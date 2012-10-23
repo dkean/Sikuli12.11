@@ -1,0 +1,7 @@
+org.sikuli.core
+org.sikuli.hotkey
+org.sikuli.script
+org.sikuli.script.natives
+org.sikuli.system
+org.sikuli.text
+org.sikuli.utility
