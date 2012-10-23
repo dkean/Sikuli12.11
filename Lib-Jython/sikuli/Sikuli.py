@@ -55,7 +55,7 @@ def load(jar):
             sys.path.append(abspath)
          return True
       return False
-
+   
    if _load(jar):
       return True
    path = getBundlePath()
@@ -97,7 +97,7 @@ def setBundlePath(path):
    ImageLocator.setBundlePath(path)
 
 def getBundlePath():
-   return Settings.BundlePath
+   return ImageLocator.getBundlePath(path)
 
 ##
 # Sikuli shows actions (click, dragDrop, ... etc.) if this flag is set to <i>True</i>.
@@ -105,7 +105,6 @@ def getBundlePath():
 #
 def setShowActions(flag):
    SikuliScript.setShowActions(flag)
-
 
 ##
 # Shows a question-message dialog requesting input from the user.

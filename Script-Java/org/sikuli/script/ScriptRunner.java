@@ -133,6 +133,8 @@ public class ScriptRunner {
 			} else {
 				sysargv.set(0, bundlePath);
 			}
+//TODO reset ImagePATH AT RERUN???
+//			addTempHeader("resetImagePath(\"\")");
 		}
 
 		// where the java command is run

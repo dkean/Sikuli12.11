@@ -22,11 +22,12 @@ import org.sikuli.utility.Util;
 public class ImageLocator {
 
 	static ArrayList<String> pathList = new ArrayList<String>();
+	static int firstEntries = 1;
 	static File _cache_dir_global = new File(System.getProperty("java.io.tmpdir"), "sikuli_cache/SIKULI_GLOBAL/");
 	static Map<URI, String> _cache = new HashMap<URI, String>();
 
 	static {
-		pathList.add(null);
+		pathList.add("");
 		resetImagePath("");
 		if (!_cache_dir_global.exists()) {
 			try {
@@ -99,19 +100,59 @@ public class ImageLocator {
 		return pathList.toArray(new String[0]);
 	}
 
+	private static String addImagePath(String[] pl, boolean first) {
+		int addedAt = firstEntries;
+		if (addedAt == pathList.size()) {
+			first = false;
+		}
+		for (int i = 0; i < pl.length; i++) {
+			if (pl[i] != null && !pathList.contains(pl[i])) {
+				if (!first) {
+					pathList.add(pl[i]);
+				} else {
+					pathList.add(addedAt, pl[i]);
+					addedAt++;
+				}
+			}
+		}
+		if (pl.length > 0) {
+			return pl[0];
+		} else {
+			return null;
+		}
+	}
+
+	private static String addImagePath(String path, boolean first) {
+		String pl[] = splitImagePath(path);
+		removeImagePath(pl);
+		return addImagePath(pl, first);
+	}
+
 	/**
-	 * the given path <br />- might be a file path or an url (http/https) <br />-
-	 * if file path relative: make absolute path based on current working
-	 * directory <br />- is first removed from the list <br />- and then added to
-	 * the end of the list (file path: if it exists)
+	 * the given path(s) <br />- might be a file path or an url (http/https) <br
+	 * />- if file path relative: make absolute path based on current working
+	 * directory <br />- is(are) first removed from the list <br />- and then
+	 * added to the end of the list (file path: if it exists)
 	 *
 	 * @param path absolute or relative path or url <br />might be a path list
 	 * string with seperator : (or ; Windows)
 	 */
 	public static String addImagePath(String path) {
-		String pl[] = splitImagePath(path);
-		removeImagePath(pl);
-		return addImagePath(pl);
+		return addImagePath(path, false);
+	}
+
+	/**
+	 * the given path(s) <br />- might be a file path or an url (http/https) <br
+	 * />- if file path relative: make absolute path based on current working
+	 * directory <br />- is(are) first removed from the list <br />- and then
+	 * added to the beginning of the list (file path: if it exists) <br />as entry
+	 * 1 after the current bundlepath (entry 0)
+	 *
+	 * @param path absolute or relative path or url <br />might be a path list
+	 * string with seperator : (or ; Windows)
+	 */
+	public static String addImagePathFirst(String path) {
+		return addImagePath(path, true);
 	}
 
 	/**
@@ -123,16 +164,20 @@ public class ImageLocator {
 	 * @param path absolute or relative paths or urls as string array
 	 */
 	public static String addImagePath(String[] pl) {
-		for (int i = 0; i < pl.length; i++) {
-			if (pl[i] != null && !pathList.contains(pl[i])) {
-				pathList.add(pl[i]);
-			}
-		}
-		if (pl.length > 0) {
-			return pl[0];
-		} else {
-			return null;
-		}
+		return addImagePath(pl, false);
+	}
+
+	/**
+	 * the given paths <br />- might be a file path or an url (http/https) <br />-
+	 * if file path relative: make absolute path based on current working
+	 * directory <br />- are removed from the list <br />- and then added to the
+	 * beginning of the list (file path: if it exists) <br />as entry 1 after the
+	 * current bundlepath (entry 0)
+	 *
+	 * @param path absolute or relative paths or urls as string array
+	 */
+	public static String addImagePathFirst(String[] pl) {
+		return addImagePath(pl, true);
 	}
 
 	/**
@@ -166,17 +211,26 @@ public class ImageLocator {
 	}
 
 	private static void clearImagePath() {
-		String p0 = pathList.get(0);
-		pathList.clear();
-		pathList.add(p0);
-		addImagePath(System.getenv("SIKULI_IMAGE_PATH"));
-		addImagePath(System.getProperty("SIKULI_IMAGE_PATH"));
+		Iterator<String> ip = pathList.listIterator(1);
+		while (ip.hasNext()) {
+			if (!ip.next().endsWith(".sikuli" + File.separator)) {
+				ip.remove();
+			}
+		}
+		if (firstEntries == pathList.size()) {
+			addImagePath(System.getenv("SIKULI_IMAGE_PATH"));
+			addImagePath(System.getProperty("SIKULI_IMAGE_PATH"));
+		} else {
+			addImagePathFirst(System.getProperty("SIKULI_IMAGE_PATH"));
+			addImagePathFirst(System.getenv("SIKULI_IMAGE_PATH"));
+		}
 	}
 
 	/**
-	 * the current list is emptied (preserving list[0] = bundlepath) <br />then
-	 * add -DSIKULI_IMAGE_PATH=... and Env(SIKULI_IMAGE_PATH) <br /> then the
-	 * given path(s) are added using addImagePath()
+	 * the current list is emptied (preserving list[0] = bundlepath and entries
+	 * created automatically by Jython import) <br />then add
+	 * -DSIKULI_IMAGE_PATH=... and Env(SIKULI_IMAGE_PATH) <br /> then the given
+	 * path(s) are added using addImagePath()
 	 *
 	 * @param path absolute or relative path(s) or url(s) might be a path list
 	 * string with seperator : (or ; Windows)
@@ -187,9 +241,10 @@ public class ImageLocator {
 	}
 
 	/**
-	 * the current list is emptied (preserving list[0] = bundlepath) <br />then
-	 * add -DSIKULI_IMAGE_PATH=... and Env(SIKULI_IMAGE_PATH) <br /> then the
-	 * given path(s) are added using addImagePath()
+	 * the current list is emptied (preserving list[0] = bundlepath and entries
+	 * created automatically by Jython import) <br />then add
+	 * -DSIKULI_IMAGE_PATH=... and Env(SIKULI_IMAGE_PATH) <br /> then the given
+	 * path(s) are added using addImagePath()
 	 *
 	 * @param path absolute or relative path(s) or url(s) as string array
 	 */
@@ -210,6 +265,14 @@ public class ImageLocator {
 			pathList.set(0, pl[0]);
 			Settings.BundlePath = pl[0];
 		}
+	}
+
+	/**
+	 *
+	 * @return the current bundle path from Settings.BundlePath
+	 */
+	public static String getBundlePath() {
+		return Settings.BundlePath;
 	}
 
 	private static String searchFile(String filename) {
@@ -244,7 +307,7 @@ public class ImageLocator {
 		try {
 			URI uri = url.toURI();
 			if (_cache.containsKey(uri)) {
-				Debug.log(2,"ImageLocator.getFileFromURL: " + uri + " taken from cache");
+				Debug.log(2, "ImageLocator.getFileFromURL: " + uri + " taken from cache");
 				return _cache.get(uri);
 			}
 			String localFile = Util.downloadURL(url, _cache_dir_global.getPath());
@@ -304,7 +367,7 @@ public class ImageLocator {
 		try {
 			return ImageIO.read(new File(locate(filename)));
 		} catch (IOException iOException) {
-			Debug.log(2, "ImageLocator.getImage: " +  filename + " does not exist or cannot be found on ImagePath");
+			Debug.log(2, "ImageLocator.getImage: " + filename + " does not exist or cannot be found on ImagePath");
 			return null;
 		}
 	}
