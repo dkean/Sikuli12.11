@@ -17,7 +17,8 @@ Motivation
 ==========
 from Launchpad/sikuli faq https://answers.launchpad.net/sikuli/+faq/2106
 
-per end of 2012-10: Status of Sikuli development --- we are waiting for a new version
+per end of 2012-10: 
+Status of Sikuli development --- we are waiting for a new version
 ---------------------------
 
 Part 1 (on Mac)
