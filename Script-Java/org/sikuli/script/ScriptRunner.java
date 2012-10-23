@@ -10,7 +10,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import javax.swing.*;
-import org.apache.commons.cli.CommandLine;
 import org.python.util.PythonInterpreter;
 import org.sikuli.core.ImageLocator;
 import org.sikuli.core.ScreenHighlighter;
@@ -85,26 +84,6 @@ public class ScriptRunner {
 			py.exec(line);
 		}
 		headers.clear();
-	}
-
-	public void runSlowMotion() {
-		addTempHeader("setShowActions(True)");
-	}
-
-	public void addTempHeader(String line) {
-		headers.add(line);
-	}
-
-	public void addTempHeader(int i, String line) {
-		headers.add(i, line);
-	}
-
-	public void addTempHeader(String[] lines) {
-		headers.addAll(new ArrayList<String>(Arrays.asList(lines)));
-	}
-
-	public void addTempHeader(int i, String[] lines) {
-		headers.addAll(i, new ArrayList<String>(Arrays.asList(lines)));
 	}
 
 	public int runPython(String bundlePath) {
@@ -199,6 +178,26 @@ public class ScriptRunner {
 
 	public void close() {
 		ScreenHighlighter.closeAll();
+	}
+
+	public void runSlowMotion() {
+		addTempHeader("setShowActions(True)");
+	}
+
+	private void addTempHeader(String line) {
+		headers.add(line);
+	}
+
+	private void addTempHeader(int i, String line) {
+		headers.add(i, line);
+	}
+
+	private void addTempHeader(String[] lines) {
+		headers.addAll(new ArrayList<String>(Arrays.asList(lines)));
+	}
+
+	private void addTempHeader(int i, String[] lines) {
+		headers.addAll(i, new ArrayList<String>(Arrays.asList(lines)));
 	}
 
 	private void runPythonAsync(final String bundlePath) throws IOException {
