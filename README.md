@@ -21,6 +21,14 @@ per end of 2012-10:
 Status of Sikuli development --- we are waiting for a new version
 ---------------------------
 
+So I decided, to revise the Sikuli version in its current shape, fix some bugs and implement some requests.
+
+My plan: Part 1 and 2 ready per end of November 2012.
+
+In parallel I am cooperating with Tom Yeh on his plans to implement a completely new Sikuli.
+
+I will continue to support the currently latest version of Sikuli at https://launchpad.net/sikuli
+
 Part 1 (on Mac)
 ---------------
 - reduce it to the really needed basic features and goodies that really work
@@ -32,7 +40,7 @@ Part 1 (on Mac)
 - implement some requests, that fit with what i am already revising
 - get it working with Java 7 AND Java 6
 - make it working with OpenCV 2.4 and Tesseract 3 (without adding features)
-- assure, that everything still works, that works with X-1.0rc3-r930
+- assure, that everything (nearly ;-) still works, that works with X-1.0rc3-r930
 
 Part 2:
 -------
