@@ -71,8 +71,7 @@ class Region(JRegion):
 # If we want to let Sikuli users use wait(int/long timeout), we need this Python method.
 # FIXME: default timeout should be autoWaitTimeout
    def wait(self, target, timeout=None):
-      ttype = __builtin__.type(target)
-      if ttype is types.IntType or ttype is types.FloatType:
+      if instanceof(target, int) or instanceof(target, long) or instanceof(target, float):
          time.sleep(target)
          return
       if timeout == None:
