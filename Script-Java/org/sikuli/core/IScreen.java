@@ -14,7 +14,7 @@ public interface IScreen {
 
 	public Rectangle getBounds();
 
-	public Region newRegion(Rectangle rect);
+	public Region newRegion(Region reg);
 
 	public ScreenImage capture();
 
@@ -27,6 +27,4 @@ public interface IScreen {
   public void setLastScreenImage(ScreenImage simg);
 
 	public void showTarget(Location loc);
-
-	public String toStringShort();
 }
