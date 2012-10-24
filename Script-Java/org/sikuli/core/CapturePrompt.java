@@ -26,8 +26,7 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 	static final Color screenFrameColor = new Color(1.0f, 0.0f, 0.0f, 0.6f);
 	static final BasicStroke strokeScreenFrame = new BasicStroke(5);
 	static final BasicStroke _StrokeCross = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float[]{2f}, 0);
-  static final BasicStroke bs = new BasicStroke(1);
-
+	static final BasicStroke bs = new BasicStroke(1);
 	Observer _obs;
 	Screen _scr;
 	BufferedImage _scr_img = null;
@@ -150,9 +149,7 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 
 	public void prompt(String msg) {
 		captureScreen(_scr);
-		setLocation(_scr.x, _scr.y);
-		this.setSize(new Dimension(_scr.w, _scr.h));
-		this.setBounds(_scr.x, _scr.y, _scr.w, _scr.h);
+		this.setBounds(_scr.getBounds());
 		this.setAlwaysOnTop(true);
 		_msg = msg;
 
@@ -178,8 +175,8 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 		if (cropImg == null) {
 			return null;
 		}
-		rectSelection.x += _scr.x;
-		rectSelection.y += _scr.y;
+		rectSelection.x += _scr.getBounds().x;
+		rectSelection.y += _scr.getBounds().y;
 		ScreenImage ret = new ScreenImage(rectSelection, cropImg);
 		return ret;
 	}
@@ -290,11 +287,8 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 	public void paint(Graphics g) {
 		if (_scr_img != null) {
 			Graphics2D g2dWin = (Graphics2D) g;
-			if (bi == null || bi.getWidth(this) != getWidth()
-							|| bi.getHeight(this) != getHeight()) {
-				bi = new BufferedImage(
-								getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-			}
+			bi = new BufferedImage(_scr.getBounds().width,
+							_scr.getBounds().height, BufferedImage.TYPE_INT_RGB);
 			Graphics2D bfG2 = bi.createGraphics();
 			bfG2.drawImage(_darker_screen, 0, 0, this);
 			drawMessage(bfG2);
