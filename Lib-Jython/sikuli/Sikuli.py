@@ -97,7 +97,7 @@ def setBundlePath(path):
    ImageLocator.setBundlePath(path)
 
 def getBundlePath():
-   return ImageLocator.getBundlePath(path)
+   return ImageLocator.getBundlePath()
 
 ##
 # Sikuli shows actions (click, dragDrop, ... etc.) if this flag is set to <i>True</i>.
