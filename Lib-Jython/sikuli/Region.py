@@ -88,10 +88,7 @@ class Region(JRegion):
       elif len(args) == 2:
          target = args[0]
          s = args[1]
-      t_str = __builtin__.type(s)
-      if t_str is types.UnicodeType:
-         pass # do nothing
-      elif t_str is types.StringType:
+      if isinstance(s, types.StringType):
          s = java.lang.String(s, "utf-8")
       return JRegion.paste(self, target, s)
 
