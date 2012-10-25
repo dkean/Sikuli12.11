@@ -42,6 +42,7 @@ public class DesktopRobot extends Robot implements IRobot {
   @Override
   public void smoothMove(Location src, Location dest, long ms) {
     if (ms == 0) {
+      Debug.log(2, "smoothMove: " + src.toString() + "---" + dest.toString());
       mouseMove(dest.x, dest.y);
       return;
     }
