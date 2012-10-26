@@ -838,7 +838,7 @@ public class Region {
   }
 
   /**
-   * create region withsame size at top left corner offset
+   * create region with same size at top left corner offset
    *
    * @param loc
    * @return the new region
@@ -923,6 +923,16 @@ public class Region {
    */
   public Region grow(Location loc, int w, int h) {
     return Region.create(0, 0, w, h).setCenter(loc);
+  }
+
+  /**
+   * create a minimal symetric region at given point as center with size 3x3
+   *
+   * @param loc the center point
+   * @return the new region
+   */
+  public Region grow(Location loc) {
+    return grow(loc, 3, 3);
   }
 
   /**
