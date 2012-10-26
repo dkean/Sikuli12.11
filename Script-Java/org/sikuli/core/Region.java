@@ -1016,13 +1016,6 @@ public class Region {
   }
 
   /**
-   * create a region above the top side with same width<br /> the new region
-   * extends to the top screen border<br /> use grow() to include the current
-   * region
-   *
-   * @return the new region
-   */
-  /**
    *
    * @return point middle on top edge
    */
@@ -1034,12 +1027,19 @@ public class Region {
    * positive offset goes towards top of screen <br />might be off current
    * screen
    *
-   * @return point with given offset horizontally to middle point on top edge
+   * @return point with given offset vertically to middle point on top edge
    */
   public Location aboveAt(int offset) {
     return new Location(x + w / 2, y - offset);
   }
 
+  /**
+   * create a region above the top side with same width<br /> the new region
+   * extends to the top screen border<br /> use grow() to include the current
+   * region
+   *
+   * @return the new region
+   */
   public Region above() {
     return above(9999999);
   }
@@ -1072,7 +1072,7 @@ public class Region {
    * positive offset goes towards bottom of screen <br />might be off current
    * screen
    *
-   * @return point with given offset horizontally to middle point on bottom edge
+   * @return point with given offset vertically to middle point on bottom edge
    */
   public Location belowAt(int offset) {
     return new Location(x + w / 2, y + h - offset);
@@ -1716,7 +1716,8 @@ public class Region {
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Mouse actions - clicking">
-  // returns target offset if lastmatch exists, center of Region otherwise
+  // returns target offset of lastmatch if exists
+	//Region.center / Match.targetOffset otherwise
   private Location checkMatch() {
     if (lastMatch != null) {
       return lastMatch.getTarget();
