@@ -8,6 +8,12 @@ package org.sikuli.core;
 
 import java.awt.Point;
 
+/**
+ * A point like AWT.Point using global coordinates, hence modifications might
+ * move location out of any screen (not checked as is done with region)
+
+ * @author RaiMan
+ */
 public class Location extends Point {
 
   /**
@@ -30,57 +36,125 @@ public class Location extends Point {
     super(x, y);
   }
 
-  public Location(Location loc) {
+  /**
+	 *
+	 * @param loc
+	 */
+	public Location(Location loc) {
     super(loc.x, loc.y);
   }
 
-  public Location(Point point) {
+  /**
+	 *
+	 * @param point
+	 */
+	public Location(Point point) {
     super(point);
   }
 
+	/**
+	 *
+	 * @return
+	 */
 	public Point getPoint() {
 		return new Point(this);
 	}
 
+	/**
+	 *
+	 * @return the screen containing this point, the primary screen if outside of any screen
+	 */
 	public Screen getScreen() {
 		return Screen.getScreenContaining(this);
 	}
 
-	public Location moveFor(int X, int Y) {
-		super.translate(X, Y);
+	/**
+	 * moves the point the given amounts in the x and y direction, might be negative
+	 * <br />might move point outside of any screen, not checked
+	 *
+	 * @param dx
+	 * @param dy
+	 * @return the location itself modified
+	 */
+	public Location moveFor(int dx, int dy) {
+		super.translate(dx, dy);
 		return this;
 	}
 
+	/**
+	 * changes the locations x and y value to the given values (moves it)
+	 * <br />might move point outside of any screen, not checked
+	 *
+	 * @param X
+	 * @param Y
+	 * @return the location itself modified
+	 */
 	public Location moveTo(int X, int Y) {
 		super.move(X, Y);
 		return this;
 	}
 
-  public Location offset(int dx, int dy) {
+  /**
+	 * creates a point at the given offset, might be negative
+	 * <br />might create a point outside of any screen, not checked
+	 *
+	 * @param dx
+	 * @param dy
+	 * @return new location
+	 */
+	public Location offset(int dx, int dy) {
     return new Location(x + dx, y + dy);
   }
 
-  public Location left(int dx) {
+  /**
+	 * creates a point at the given offset to the left, might be negative
+	 * <br />might create a point outside of any screen, not checked
+	 *
+	 * @param dx
+	 * @return new location
+	 */
+	public Location left(int dx) {
     return new Location(x - dx, y);
   }
 
-  public Location right(int dx) {
+  /**
+	 * creates a point at the given offset to the right, might be negative
+	 * <br />might create a point outside of any screen, not checked
+	 *
+	 * @param dx
+	 * @return new location
+	 */
+	public Location right(int dx) {
     return new Location(x + dx, y);
   }
 
-  public Location above(int dy) {
+  /**
+	 * creates a point at the given offset above, might be negative
+	 * <br />might create a point outside of any screen, not checked
+	 *
+	 * @param dy
+	 * @return new location
+	 */
+	public Location above(int dy) {
     return new Location(x, y - dy);
   }
 
-  public Location below(int dy) {
+  /**
+	 * creates a point at the given offset below, might be negative
+	 * <br />might create a point outside of any screen, not checked
+	 *
+	 * @param dy
+	 * @return new location
+	 */
+	public Location below(int dy) {
     return new Location(x, y + dy);
   }
 
-	  /**
-   * new point with same offset to current screen's top left on primary screen
-   *
-   * @return new location
-   */
+  /**
+  * new point with same offset to current screen's top left on primary screen
+  *
+  * @return new location
+  */
   public Location copyTo() {
     return copyTo(Screen.getPrimaryScreen());
   }
@@ -108,11 +182,11 @@ public class Location extends Point {
   }
 
   /**
-   * new region with same offset to current screen's top left <br />on the given
+   * new point with same offset to current screen's top left <br />on the given
    * region's screen <br />mainly to support Jython Screen objects
    *
    * @param screen new parent screen
-   * @return new region
+   * @return new point
    */
   public Location copyTo(Region reg) {
     return copyTo(reg.getScreen());
@@ -122,6 +196,6 @@ public class Location extends Point {
 
   @Override
   public String toString() {
-    return "(" + x + "," + y + ")";
+    return "L(" + x + "," + y + ") on "+getScreen().toStringShort();
   }
 }
