@@ -141,14 +141,14 @@ public class Screen extends Region implements Observer, IScreen {
     return screens[getValidID(id)];
   }
 
-  public static Screen getScreenContaining(Rectangle rect) {
+  public static Screen getScreenContaining(Region reg) {
     for (int i = 0; i < Screen.getNumberScreens(); i++) {
       Rectangle sb = Screen.getBounds(i);
-      if (sb.contains(rect.getLocation())) {
+      if (sb.contains(reg.getTopLeft())) {
         return getScreen(i);
       }
     }
-    return null;
+    return Screen.getPrimaryScreen();
   }
 
   public static Screen getScreenContaining(Location point) {
@@ -158,7 +158,7 @@ public class Screen extends Region implements Observer, IScreen {
         return getScreen(i);
       }
     }
-    return null;
+    return Screen.getPrimaryScreen();
   }
 
   public static Rectangle getBounds(int id) {
@@ -191,9 +191,12 @@ public class Screen extends Region implements Observer, IScreen {
     return curGD.getDefaultConfiguration().getBounds();
   }
 
-  @Override
-  public Region newRegion(Region reg) {
-    return Region.create(reg);
+  public Region newRegion(Location loc, int W, int H) {
+			return Region.createAt(loc.copyTo(this), W, H);
+  }
+
+  public Location newLocation(Location loc) {
+			return (new Location(loc)).copyTo(this);
   }
 
   @Override
