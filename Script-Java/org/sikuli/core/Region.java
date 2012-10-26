@@ -28,10 +28,21 @@ public class Region {
   static final int PADDING = 50;
   private Screen scr;
   private ScreenHighlighter overlay = null;
-  public int x, y, w, h;
+  public int x, y;
+	/**
+	 * width/height cropped to screen
+	 */
+	public int w, h;
+	/**
+	 * width/height given at time of creation
+	 */
+	public int vWidth, vHeight;
   protected FindFailedResponse findFailedResponse =
           Settings.defaultFindFailedResponse;
-  protected boolean throwException = Settings.ThrowException;
+  /**
+	 *
+	 */
+	protected boolean throwException = Settings.ThrowException;
   protected double autoWaitTimeout = Settings.AutoWaitTimeout;
   protected boolean observing = false;
   protected EventManager evtMgr = null;
@@ -49,8 +60,8 @@ public class Region {
   private Region initialize(int X, int Y, int W, int H, Screen parentScreen) {
     x = X;
     y = Y;
-    w = W;
-    h = H;
+    w = vWidth = W;
+    h = vHeight = H;
     if (parentScreen != null) {
       scr = parentScreen;
     }
@@ -71,6 +82,9 @@ public class Region {
       y = 0;
     }
     roi = scr.getBounds().intersection(roi);
+		if (roi.width < w || roi.height < h) {
+			Debug.log(2, "Region cropped to screen" + toString());
+		}
     x = (int) roi.getX();
     y = (int) roi.getY();
     w = (int) roi.getWidth();
@@ -173,6 +187,19 @@ public class Region {
     reg.throwException = r.throwException;
     return reg.initialize(r.x, r.y, r.w, r.h, null);
   }
+
+	/**
+   * Create a region with the provided top left corner and size
+	 *
+	 * @param loc top left corner
+	 * @param w width
+	 * @param h height
+	 * @return
+	 */
+	public static Region createAt(Location loc, int w, int h) {
+    Region reg = new Region();
+    return reg.initialize(loc.x, loc.y, w, h, null);
+	}
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="handle coordinates">
