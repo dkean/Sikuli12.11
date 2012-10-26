@@ -35,7 +35,7 @@ public class Region {
   protected double autoWaitTimeout = Settings.AutoWaitTimeout;
   protected boolean observing = false;
   protected EventManager evtMgr = null;
-  protected Match lastMatch;
+  protected Match lastMatch = null;
   protected Iterator<Match> lastMatches;
 
   @Override
@@ -227,9 +227,9 @@ public class Region {
   }
 
   /**
-   * new region with same offset to current screen's top left
-   *<br />on the given region's screen
-   *<br />mainly to support Jython Screen objects
+   * new region with same offset to current screen's top left <br />on the given
+   * region's screen <br />mainly to support Jython Screen objects
+   *
    * @param screen new parent screen
    * @return new region
    */
@@ -347,6 +347,15 @@ public class Region {
    */
   public Location getCenter() {
     return new Location(x + w / 2, y + h / 2);
+  }
+
+  /**
+   * conveneince: can be used on Region and Match (returns TargetOffset)
+   *
+   * @return the regions center
+   */
+  public Location getTarget() {
+    return getCenter();
   }
 
   /**
@@ -920,6 +929,23 @@ public class Region {
   }
 
   /**
+   *
+   * @return point middle on right edge
+   */
+  public Location rightAt() {
+    return rightAt(0);
+  }
+
+  /**
+   * positive offset goes to the right <br />might be off current screen
+   *
+   * @return point with given offset horizontally to middle point on right edge
+   */
+  public Location rightAt(int offset) {
+    return new Location(x + w + offset, y + h / 2);
+  }
+
+  /**
    * create a region right of the right side with same height<br /> the new
    * region extends to the right screen border<br /> use grow() to include the
    * current region
@@ -943,6 +969,23 @@ public class Region {
     int _w = width;
     int _h = h;
     return Region.create(_x, _y, _w, _h);
+  }
+
+  /**
+   *
+   * @return point middle on left edge
+   */
+  public Location leftAt() {
+    return leftAt(0);
+  }
+
+  /**
+   * positive offset goes to the left <br />might be off current screen
+   *
+   * @return point with given offset horizontally to middle point on left edge
+   */
+  public Location leftAt(int offset) {
+    return new Location(x - offset, y + h / 2);
   }
 
   /**
@@ -979,6 +1022,24 @@ public class Region {
    *
    * @return the new region
    */
+  /**
+   *
+   * @return point middle on top edge
+   */
+  public Location aboveAt() {
+    return aboveAt(0);
+  }
+
+  /**
+   * positive offset goes towards top of screen <br />might be off current
+   * screen
+   *
+   * @return point with given offset horizontally to middle point on top edge
+   */
+  public Location aboveAt(int offset) {
+    return new Location(x + w / 2, y - offset);
+  }
+
   public Region above() {
     return above(9999999);
   }
@@ -997,6 +1058,24 @@ public class Region {
     int _w = w;
     int _h = y - _y;
     return Region.create(_x, _y, _w, _h);
+  }
+
+  /**
+   *
+   * @return point middle on bottom edge
+   */
+  public Location belowAt() {
+    return belowAt(0);
+  }
+
+  /**
+   * positive offset goes towards bottom of screen <br />might be off current
+   * screen
+   *
+   * @return point with given offset horizontally to middle point on bottom edge
+   */
+  public Location belowAt(int offset) {
+    return new Location(x + w / 2, y + h - offset);
   }
 
   /**
@@ -1637,18 +1716,25 @@ public class Region {
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Mouse actions - clicking">
+  // returns target offset if lastmatch exists, center of Region otherwise
+  private Location checkMatch() {
+    if (lastMatch != null) {
+      return lastMatch.getTarget();
+    }
+    return getTarget();
+  }
+
   /**
-   * move the mouse pointer to the region's last successful match<br />same as
-   * mouseMove<br />
+   * move the mouse pointer to region's last successful match <br />use center
+   * if no lastMatch <br />if region is a match: move to targetOffset <br />same
+   * as mouseMove
    *
    * @return 1 if possible, 0 otherwise
    */
   public int hover() {
-    if (lastMatch != null) {
-      try {
-        return hover(lastMatch);
-      } catch (FindFailed ex) {
-      }
+    try { // needed to cut throw chain for FindFailed
+      return hover(checkMatch());
+    } catch (FindFailed ex) {
     }
     return 0;
   }
@@ -1669,20 +1755,17 @@ public class Region {
   }
 
   /**
-   * left click at the region's last successful match
+   * left click at the region's last successful match <br />use center if no
+   * lastMatch <br />if region is a match: click targetOffset
    *
    * @return 1 if possible, 0 otherwise
    */
   public int click() {
-    if (lastMatch != null) {
-      try {
-        return click(lastMatch, 0);
-      } catch (FindFailed ex) {
-        return 0;
-      }
-    } else {
-      return 0;
+    try { // needed to cut throw chain for FindFailed
+      return click(checkMatch(), 0);
+    } catch (FindFailed ex) {
     }
+    return 0;
   }
 
   /**
@@ -1721,20 +1804,17 @@ public class Region {
   }
 
   /**
-   * double click at the region's last successful match
+   * double click at the region's last successful match <br />use center if no
+   * lastMatch <br />if region is a match: click targetOffset
    *
    * @return 1 if possible, 0 otherwise
    */
   public int doubleClick() {
-    if (lastMatch != null) {
-      try {
-        return doubleClick(lastMatch, 0);
-      } catch (FindFailed ex) {
-        return 0;
-      }
-    } else {
-      return 0;
+    try { // needed to cut throw chain for FindFailed
+      return doubleClick(checkMatch(), 0);
+    } catch (FindFailed ex) {
     }
+    return 0;
   }
 
   /**
@@ -1773,20 +1853,17 @@ public class Region {
   }
 
   /**
-   * right click at the region's last successful match
+   * right click at the region's last successful match <br />use center if no
+   * lastMatch <br />if region is a match: click targetOffset
    *
    * @return 1 if possible, 0 otherwise
    */
   public int rightClick() {
-    if (lastMatch != null) {
-      try {
-        return rightClick(lastMatch, 0);
-      } catch (FindFailed ex) {
-        return 0;
-      }
-    } else {
-      return 0;
+    try { // needed to cut throw chain for FindFailed
+      return rightClick(checkMatch(), 0);
+    } catch (FindFailed ex) {
     }
+    return 0;
   }
 
   /**
@@ -2229,7 +2306,7 @@ public class Region {
     return keyin(target, text, modifiersNew);
   }
 
-  public <PatternFilenameRegionMatchLocation> int keyin(PatternFilenameRegionMatchLocation target, String text, int modifiers)
+  private <PatternFilenameRegionMatchLocation> int keyin(PatternFilenameRegionMatchLocation target, String text, int modifiers)
           throws FindFailed {
     if (0 == click(target, 0)) {
       return 0;

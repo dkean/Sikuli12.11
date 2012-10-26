@@ -73,6 +73,7 @@ public class Match extends Region implements Comparable {
     return simScore;
   }
 
+  @Override
   public Location getTarget() {
     if (target != null) {
       return target;
