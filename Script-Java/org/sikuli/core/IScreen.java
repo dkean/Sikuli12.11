@@ -14,8 +14,6 @@ public interface IScreen {
 
 	public Rectangle getBounds();
 
-	public Region newRegion(Region reg);
-
 	public ScreenImage capture();
 
 	public ScreenImage capture(int x, int y, int w, int h);
