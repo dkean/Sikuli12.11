@@ -1572,11 +1572,12 @@ public class Region {
         run();
         if (ifSuccessful()) {
           return true;
-        } else if (timeout == 0) {
+        } else if (timeout < MaxTimePerScan) {
+					// instant return on first search failed if timeout very small or 0
           return false;
         }
-//TODO instant return
-        long after_find = (new Date()).getTime();
+
+				long after_find = (new Date()).getTime();
         if (after_find - before_find < MaxTimePerScan) {
           scr.getActionRobot().delay((int) (MaxTimePerScan - (after_find - before_find)));
         } else {
