@@ -334,25 +334,29 @@ public class ImageLocator {
 	 * urls are loaded to local cash
 	 */
 	public static String locate(String filename) throws IOException {
-		String ret;
-		URL url = getURL(filename);
-		if (url != null) {
-			ret = getFileFromURL(url);
-			if (ret != null) {
-				return ret;
-			}
-		}
-		File f = new File(filename);
-		if (f.isAbsolute()) {
-			if (f.exists()) {
-				return f.getAbsolutePath();
-			}
-		} else {
-			ret = searchFile(filename);
-			if (ret != null) {
-				return ret;
-			}
-		}
+    if (filename != null) {
+      String ret;
+      URL url = getURL(filename);
+      if (url != null) {
+        ret = getFileFromURL(url);
+        if (ret != null) {
+          return ret;
+        }
+      }
+      File f = new File(filename);
+      if (f.isAbsolute()) {
+        if (f.exists()) {
+          return f.getAbsolutePath();
+        }
+      } else {
+        ret = searchFile(filename);
+        if (ret != null) {
+          return ret;
+        }
+      }
+    } else {
+      filename = "*** not known ***";
+    }
 		throw new FileNotFoundException("ImageLocator.locate: " + filename + " does not exist or cannot be found on ImagePath");
 	}
 
