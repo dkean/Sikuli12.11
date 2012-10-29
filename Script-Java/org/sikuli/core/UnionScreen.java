@@ -65,7 +65,7 @@ public class UnionScreen extends Screen {
    }
 
   @Override
-   boolean useFullscreen(){
+   public boolean useFullscreen(){
       return false;
    }
 
