@@ -21,8 +21,4 @@ public interface IScreen {
 	public ScreenImage capture(Rectangle rect);
 
 	public ScreenImage capture(Region reg);
-
-  public void setLastScreenImage(ScreenImage simg);
-
-	public void showTarget(Location loc);
 }
