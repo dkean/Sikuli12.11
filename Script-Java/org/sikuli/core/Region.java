@@ -25,7 +25,7 @@ import org.sikuli.utility.Debug;
 public class Region {
 
   final static float DEFAULT_HIGHLIGHT_TIME = Settings.DefaultHighlightTime;
-  static final int PADDING = 50;
+  static final int PADDING = Settings.DefaultPadding;
   private Screen scr;
   private ScreenHighlighter overlay = null;
   public int x, y;
@@ -70,25 +70,25 @@ public class Region {
   }
 
   private void initScreen() {
-    if (this instanceof Screen) {
-      scr = (Screen) this;
-    }
-    Rectangle roi = new Rectangle(x, y, w, h);
-    scr = Screen.getScreenContaining(new Location(roi.getLocation()));
-    if (scr == null) {
-      Debug.error("Region outside any screen - using primary - (x,y) set to (0,0) ---", this);
-      scr = Screen.getPrimaryScreen();
-      x = 0;
-      y = 0;
-    }
-    roi = scr.getBounds().intersection(roi);
-		if (roi.width < w || roi.height < h) {
-			Debug.log(2, "Region cropped to screen" + toString());
+    if (! (this instanceof Screen)) {
+			Rectangle roi = new Rectangle(x, y, vWidth, vHeight);
+			scr = Screen.getScreenContaining(new Location(roi.getLocation()));
+			if (scr == null) {
+				Debug.error("Region outside any screen - using primary - (x,y) set to (0,0) ---", this);
+				scr = Screen.getPrimaryScreen();
+				w = vWidth;
+				h = vHeight;
+			} else {
+				roi = scr.getBounds().intersection(roi);
+				if (roi.width < w || roi.height < h) {
+					Debug.log(2, "Region cropped to screen" + toString());
+				}
+				x = (int) roi.getX();
+				y = (int) roi.getY();
+				w = (int) roi.getWidth();
+				h = (int) roi.getHeight();
+			}
 		}
-    x = (int) roi.getX();
-    y = (int) roi.getY();
-    w = (int) roi.getWidth();
-    h = (int) roi.getHeight();
     updateSelf();
   }
   //</editor-fold>
@@ -158,6 +158,66 @@ public class Region {
     return reg.initialize(X, Y, W, H, null);
   }
 
+	/**
+   * Create a region with the provided top left corner and size
+	 *
+	 * @param loc top left corner
+	 * @param w width
+	 * @param h height
+	 * @return
+	 */
+	public static Region create(Location loc, int w, int h) {
+    Region reg = new Region();
+    return reg.initialize(loc.x, loc.y, w, h, null);
+	}
+
+  /**
+   * create a region with a corner at the given point<br />as specified with x
+   * y<br /> 0 0 top left<br /> 0 1 bottom left<br /> 1 0 top right<br /> 1 1
+   * bottom right<br />
+   *
+   * @param loc the refence point
+   * @param x ==0 is left side !=0 is right side
+   * @param y ==0 is top side !=0 is bottom side
+   * @param w the width
+   * @param h the height
+   * @return the new region
+   */
+  public static Region create(Location loc, int x, int y, int w, int h) {
+    Region r = Region.create(0, 0, w, h);
+    if (x == 0) {
+      if (y == 0) {
+        r.setLocation(loc);
+      } else {
+        r.setBottomLeft(loc);
+      }
+    } else {
+      if (y == 0) {
+        r.setTopRight(loc);
+      } else {
+        r.setBottomRight(loc);
+      }
+    }
+    return r;
+  }
+
+  /**
+   * create a region with a corner at the given point<br />as specified with x
+   * y<br /> 0 0 top left<br /> 0 1 bottom left<br /> 1 0 top right<br /> 1 1
+   * bottom right<br />same as the corresponding create method,
+   * here to be naming compatible with class Location
+   *
+   * @param loc the refence point
+   * @param x ==0 is left side !=0 is right side
+   * @param y ==0 is top side !=0 is bottom side
+   * @param w the width
+   * @param h the height
+   * @return the new region
+   */
+  public static Region grow(Location loc, int x, int y, int w, int h) {
+    return Region.create(loc, x, y, w, h);
+  }
+
   /**
    * Create a region from a Rectangle
    *
@@ -188,18 +248,28 @@ public class Region {
     return reg.initialize(r.x, r.y, r.w, r.h, null);
   }
 
-	/**
-   * Create a region with the provided top left corner and size
-	 *
-	 * @param loc top left corner
-	 * @param w width
-	 * @param h height
-	 * @return
-	 */
-	public static Region createAt(Location loc, int w, int h) {
-    Region reg = new Region();
-    return reg.initialize(loc.x, loc.y, w, h, null);
-	}
+  /**
+   * create a region with the given point as center and the given size
+   *
+   * @param loc the center point
+   * @param w the width
+   * @param h the height
+   * @return the new region
+   */
+  public static Region grow(Location loc, int w, int h) {
+    return Region.create(0, 0, w, h).setCenter(loc);
+  }
+
+  /**
+   * create a minimal symetric region at given point as center with size 3x3
+   *
+   * @param loc the center point
+   * @return the new region
+   */
+  public static Region grow(Location loc) {
+    return grow(loc, 3, 3);
+  }
+
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="handle coordinates">
@@ -250,7 +320,7 @@ public class Region {
   public Region copyTo(Screen screen) {
     Location o = new Location(getScreen().getBounds().getLocation());
     Location n = new Location(screen.getBounds().getLocation());
-    return Region.create(n.x + x - o.x, n.y + y - o.y, w, h);
+    return Region.create(n.x + x - o.x, n.y + y - o.y, vWidth, vHeight);
   }
 
   /**
@@ -360,6 +430,14 @@ public class Region {
    */
   protected void setScreen(Screen is) {
     scr = is;
+  }
+
+  /**
+   * internal use from Screen initialization to act like Region
+   * @param id the containing screen object's id
+   */
+  protected void setScreen(int id) {
+    scr = Screen.getScreen(id);
   }
 
 //TODO getColor
@@ -811,7 +889,6 @@ public class Region {
   public Match getLastMatch() {
     return lastMatch;
   }
-  //TODO do not change lastmatch on failure
 
   // ************************************************
   /**
@@ -844,7 +921,7 @@ public class Region {
    * @return the new region
    */
   public Region offset(Location loc) {
-    return Region.create(x + loc.x, y + loc.y, w, h);
+    return Region.create(x + loc.x, y + loc.y, vWidth, vHeight);
   }
 
   /**
@@ -890,6 +967,7 @@ public class Region {
    */
   public Region grow(int w, int h) {
     Rectangle r = getRect();
+    r.setSize(vWidth, vHeight);
     r.grow(w, h);
     return Region.create(r.x, r.y, r.width, r.height);
   }
@@ -908,61 +986,9 @@ public class Region {
     Rectangle re = getRect();
     int _x = x - l;
     int _y = y - b;
-    int _w = w + l + r;
-    int _h = h + t + b;
+    int _w = vWidth + l + r;
+    int _h = vHeight + t + b;
     return Region.create(_x, _y, _w, _h);
-  }
-
-  /**
-   * create a region with the given point as center and the given size
-   *
-   * @param loc the center point
-   * @param w the width
-   * @param h the height
-   * @return the new region
-   */
-  public Region grow(Location loc, int w, int h) {
-    return Region.create(0, 0, w, h).setCenter(loc);
-  }
-
-  /**
-   * create a minimal symetric region at given point as center with size 3x3
-   *
-   * @param loc the center point
-   * @return the new region
-   */
-  public Region grow(Location loc) {
-    return grow(loc, 3, 3);
-  }
-
-  /**
-   * create a region with a corner at the given point<br />as specified with x
-   * y<br /> 0 0 top left<br /> 0 1 bottom left<br /> 1 0 top right<br /> 1 1
-   * bottom right<br />
-   *
-   * @param loc the refence point
-   * @param x ==0 is left side !=0 is right side
-   * @param y ==0 is top side !=0 is bottom side
-   * @param w the width
-   * @param h the height
-   * @return the new region
-   */
-  public Region grow(Location loc, int x, int y, int w, int h) {
-    Region r = Region.create(0, 0, w, h);
-    if (x == 0) {
-      if (y == 0) {
-        r.setLocation(loc);
-      } else {
-        r.setBottomLeft(loc);
-      }
-    } else {
-      if (y == 0) {
-        r.setTopRight(loc);
-      } else {
-        r.setBottomRight(loc);
-      }
-    }
-    return r;
   }
 
   /**
@@ -1149,7 +1175,9 @@ public class Region {
    * @return the new region
    */
   public Region union(Region ur) {
-    Rectangle r = getRect().union(ur.getRect());
+    Rectangle r = getRect();
+    r.setSize(vWidth, vHeight);
+    r = r.union(ur.getRect());
     return Region.create(r.x, r.y, r.width, r.height);
   }
 
@@ -1160,7 +1188,9 @@ public class Region {
    * @return the new region
    */
   public Region intersection(Region ir) {
-    Rectangle r = getRect().intersection(ir.getRect());
+    Rectangle r = getRect();
+    r.setSize(vWidth, vHeight);
+    r = r.intersection(ir.getRect());
     return Region.create(r.x, r.y, r.width, r.height);
   }
   //</editor-fold>
@@ -1233,6 +1263,20 @@ public class Region {
     }
   }
 
+  private <PatternOrString> String getImageFilename(PatternOrString target) {
+    String imageFileName = null;
+    if (target instanceof Pattern) {
+      imageFileName = ((Pattern) target).getFilename();
+    } else if (target instanceof String) {
+        imageFileName = (String) target;
+    }
+    try {
+      return ImageLocator.locate(imageFileName);
+    } catch (IOException ex) {
+      return "*** not known ***";
+    }
+  }
+
   /**
    * return false to skip return true to try again throw FindFailed to abort
    */
@@ -1261,7 +1305,7 @@ public class Region {
   }
 
   /**
-   * Match find( Pattern/String/PatternClass ) finds the given pattern on the
+   * Match find( Pattern/String ) finds the given pattern on the
    * screen and returns the best match. If AutoWaitTimeout is set, this is
    * equivalent to wait().
    *
@@ -1269,7 +1313,7 @@ public class Region {
    * @return If found, the element. null otherwise
    * @throws FindFailed if the Find operation failed
    */
-  public <PSC> Match find(final PSC target) throws FindFailed {
+  public <PatternOrString> Match find(final PatternOrString target) throws FindFailed {
     if (autoWaitTimeout > 0) {
       return wait(target, autoWaitTimeout);
     }
@@ -1279,11 +1323,10 @@ public class Region {
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
       }
-
       if (lastMatch != null) {
+        lastMatch.setImage(getImageFilename(target));
         return lastMatch;
       }
-
       if (!handleFindFailed(target)) {
         return null;
       }
@@ -1299,7 +1342,7 @@ public class Region {
    * @return All elements matching
    * @throws FindFailed if the Find operation failed
    */
-  public <PSC> Iterator<Match> findAll(PSC target) throws FindFailed {
+  public <PatternOrString> Iterator<Match> findAll(PatternOrString target) throws FindFailed {
     while (true) {
       try {
         if (autoWaitTimeout > 0) {
@@ -1321,7 +1364,7 @@ public class Region {
     }
   }
 
-  public <PSC> Match wait(PSC target) throws FindFailed {
+  public <PatternOrString> Match wait(PatternOrString target) throws FindFailed {
     return wait(target, autoWaitTimeout);
   }
 
@@ -1334,7 +1377,7 @@ public class Region {
    * @return All elements matching
    * @throws FindFailed if the Find operation failed
    */
-  public <PSC> Match wait(PSC target, double timeout) throws FindFailed {
+  public <PatternOrString> Match wait(PatternOrString target, double timeout) throws FindFailed {
 
     while (true) {
       try {
@@ -1348,6 +1391,7 @@ public class Region {
       }
 
       if (lastMatch != null) {
+        lastMatch.setImage(getImageFilename(target));
         Debug.log(2, "" + target + " has appeared.");
         break;
       }
@@ -1368,7 +1412,7 @@ public class Region {
    * @param target A search criteria
    * @return The element matching
    */
-  public <PSC> Match exists(PSC target) {
+  public <PatternOrString> Match exists(PatternOrString target) throws Exception {
     return exists(target, autoWaitTimeout);
   }
 
@@ -1379,17 +1423,19 @@ public class Region {
    * @param timeout Timeout in second
    * @return The element matching
    */
-  public <PSC> Match exists(PSC target, double timeout) {
+  public <PatternOrString> Match exists(PatternOrString target, double timeout) throws Exception {
     try {
       RepeatableFind rf = new RepeatableFind(target);
       if (rf.repeat(timeout)) {
         lastMatch = rf.getMatch();
+        lastMatch.setImage(getImageFilename(target));
         return lastMatch;
       }
-    } catch (Exception ff) {
+    } catch (Exception ex) {
       // TODO: This should throw an exception since
       // it is likely caused by not able to read the input
       // image.
+      throw ex;
     }
     return null;
   }
@@ -1400,7 +1446,7 @@ public class Region {
    *
    * @return true if the target vanishes, otherwise returns false.
    */
-  public <PSC> boolean waitVanish(PSC target) {
+  public <PatternOrString> boolean waitVanish(PatternOrString target) {
     return waitVanish(target, autoWaitTimeout);
   }
 
@@ -1410,7 +1456,7 @@ public class Region {
    *
    * @return true if the target vanishes, otherwise returns false.
    */
-  public <PSC> boolean waitVanish(PSC target, double timeout) {
+  public <PatternOrString> boolean waitVanish(PatternOrString target, double timeout) {
     try {
       Debug.log(2, "waiting for " + target + " to vanish");
       RepeatableVanish r = new RepeatableVanish(target);
@@ -1465,15 +1511,11 @@ public class Region {
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     Match ret = null;
-    try {
-      f.find(ptn);
-      if (f.hasNext()) {
-        ret = f.next();
-      }
-      f.destroy();
-    } catch (IOException e) {
-      throw new FindFailed(e.getMessage());
+    f.find(ptn);
+    if (f.hasNext()) {
+      ret = f.next();
     }
+    f.destroy();
     return ret;
   }
 
@@ -1505,15 +1547,11 @@ public class Region {
     ScreenImage simg = scr.capture(x, y, w, h);
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
-    try {
-      f.findAll(ptn);
-      if (f.hasNext()) {
-        return f;
-      }
-      f.destroy();
-    } catch (IOException e) {
-      throw new FindFailed(e.getMessage());
+    f.findAll(ptn);
+    if (f.hasNext()) {
+      return f;
     }
+    f.destroy();
     return null;
   }
 
