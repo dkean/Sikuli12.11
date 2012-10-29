@@ -60,13 +60,57 @@ public class Location extends Point {
 		return new Point(this);
 	}
 
-	/**
-	 *
-	 * @return the screen containing this point, the primary screen if outside of any screen
-	 */
-	public Screen getScreen() {
-		return Screen.getScreenContaining(this);
-	}
+  /**
+   * create a region with this point as center and the given size
+   *
+   * @param loc the center point
+   * @param w the width
+   * @param h the height
+   * @return the new region
+   */
+  public Region grow(int w, int h) {
+    return Region.create(0, 0, w, h).setCenter(this);
+  }
+
+  /**
+   * create a minimal symetric region at this point as center with size 3x3
+   *
+   * @param loc the center point
+   * @return the new region
+   */
+  public Region grow() {
+    return grow(3, 3);
+  }
+
+  /**
+   * create a region with a corner at this point<br />as specified with x
+   * y<br /> 0 0 top left<br /> 0 1 bottom left<br /> 1 0 top right<br /> 1 1
+   * bottom right<br />
+   *
+   * @param loc the refence point
+   * @param x ==0 is left side !=0 is right side
+   * @param y ==0 is top side !=0 is bottom side
+   * @param w the width
+   * @param h the height
+   * @return the new region
+   */
+  public Region grow(int x, int y, int w, int h) {
+    Region r = Region.create(0, 0, w, h);
+    if (x == 0) {
+      if (y == 0) {
+        r.setLocation(this);
+      } else {
+        r.setBottomLeft(this);
+      }
+    } else {
+      if (y == 0) {
+        r.setTopRight(this);
+      } else {
+        r.setBottomRight(this);
+      }
+    }
+    return r;
+  }
 
 	/**
 	 * moves the point the given amounts in the x and y direction, might be negative
@@ -149,6 +193,14 @@ public class Location extends Point {
 	public Location below(int dy) {
     return new Location(x, y + dy);
   }
+
+	/**
+	 *
+	 * @return the screen containing this point, the primary screen if outside of any screen
+	 */
+	public Screen getScreen() {
+		return Screen.getScreenContaining(this);
+	}
 
   /**
   * new point with same offset to current screen's top left on primary screen
