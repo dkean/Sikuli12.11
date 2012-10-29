@@ -154,6 +154,11 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 		_msg = msg;
 
 		this.setVisible(true);
+		if (! Settings.isJava7()) {
+			if (Settings.isMac()) {
+				Settings.getOSUtil().bringWindowToFront(this, false);
+			}
+		}
 		this.requestFocus();
 	}
 
@@ -287,8 +292,10 @@ public class CapturePrompt extends TransparentWindow implements Subject {
 	public void paint(Graphics g) {
 		if (_scr_img != null) {
 			Graphics2D g2dWin = (Graphics2D) g;
-			bi = new BufferedImage(_scr.getBounds().width,
-							_scr.getBounds().height, BufferedImage.TYPE_INT_RGB);
+			if (bi == null) {
+				bi = new BufferedImage(_scr.getBounds().width,
+								_scr.getBounds().height, BufferedImage.TYPE_INT_RGB);
+			}
 			Graphics2D bfG2 = bi.createGraphics();
 			bfG2.drawImage(_darker_screen, 0, 0, this);
 			drawMessage(bfG2);

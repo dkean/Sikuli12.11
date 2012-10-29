@@ -40,7 +40,11 @@ public class Settings {
   public static boolean ProfileLogs = false;
   public static final int DefaultPadding = 50;
 
-  static OSUtil _osUtil = null;
+  static OSUtil osUtil = null;
+
+	public static boolean isJava7() {
+		return JavaVersion > 6;
+	}
 
 	public static String getFilePathSeperator() {
 		return File.separator;
@@ -115,11 +119,11 @@ public class Settings {
   }
 
   public static OSUtil getOSUtil() {
-    if (_osUtil == null) {
+    if (osUtil == null) {
       try {
         Class c = Class.forName(getOSUtilClass());
         Constructor constr = c.getConstructor();
-        _osUtil = (OSUtil) constr.newInstance();
+        osUtil = (OSUtil) constr.newInstance();
       } catch (Exception e) {
 // TODO Java 7
 //              ClassNotFoundException | NoSuchMethodException |
@@ -129,7 +133,7 @@ public class Settings {
         Debug.error("Can't create OS Util: " + e.getMessage());
       }
     }
-    return _osUtil;
+    return osUtil;
   }
 
 }
