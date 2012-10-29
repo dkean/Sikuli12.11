@@ -7,10 +7,28 @@
 package org.sikuli.core;
 
 import java.awt.*;
+import java.io.IOException;
 import org.sikuli.utility.Debug;
 import org.sikuli.utility.Observer;
 import org.sikuli.utility.Subject;
 
+/**
+ * A screen represents a physical monitor with its coordinates and size
+ * according to the global point system: the screen areas are grouped
+ * around a point (0,0) like in a cartesian system (the top left corner and the
+ * points containd in the screen area might have negative x and/or y values)
+ * <br >The screens are aranged in an array (index = id) and
+ * each screen is always the same object (not possible to create new objects).
+ * <br />A screen inherits from class Region, so it can be used as such
+ * in all aspects. If you need the region of the screen more than once,
+ * you have to create new ones based on the screen.
+ *<br />The so called primary screen here is the one with top left (0,0).
+ * It is not guaranteed, that the primary screen has id 0, since the
+ * sequence of the screens and hence there id depends
+ * on the system dependent monitor configuration.
+ *
+ * @author RaiMan
+ */
 public class Screen extends Region implements Observer, IScreen {
 
   static GraphicsEnvironment genv = null;
@@ -66,11 +84,20 @@ public class Screen extends Region implements Observer, IScreen {
     Debug.log(2, "Screen static initScreens");
   }
 
+	// hack to get an additional internal constructor for the initialization
   private Screen(int id, boolean init) {
+		super();
     curID = id;
+		setScreen(curID);
   }
 
-  public Screen(int id) {
+  /**
+	 * Is the screen object at the given id
+	 *
+	 * @param id
+	 */
+	public Screen(int id) {
+		super();
     initScreens();
     curID = id;
     if (id < 0 || id >= gdevs.length) {
@@ -80,9 +107,11 @@ public class Screen extends Region implements Observer, IScreen {
   }
 
   /**
-   *
+   * Is the screen object having the top left corner as (0,0).
+	 * If such a screen does not exist it is the screen with id 0.
    */
   public Screen() {
+		super();
     initScreens();
     curID = getPrimaryId();
     initScreen();
@@ -106,11 +135,12 @@ public class Screen extends Region implements Observer, IScreen {
       h = (int) bounds.getHeight();
       curROI = Region.create(bounds);
     }
+		setScreen(curID);
   }
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="getters setters">
-  boolean useFullscreen() {
+  protected boolean useFullscreen() {
     return false;
   }
 
@@ -123,25 +153,48 @@ public class Screen extends Region implements Observer, IScreen {
     }
   }
 
-  public static int getNumberScreens() {
+  /**
+	 *
+	 * @return number of available screens
+	 */
+	public static int getNumberScreens() {
     initScreens();
     return gdevs.length;
   }
 
-  public static int getPrimaryId() {
+  /**
+	 *
+	 * @return the id of the screen at (0,0), if not exists 0
+	 */
+	public static int getPrimaryId() {
     initScreens();
     return primaryScreen;
   }
 
+  /**
+	 *
+	 * @return the screen at (0,0), if not exists the one with id 0
+	 */
   public static Screen getPrimaryScreen() {
     return screens[getPrimaryId()];
   }
 
-  public static Screen getScreen(int id) {
+  /**
+	 *
+	 * @param id of the screen
+	 * @return the screen with given id, the primary screen if id is invalid
+	 */
+	public static Screen getScreen(int id) {
     return screens[getValidID(id)];
   }
 
-  public static Screen getScreenContaining(Region reg) {
+  /**
+	 *
+	 * @param reg a region in global coordinates
+	 * @return the screen, that contains the top left corner of the region.
+	 * Returns primary screen if outside of any screen.
+	 */
+	public static Screen getScreenContaining(Region reg) {
     for (int i = 0; i < Screen.getNumberScreens(); i++) {
       Rectangle sb = Screen.getBounds(i);
       if (sb.contains(reg.getTopLeft())) {
@@ -151,51 +204,106 @@ public class Screen extends Region implements Observer, IScreen {
     return Screen.getPrimaryScreen();
   }
 
-  public static Screen getScreenContaining(Location point) {
+  /**
+	 *
+	 * @param loc a location in global coordinates
+	 * @return the screen, that contains the given point.
+	 * Returns primary screen if outside of any screen.
+	 */
+	public static Screen getScreenContaining(Location loc) {
     for (int i = 0; i < Screen.getNumberScreens(); i++) {
       Rectangle sb = Screen.getBounds(i);
-      if (sb.contains(point)) {
+      if (sb.contains(loc)) {
         return getScreen(i);
       }
     }
     return Screen.getPrimaryScreen();
   }
 
-  public static Rectangle getBounds(int id) {
+  /**
+	 *
+	 * @param id
+	 * @return the physical coordinate/size <br />as AWT.Rectangle to avoid mix up with getROI
+	 */
+	public static Rectangle getBounds(int id) {
     return gdevs[getValidID(id)].getDefaultConfiguration().getBounds();
   }
 
-  public static DesktopRobot getRobot(int id) {
+  /**
+	 * each screen has exactly one robot (internally used for screen capturing)
+	 * <br />available as a convenience for those who know what they are doing.
+	 * Should not be needed normally.
+	 *
+	 * @param id
+	 * @return the AWT.Robot of the given screen, if id invalid the primary screen
+	 */
+	public static DesktopRobot getRobot(int id) {
     return robots[getValidID(id)];
   }
 
-  public DesktopRobot getActionRobot() {
+  /**
+	 * the one robot, that runs and coordinates all mouse and keyboard activities
+	 * <br />available as a convenience for those who know what they are doing.
+	 * Should not be needed normally.
+	 * @return an AWT.Robot (always same object)
+	 */
+	public DesktopRobot getActionRobot() {
     return actionRobot;
   }
 
-  public int getID() {
+  /**
+	 *
+	 * @return
+	 */
+	public int getID() {
     return curID;
   }
 
-  public GraphicsDevice getGraphicsDevice() {
+  /**
+	 *
+	 * @return
+	 */
+	public GraphicsDevice getGraphicsDevice() {
     return curGD;
   }
 
-  @Override
+  /**
+	 *
+	 * @return
+	 */
+	@Override
   public DesktopRobot getRobot() {
     return robots[curID];
   }
 
-  @Override
+ 	@Override
   public Rectangle getBounds() {
     return curGD.getDefaultConfiguration().getBounds();
   }
 
-  public Region newRegion(Location loc, int W, int H) {
-			return Region.createAt(loc.copyTo(this), W, H);
+  /**
+	 * creates a region on the current screen with the given coordinate/size.
+	 * The coordinate is translated to the current screen from its
+	 * relative position on the screen it would have been created normally.
+	 *
+	 * @param loc
+	 * @param width
+	 * @param height
+	 * @return the new region
+	 */
+	public Region newRegion(Location loc, int width, int height) {
+			return Region.create(loc.copyTo(this), width, height);
   }
 
-  public Location newLocation(Location loc) {
+  /**
+	 * creates a location on the current screen with the given point.
+	 * The coordinate is translated to the current screen from its
+	 * relative position on the screen it would have been created normally.
+	 *
+	 * @param loc
+	 * @return the new location
+	 */
+	public Location newLocation(Location loc) {
 			return (new Location(loc)).copyTo(this);
   }
 
@@ -228,30 +336,97 @@ public class Screen extends Region implements Observer, IScreen {
     setROI(roi.getRect());
   }
 
-  public void resetROI() {
+  /**
+	 * resets the screens ROI to the physical bounds of the screen
+	 */
+	public void resetROI() {
     initScreen();
   }
 
-  @Override
-  public void setLastScreenImage(ScreenImage simg) {
-    lastScreenImage = simg;
+  /**
+	 * store the last fullscreen image taken on this "physical" screen
+	 * @param simg
+	 */
+	public void setLastScreenImage(ScreenImage simg) {
+    getScreen().lastScreenImage = simg;
   }
+
+	/**
+	 * get the last fullscreen image taken on this "physical" screen
+	 * @return
+	 */
+	public ScreenImage getLastScreenImage() {
+		return getScreen().lastScreenImage;
+	}
+
+	/**
+	 * stores the image in the current bundle path with a created unique name
+	 *
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile() throws IOException {
+		return getLastScreenImageFile(Settings.BundlePath);
+	}
+
+	/**
+	 * stores the image in the current bundle path with the given name
+	 *
+	 * @param name file name (.png is added if not there)
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile(String name) throws IOException {
+		return getScreen().lastScreenImage.getFile(Settings.BundlePath, name);
+	}
+
+	/**
+	 * stores the image in the given path with the given name
+	 *
+	 * @param name file name (.png is added if not there)
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile(String path, String name) throws IOException {
+		return getScreen().lastScreenImage.getFile(path, name);
+	}
+
 //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Capture - SelectRegion">
-  @Override
+  /**
+	 * create a ScreenImage with the physical bounds of this screen
+	 *
+	 * @return the image
+	 */
+	@Override
   public ScreenImage capture() {
     return capture(getBounds());
   }
 
-  @Override
+  /**
+	 * create a ScreenImage with given coordinates on this screen.
+	 * Will be translated to this screen if (x,y) is outside.
+	 *
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @return the image
+	 */
+	@Override
   public ScreenImage capture(int x, int y, int w, int h) {
-    Rectangle rect = new Rectangle(x, y, w, h);
+    Rectangle rect = newRegion(new Location(x,y), w, h).getRect();
     return capture(rect);
   }
 
-  @Override
+  /**
+	 * create a ScreenImage with given rectangle on this screen
+	 * Will be translated to this screen if top left is outside.
+	 *
+	 * @param rect
+	 * @return the image
+	 */
+	@Override
   public ScreenImage capture(Rectangle rect) {
+    rect = newRegion(new Location(rect.x, rect.y), rect.width, rect.height).getRect();
     Rectangle bounds = getBounds();
     rect.x -= bounds.x;
     rect.y -= bounds.y;
@@ -262,15 +437,34 @@ public class Screen extends Region implements Observer, IScreen {
     return simg;
   }
 
-  @Override
+  /**
+	 * create a ScreenImage with given region on this screen
+	 * Will be translated to this screen if top left is outside.
+	 *
+	 * @param reg
+	 * @return the image
+	 */
+	@Override
   public ScreenImage capture(Region reg) {
-    return capture(reg.getRect());
+    return capture(newRegion(reg.getTopLeft(), reg.vWidth, reg.vHeight).getRect());
   }
 
-  public ScreenImage userCapture() {
+  /**
+	 * interactive capture with predefined message: lets the user capture a
+	 * screen image using the mouse to draw the rectangle
+	 *
+	 * @return the image
+	 */
+	public ScreenImage userCapture() {
     return userCapture("Select a region on the screen");
   }
 
+  /**
+	 * interactive capture with given message: lets the user capture a
+	 * screen image using the mouse to draw the rectangle
+	 *
+	 * @return the image
+	 */
   public ScreenImage userCapture(final String msg) {
     waitPrompt = true;
     Thread th = new Thread() {
@@ -297,10 +491,22 @@ public class Screen extends Region implements Observer, IScreen {
     return ret;
   }
 
+  /**
+	 * interactive region create with predefined message: lets the user
+	 * draw the rectangle using the mouse
+	 *
+	 * @return the region
+	 */
   public Region selectRegion() {
     return selectRegion("Select a region on the screen");
   }
 
+  /**
+	 * interactive region create with given message: lets the user
+	 * draw the rectangle using the mouse
+	 *
+	 * @return the region
+	 */
   public Region selectRegion(final String msg) {
     ScreenImage sim = userCapture(msg);
     if (sim == null) {
@@ -311,19 +517,22 @@ public class Screen extends Region implements Observer, IScreen {
             (int) r.getWidth(), (int) r.getHeight());
   }
 
-  @Override
+  /**
+	 * Internal use only
+	 * @param s
+	 */
+	@Override
   public void update(Subject s) {
     waitPrompt = false;
   }
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Visual effects">
-  @Override
-  public void showTarget(Location loc) {
+  protected void showTarget(Location loc) {
     showTarget(loc, Settings.SlowMotionDelay);
   }
 
-  public void showTarget(Location loc, double secs) {
+  protected void showTarget(Location loc, double secs) {
     if (Settings.ShowActions) {
       ScreenHighlighter overlay = new ScreenHighlighter(this);
       overlay.showTarget(loc, (float) secs);
@@ -350,7 +559,12 @@ public class Screen extends Region implements Observer, IScreen {
     }
   }
 
-  public String toStringShort() {
+  /**
+	 * only a short version of toString()
+	 *
+	 * @return like S(0) [0,0, 1440x900]
+	 */
+	public String toStringShort() {
     Rectangle r = getBounds();
     return String.format("S(%d)[%d,%d %dx%d]",
             curID, (int) r.getX(), (int) r.getY(),
