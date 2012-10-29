@@ -86,6 +86,10 @@ public class Match extends Region implements Comparable {
     target.translate(offset.x, offset.y);
   }
 
+  protected void setImage(String imageFileName) {
+    image = imageFileName;
+  }
+
   public BufferedImage getImage() {
     if (image == null) {
       return null;
