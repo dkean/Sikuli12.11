@@ -25,25 +25,11 @@ public class Finder implements Iterator<Match> {
   private Pattern _pattern = null;
   private FindInput _findInput = new FindInput();
   private FindResults _results = null;
-  private ImageLocator _imgLocator = null;
   private int _cur_result_i;
 
   //TODO Vision.setParameter("GPU", 1);
   static {
     LibLoader.loadLibrary("VisionProxy");
-  }
-
-  //TODO get Python specifics out (support for with)
-  public Finder __enter__() {
-    return this;
-  }
-
-  public void __exit__(Object type, Object value, Object trackback) {
-    destroy();
-  }
-
-  public void __del__() {
-    destroy();
   }
 
   /**
@@ -63,7 +49,7 @@ public class Finder implements Iterator<Match> {
    * @param imageFilename a string (name, path, url)
    * @param region search Region within image - topleft = (0,0)
    */
-  public Finder(String imageFilename, Region region) throws IOException {
+  public Finder(String imageFilename, Region region) throws IOException  {
     String fname = ImageLocator.locate(imageFilename);
     _findInput.setSource(fname);
     _region = region;
@@ -93,7 +79,7 @@ public class Finder implements Iterator<Match> {
    *
    * @param aPtnOrStr Pattern or String (image filename, path, url)
    */
-  public <PatternString> void find(PatternString aPtnOrStr) throws IOException {
+  public <PatternString> void find(PatternString aPtnOrStr) {
     setFindInput(aPtnOrStr);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
@@ -105,7 +91,7 @@ public class Finder implements Iterator<Match> {
    * @param minSimilarity
    * @throws IOException
    */
-  public void find(String ImageOrText, double minSimilarity) throws IOException {
+  public void find(String ImageOrText, double minSimilarity) {
     setTargetSmartly(_findInput, ImageOrText);
     _findInput.setSimilarity(minSimilarity);
     _results = Vision.find(_findInput);
@@ -118,7 +104,7 @@ public class Finder implements Iterator<Match> {
    * @param ptn
    * @throws IOException
    */
-  public <PatternString> void findAll(PatternString aPtnOrStr) throws IOException {
+  public <PatternString> void findAll(PatternString aPtnOrStr)  {
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
 
@@ -136,7 +122,7 @@ public class Finder implements Iterator<Match> {
    * @param minSimilarity
    * @throws IOException
    */
-  public void findAll(String ImageOrText, double minSimilarity) throws IOException {
+  public void findAll(String ImageOrText, double minSimilarity) {
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
 
@@ -193,7 +179,7 @@ public class Finder implements Iterator<Match> {
   public void remove() {
   }
 
-  private <PatternString> void setFindInput(PatternString ptn) throws IOException {
+  private <PatternString> void setFindInput(PatternString ptn) {
     if (ptn instanceof Pattern) {
       _pattern = (Pattern) ptn;
       Mat targetMat = OpenCV.convertBufferedImageToMat(_pattern.getImage());
