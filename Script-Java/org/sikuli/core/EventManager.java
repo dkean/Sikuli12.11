@@ -80,35 +80,33 @@ public class EventManager {
    protected void checkPatterns(ScreenImage img){
       Finder finder = new Finder(img, _region);
       for(Object ptn : _state.keySet()){
-         try{
-            finder.find(ptn);
-            Match m = null;
-            boolean hasMatch = false;
-            if(finder.hasNext()){
-               m = finder.next();
-               if(m.getScore() >= getSimiliarity(ptn)){
-                  hasMatch = true;
-                  _lastMatch.put(ptn, m);
-               }
-            }
-            Debug.log(9, "check pattern: " + _state.get(ptn) + " match:" + hasMatch);
-            if(_appearOb.containsKey(ptn)){
-               if(_state.get(ptn) != State.APPEARED && hasMatch)
-                  callAppearObserver(ptn, m);
-            }
-            if(_vanishOb.containsKey(ptn)){
-               if(_state.get(ptn) != State.VANISHED && !hasMatch){
-                  callVanishObserver(ptn, _lastMatch.get(ptn));
-               }
-            }
-            if(hasMatch)
-               _state.put(ptn, State.APPEARED);
-            else
-               _state.put(ptn, State.VANISHED);
-         }
-         catch(IOException e){
-            Debug.error("Can't access "+ ptn +"\n" + e.getMessage());
-         }
+        finder.find(ptn);
+        Match m = null;
+        boolean hasMatch = false;
+        if(finder.hasNext()){
+           m = finder.next();
+           if(m.getScore() >= getSimiliarity(ptn)){
+              hasMatch = true;
+              _lastMatch.put(ptn, m);
+           }
+        }
+        Debug.log(9, "check pattern: " + _state.get(ptn) + " match:" + hasMatch);
+        if(_appearOb.containsKey(ptn)){
+           if(_state.get(ptn) != State.APPEARED && hasMatch) {
+            callAppearObserver(ptn, m);
+          }
+        }
+        if(_vanishOb.containsKey(ptn)){
+           if(_state.get(ptn) != State.VANISHED && !hasMatch){
+              callVanishObserver(ptn, _lastMatch.get(ptn));
+           }
+        }
+        if(hasMatch) {
+          _state.put(ptn, State.APPEARED);
+        }
+        else {
+          _state.put(ptn, State.VANISHED);
+        }
       }
 
    }
