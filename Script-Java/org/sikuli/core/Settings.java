@@ -38,6 +38,7 @@ public class Settings {
   public static boolean InfoLogs = true;
   public static boolean DebugLogs = true;
   public static boolean ProfileLogs = false;
+  public static final int DefaultPadding = 50;
 
   static OSUtil _osUtil = null;
 
