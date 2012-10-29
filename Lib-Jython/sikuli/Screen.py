@@ -55,20 +55,20 @@ class Screen(Region):
       if len(args) == 0:
          simg = scr.userCapture("Select an image")
          if simg:
-            return simg.getFilename()
+            return simg.getFile()
          else:
             return None
       elif len(args) == 1:
          if __builtin__.type(args[0]) is types.StringType or __builtin__.type(args[0]) is types.UnicodeType:
             simg = scr.userCapture(args[0])
             if simg:
-               return simg.getFilename()
+               return simg.getFile()
             else:
                return None
          else:
-            return scr.capture(args[0]).getFilename()
+            return scr.capture(args[0]).getFile()
       elif len(args) == 4:
-         return scr.capture(args[0], args[1], args[2], args[3]).getFilename()
+         return scr.capture(args[0], args[1], args[2], args[3]).getFile()
       else:
          return None
 
