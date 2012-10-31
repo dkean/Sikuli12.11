@@ -64,6 +64,12 @@ IDE
  - as standard: no command bar, vertically split (left code, right messages)
  - eliminated menus/features: export, extensions (might come back later), unit test
 - revised the Preview window (only one at a time, apply button added to do more than one change, ...)
+- revised the dirty-handling (script is edited with changes):
+ - aware of changes in Preview 
+ - scripts with changes are marked in its tab: *myScript
+ - new option: autosave before run and warning
+- new options: no HTML creation, do not delete unused images
+- possibility to put IDE options in a script at the beginning as special comment
 
 Script API
 ----------
