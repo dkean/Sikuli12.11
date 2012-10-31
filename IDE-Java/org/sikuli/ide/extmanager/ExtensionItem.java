@@ -25,7 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import org.sikuli.ide.I18N;
+import org.sikuli.ide.SikuliIDEI18N;
 import org.sikuli.utility.Debug;
 import org.sikuli.utility.ExtensionManager;
 
@@ -98,13 +98,13 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       add(_content);
 
-      JButton btn = new JButton(I18N._I("extBtnInstall"));
+      JButton btn = new JButton(SikuliIDEI18N._I("extBtnInstall"));
       btn.addActionListener(this);
       btn.setActionCommand("Install");
       _installCtrl = btn;
       _installCtrl.setFocusable(false);
 
-      btn = new JButton(I18N._I("extBtnInfo"));
+      btn = new JButton(SikuliIDEI18N._I("extBtnInfo"));
       btn.addActionListener(this);
       btn.setActionCommand("Info");
       _infoCtrl = btn;
@@ -190,13 +190,13 @@ class ExtensionItem extends JPanel implements ActionListener {
 
       if (status == INSTALLED){
          _installCtrl.setEnabled(false);
-         _installCtrl.setText(I18N._I("extMsgInstalled"));
+         _installCtrl.setText(SikuliIDEI18N._I("extMsgInstalled"));
       }else if (status == NOT_INSTALLED){
          _installCtrl.setEnabled(true);
-         _installCtrl.setText(I18N._I("extBtnInstallVer",_version));
+         _installCtrl.setText(SikuliIDEI18N._I("extBtnInstallVer",_version));
       }else if (status == OUT_OF_DATE){
          _installCtrl.setEnabled(true);
-         _installCtrl.setText(I18N._I("extBtnUpdateVer",_version));
+         _installCtrl.setText(SikuliIDEI18N._I("extBtnUpdateVer",_version));
       }
 
       _htmlLabel.setText(renderHTML());
