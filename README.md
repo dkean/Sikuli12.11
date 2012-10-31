@@ -54,6 +54,8 @@ Part 3: (as support for further developement)
 - revise and complete the JavaDocs
 - based on the Netbeans build.xml make Ant scripts and use Maven, that allow to build Sikuli without having Netbeans
 
+---------------------------------------------------------
+
 Information on fixes and improvements
 =====================================
 IDE
@@ -65,7 +67,7 @@ IDE
 
 Script API
 ----------
-- constantly adding javadocs to all public (and important protected methods)
+- constantly adding javadocs to all public (and important protected) methods
 - totally revised the ImagePath feature and the usage of ImageLocator (including the usage with Jython import)
 - revising the command line usage to make it equal for ide.jar and script.jar running Sikuli scripts
 - each physical monitor has only one Screen object, only one Robot for all and better support for multi monitor
