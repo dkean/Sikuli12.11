@@ -564,7 +564,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 		try {
 			end = parseLine(start, end, patCaptureBtn);
 			end = parseLine(start, end, patPatternStr);
-			end = parseLine(start, end, patSubregionStr);
+			end = parseLine(start, end, patRegionStr);
 			end = parseLine(start, end, patPngStr);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -589,7 +589,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 	static Pattern patCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
 	static Pattern patPatternStr = Pattern.compile(
 					"\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
-	static Pattern patSubregionStr = Pattern.compile(
+	static Pattern patRegionStr = Pattern.compile(
 					"\\b(Region\\s*\\([\\d\\s,]+\\))");
 
 	int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException {
@@ -649,7 +649,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 
 		if (ptn == patPatternStr || ptn == patPngStr) {
 			comp = PatternImageButton.createFromString(this, imgStr);
-		} else if (ptn == patSubregionStr) {
+		} else if (ptn == patRegionStr) {
 			comp = ButtonRegion.createFromString(this, imgStr);
 		} else if (ptn == patCaptureBtn) {
 			Element root = doc.getDefaultRootElement();

@@ -21,12 +21,12 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 
 	static final int DEFAULT_NUM_MATCHES = 10;
 	static final float DEFAULT_SIMILARITY = 0.7f;
-	private String _imgFilename, _thumbFname;
+	private String _imgFilename, _thumbFname, _imgFilenameSaved;
 	private EditorPane _pane;
-	private float _similarity;
+	private float _similarity, _similaritySaved;
 	private int _numMatches = DEFAULT_NUM_MATCHES;
-	private boolean _exact;
-	private Location _offset = new Location(0, 0);
+	private boolean _exact, _exactSaved;
+	private Location _offset = new Location(0, 0), _offsetSaved;
 	private int _imgW, _imgH;
 	private float _scale = 1f;
 	private static PatternWindow pwin = null;
@@ -58,7 +58,16 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 	public void actionPerformed(ActionEvent e) {
 		Debug.log("open Pattern Settings");
 		if (pwin == null) {
-			pwin = new PatternWindow(this, _exact, _similarity, _numMatches);
+			_offsetSaved = new Location(_offset);
+			_similaritySaved = _similarity;
+			if (_similarity >= 0.99f) {
+				_exactSaved = true;
+			}
+			else {
+				_exactSaved = false;
+			}
+			_imgFilenameSaved = _imgFilename.substring(0);
+			pwin = new PatternWindow(this, _exactSaved, _similarity, _numMatches);
 			pwin.setTargetOffset(_offset);
 		} else {
 			pwin.requestFocus();
@@ -99,6 +108,12 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 		dirty |= setSimilarity(similarity);
 		setToolTipText(this.toString());
 		return dirty;
+	}
+
+	public void resetParameters() {
+		setFilename(_imgFilenameSaved);
+		setParameters(_exactSaved, _similaritySaved, DEFAULT_NUM_MATCHES);
+		setTargetOffset(_offsetSaved);
 	}
 
 	public boolean setExact(boolean exact) {

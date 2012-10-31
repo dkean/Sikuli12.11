@@ -39,11 +39,12 @@ public class PatternWindow extends JFrame {
 
 	public PatternWindow(PatternImageButton imgBtn, boolean exact,
 					float similarity, int numMatches) {
-		super(_I("winPatternSettings"));
 		init(imgBtn, exact, similarity, numMatches);
 	}
 
 	private void init(PatternImageButton imgBtn, boolean exact, float similarity, int numMatches) {
+		setTitle(_I("winPatternSettings"));
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		_imgBtn = imgBtn;
 		Point pos = imgBtn.getLocationOnScreen();
 		Debug.log(4, "pattern window: " + pos);
@@ -192,11 +193,6 @@ public class PatternWindow extends JFrame {
 
 	private void actionPerformedUpdates(Window _parent) {
 		boolean tempDirty = isDirty();
-		if (isDirty()) {
-			setDirty(false);
-			int i = _imgBtn.getWindow().getTabbedPane().getSelectedIndex();
-			_imgBtn.getWindow().setMessageApplied(i, false);
-		}
 		if (paneNaming.isDirty()) {
 			String filename = paneNaming.getAbsolutePath();
 			String oldFilename = _imgBtn.getFilename();
@@ -227,11 +223,10 @@ public class PatternWindow extends JFrame {
 						_screenshot.getNumMatches()));
 		addDirty(_imgBtn.setTargetOffset(_tarOffsetPane.getTargetOffset()));
 		Debug.log("update: " + _imgBtn.toString());
-		if (isDirty()) {
+		if (isDirty() || tempDirty) {
 			int i = _imgBtn.getWindow().getTabbedPane().getSelectedIndex();
 			_imgBtn.getWindow().setMessageApplied(i, true);
-		} else {
-			setDirty(tempDirty);
+			_imgBtn.repaint();
 		}
 	}
 
@@ -277,6 +272,9 @@ public class PatternWindow extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (isDirty()) {
+				_imgBtn.resetParameters();
+			}
 			_imgBtn.getWindow().close();
 			_parent.dispose();
 		}
