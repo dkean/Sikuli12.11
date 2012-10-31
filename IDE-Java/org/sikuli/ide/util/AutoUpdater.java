@@ -4,7 +4,7 @@
  *
  * modified RaiMan 2012
  */
-package org.sikuli.ide;
+package org.sikuli.ide.util;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -12,6 +12,8 @@ import java.io.*;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import org.sikuli.ide.SikuliIDESettings;
+import org.sikuli.ide.SikuliIDE;
 import org.sikuli.utility.Debug;
 
 public class AutoUpdater {
@@ -57,7 +59,7 @@ public class AutoUpdater {
       for(String s : ServerList){
          try{
             if(checkUpdate(s)){
-               if(isNewer(version, IDESettings.SikuliVersion))
+               if(isNewer(version, SikuliIDESettings.SikuliVersion))
                   return true;
             }
          }
@@ -87,6 +89,10 @@ public class AutoUpdater {
       }
       return false;
    }
+
+	 public void showUpdateFrame(String title, String text) {
+				UpdateFrame f = new UpdateFrame(title, text);
+	 }
 }
 
 
