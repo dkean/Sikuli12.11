@@ -65,4 +65,12 @@ IDE
 
 Script API
 ----------
+- constantly adding javadocs to all public (and important protected methods)
+- totally revised the ImagePath feature and the usage of ImageLocator (including the usage with Jython import)
+- revising the command line usage to make it equal for ide.jar and script.jar running Sikuli scripts
+- each physical monitor has only one Screen object, only one Robot for all and better support for multi monitor
+- Region: added methods to make it functinally compatible with AWT Rectangle and added more methods to create
+new Regions easily based on existing Regions and Locations
+- click() and similar, click the lastMatch()
+
 
