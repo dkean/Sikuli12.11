@@ -7,8 +7,8 @@ package org.sikuli.ide;
 
 import java.awt.*;
 import javax.swing.*;
-import org.jdesktop.swingx.MultiSplitLayout.Divider;
 import org.jdesktop.swingx.JXMultiSplitPane.DividerPainter;
+import org.jdesktop.swingx.MultiSplitLayout.Divider;
 
 class BevelDividerPainter extends DividerPainter {
    private JComponent owner;
@@ -18,6 +18,7 @@ class BevelDividerPainter extends DividerPainter {
       owner = c;
    }
 
+	@Override
    public void doPaint(Graphics2D g, Divider divider, int width, int height)
    {
       Color c = owner.getBackground();
