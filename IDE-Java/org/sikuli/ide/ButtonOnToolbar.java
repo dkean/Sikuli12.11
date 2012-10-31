@@ -9,9 +9,9 @@ import com.explodingpixels.macwidgets.plaf.UnifiedToolbarButtonUI;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-public class ToolbarButton extends JButton {
+public class ButtonOnToolbar extends JButton {
 
-   public ToolbarButton(){
+   public ButtonOnToolbar(){
       setBorderPainted(false);
       putClientProperty("JButton.buttonType", "textured");
       //setIconTextGap(8);

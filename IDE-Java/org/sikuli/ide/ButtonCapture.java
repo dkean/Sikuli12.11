@@ -17,17 +17,17 @@ import org.sikuli.utility.Debug;
 import org.sikuli.utility.Observer;
 import org.sikuli.utility.Subject;
 
-class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, Observer {
+class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable, Observer {
 
 	protected Element _line;
-	protected SikuliPane _codePane;
+	protected EditorPane _codePane;
 	protected boolean _isCapturing;
 
-	public CaptureButton() {
+	public ButtonCapture() {
 		super();
 		URL imageURL = SikuliIDE.class.getResource("/icons/camera-icon.png");
 		setIcon(new ImageIcon(imageURL));
-		UserPreferences pref = UserPreferences.getInstance();
+		PreferencesUser pref = PreferencesUser.getInstance();
 		String strHotkey = Utils.convertKeyToText(
 						pref.getCaptureHotkey(), pref.getCaptureHotkeyModifiers());
 		setToolTipText(SikuliIDE._I("btnCaptureHint", strHotkey));
@@ -38,7 +38,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 		_line = null;
 	}
 
-	public CaptureButton(SikuliPane codePane, Element elmLine) {
+	public ButtonCapture(EditorPane codePane, Element elmLine) {
 		this();
 		_line = elmLine;
 		_codePane = codePane;
@@ -60,7 +60,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 		if (_isCapturing) {
 			return;
 		}
-		UserPreferences pref = UserPreferences.getInstance();
+		PreferencesUser pref = PreferencesUser.getInstance();
 		int delay = (int) (pref.getCaptureDelay() * 1000.0) + 1;
 		capture(delay);
 	}
@@ -81,7 +81,7 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 					Thread.sleep(delay);
 				} catch (Exception e) {
 				}
-				CapturePrompt p = new CapturePrompt(null, CaptureButton.this);
+				CapturePrompt p = new CapturePrompt(null, ButtonCapture.this);
 				p.prompt("Select an image");
 				try {
 					Thread.sleep(500);
@@ -119,13 +119,13 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 			CapturePrompt cp = (CapturePrompt) s;
 			ScreenImage simg = cp.getSelection();
 			String filename = null;
-			SikuliPane pane = SikuliIDE.getInstance().getCurrentCodePane();
+			EditorPane pane = SikuliIDE.getInstance().getCurrentCodePane();
 
 			if (simg != null) {
-				int naming = UserPreferences.getInstance().getAutoNamingMethod();
-				if (naming == UserPreferences.AUTO_NAMING_TIMESTAMP) {
+				int naming = PreferencesUser.getInstance().getAutoNamingMethod();
+				if (naming == PreferencesUser.AUTO_NAMING_TIMESTAMP) {
 					filename = Utils.getTimestamp();
-				} else if (naming == UserPreferences.AUTO_NAMING_OCR) {
+				} else if (naming == PreferencesUser.AUTO_NAMING_OCR) {
 //RaiMan not used            filename = NamingPane.getFilenameFromImage(simg.getImage());
 					if (filename == null || filename.length() == 0) {
 						filename = Utils.getTimestamp();
@@ -153,8 +153,8 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 	private String getFilenameFromUser(String hint) {
 		return (String) JOptionPane.showInputDialog(
 						_codePane,
-						I18N._I("msgEnterScreenshotFilename"),
-						I18N._I("dlgEnterScreenshotFilename"),
+						SikuliIDEI18N._I("msgEnterScreenshotFilename"),
+						SikuliIDEI18N._I("dlgEnterScreenshotFilename"),
 						JOptionPane.PLAIN_MESSAGE,
 						null,
 						null,
@@ -187,11 +187,11 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 						if (elm.getName().equals(StyleConstants.ComponentElementName)) {
 							AttributeSet attr = elm.getAttributes();
 							Component com = StyleConstants.getComponent(attr);
-							if (com instanceof CaptureButton) {
+							if (com instanceof ButtonCapture) {
 								Debug.log(5, "button is at " + i);
 								int oldCaretPos = _codePane.getCaretPosition();
 								_codePane.select(i, i + 1);
-								ImageButton icon = new ImageButton(_codePane, imgFullPath);
+								PatternImageButton icon = new PatternImageButton(_codePane, imgFullPath);
 								_codePane.insertComponent(icon);
 								_codePane.setCaretPosition(oldCaretPos);
 								break;
@@ -212,8 +212,8 @@ class CaptureButton extends ToolbarButton implements ActionListener, Cloneable, 
 		return _line;
 	}
 
-	protected void insertAtCursor(SikuliPane pane, String imgFilename) {
-		ImageButton icon = new ImageButton(pane, imgFilename);
+	protected void insertAtCursor(EditorPane pane, String imgFilename) {
+		PatternImageButton icon = new PatternImageButton(pane, imgFilename);
 		pane.insertComponent(icon);
 		pane.requestFocus();
 	}

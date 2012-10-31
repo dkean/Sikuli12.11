@@ -17,12 +17,12 @@ import org.sikuli.utility.Debug;
 import org.sikuli.utility.Observer;
 import org.sikuli.utility.Subject;
 
-class RegionButton extends JButton implements ActionListener, Observer {
+class ButtonRegion extends JButton implements ActionListener, Observer {
 
-  SikuliPane _pane;
+  EditorPane _pane;
   int _x, _y, _w, _h;
 
-  public RegionButton(SikuliPane pane, int x, int y, int w, int h) {
+  public ButtonRegion(EditorPane pane, int x, int y, int w, int h) {
     _pane = pane;
     _x = x;
     _y = y;
@@ -37,7 +37,7 @@ class RegionButton extends JButton implements ActionListener, Observer {
   @Override
   public void actionPerformed(ActionEvent ae) {
     SikuliIDE ide = SikuliIDE.getInstance();
-    SikuliPane codePane = ide.getCurrentCodePane();
+    EditorPane codePane = ide.getCurrentCodePane();
     ide.setVisible(false);
     CapturePrompt prompt = new CapturePrompt(null, this);
     prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
@@ -91,12 +91,12 @@ class RegionButton extends JButton implements ActionListener, Observer {
     return screen;
   }
 
-  public static RegionButton createFromString(SikuliPane parentPane, String str) {
+  public static ButtonRegion createFromString(EditorPane parentPane, String str) {
     String[] tokens = str.split("[(),]");
     try {
       int x = Integer.valueOf(tokens[1].trim()), y = Integer.valueOf(tokens[2].trim()),
               w = Integer.valueOf(tokens[3].trim()), h = Integer.valueOf(tokens[4].trim());
-      return new RegionButton(parentPane, x, y, w, h);
+      return new ButtonRegion(parentPane, x, y, w, h);
     } catch (Exception e) {
       Debug.error("Can't parse Region: " + e.getMessage());
       e.printStackTrace();
