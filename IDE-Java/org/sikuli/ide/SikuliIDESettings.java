@@ -6,7 +6,7 @@
 package org.sikuli.ide;
 
 
-public class IDESettings {
+public class SikuliIDESettings {
    public static String SikuliVersion = "X-1.0-RaiMan2012-1";
 
 	 private static String[] args = new String[0];
@@ -16,6 +16,6 @@ public class IDESettings {
 	 }
 
 	 protected static void setArgs(String[] args) {
-		 IDESettings.args = args;
+		 SikuliIDESettings.args = args;
 	 }
 }

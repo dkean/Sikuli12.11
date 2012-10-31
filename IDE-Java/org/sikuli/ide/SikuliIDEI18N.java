@@ -10,17 +10,17 @@ import java.text.MessageFormat;
 
 import org.sikuli.utility.Debug;
 
-public class I18N {
+public class SikuliIDEI18N {
    static ResourceBundle i18nRB, i18nRB_en;
    static Locale curLocale;
 
    static {
       Locale locale_en = new Locale("en","US");
       i18nRB_en = ResourceBundle.getBundle("i18n/IDE",locale_en);
-      Locale locale = UserPreferences.getInstance().getLocale();
+      Locale locale = PreferencesUser.getInstance().getLocale();
       if(!setLocale(locale)){
          locale = locale_en;
-         UserPreferences.getInstance().setLocale(locale);
+         PreferencesUser.getInstance().setLocale(locale);
       }
       Debug.info("locale: " + locale);
    }
@@ -37,16 +37,16 @@ public class I18N {
       return true;
    }
 
-   public static String _I(String key, Object... args){ 
+   public static String _I(String key, Object... args){
       String ret;
       if(i18nRB==null)
-         ret = i18nRB_en.getString(key); 
+         ret = i18nRB_en.getString(key);
       else{
          try {
             ret = i18nRB.getString(key);
          } catch (MissingResourceException e) {
-            ret = i18nRB_en.getString(key); 
-         } 
+            ret = i18nRB_en.getString(key);
+         }
       }
       if(args.length>0){
          MessageFormat formatter = new MessageFormat("");

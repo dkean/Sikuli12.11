@@ -10,12 +10,12 @@ import javax.swing.*;
 
 import com.explodingpixels.macwidgets.plaf.EmphasizedLabelUI;
 
-class StatusBar extends JPanel {
+class SikuliIDEStatusBar extends JPanel {
 
    private JLabel _lblMsg;
    private JLabel _lblCaretPos;
 
-   public StatusBar() {
+   public SikuliIDEStatusBar() {
       setLayout(new BorderLayout());
       setPreferredSize(new Dimension(10, 20));
 
@@ -37,7 +37,7 @@ class StatusBar extends JPanel {
 
    public void setCaretPosition(int row, int col){
       _lblCaretPos.setText(
-            I18N._I("statusLineColumn", row, col) );
+            SikuliIDEI18N._I("statusLineColumn", row, col) );
    }
 
    public void setMessage(String text) {
