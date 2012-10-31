@@ -54,5 +54,15 @@ Part 3: (as support for further developement)
 - revise and complete the JavaDocs
 - based on the Netbeans build.xml make Ant scripts and use Maven, that allow to build Sikuli without having Netbeans
 
+Information on fixes and improvements
+=====================================
+IDE
+---
+- revised the main window
+-- as standard: no command bar, vertically split (left code, right messages)
+-- eliminated menus/features: export, extensions (might come back later), unit test
+- revised the Preview window (only one at a time, apply button added to do more than one change, ...)
 
+Script API
+----------
 
