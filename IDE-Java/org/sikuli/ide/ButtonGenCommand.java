@@ -101,8 +101,8 @@ public class ButtonGenCommand extends JButton implements ActionListener,
 
    public void insertCommand() {
       SikuliIDE ide = SikuliIDE.getInstance();
-      SikuliPane pane = ide.getCurrentCodePane();
-      UserPreferences pref = UserPreferences.getInstance();
+      EditorPane pane = ide.getCurrentCodePane();
+      PreferencesUser pref = PreferencesUser.getInstance();
       int endPos = -1, endPosLen = 0;
       boolean first = true;
       pane.insertString(_cmd + "(");
@@ -113,7 +113,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
             int pos = pane.getCaretPosition();
             int lineIdx = root.getElementIndex(pos);
             Element line = root.getElement(lineIdx);
-            CaptureButton btnCapture = new CaptureButton(pane, line);
+            ButtonCapture btnCapture = new ButtonCapture(pane, line);
             if(!first) pane.insertString(", ");
             pane.insertComponent(btnCapture);
             if( pref.getAutoCaptureForCmdButtons() ){
@@ -134,7 +134,7 @@ public class ButtonGenCommand extends JButton implements ActionListener,
          }
       }
       pane.insertString(")");
-      (new SikuliEditorKit.InsertBreakAction()).insertBreak(pane);
+      (new EditorKit.InsertBreakAction()).insertBreak(pane);
       if(endPos>=0){
          pane.requestFocus();
          pane.setCaretPosition(endPos);
