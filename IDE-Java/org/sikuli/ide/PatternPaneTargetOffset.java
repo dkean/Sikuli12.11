@@ -20,7 +20,7 @@ import org.sikuli.core.ScreenImage;
 import org.sikuli.ide.util.LoadingSpinner;
 import org.sikuli.utility.Debug;
 
-class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListener, ChangeListener {
+class PatternPaneTargetOffset extends JPanel implements MouseListener, MouseWheelListener, ChangeListener {
 
 	final static int DEFAULT_H = 300;
 	final static float DEFAULT_PATTERN_RATIO = 0.4f;
@@ -35,7 +35,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 	private LoadingSpinner _loading;
 	private boolean _finding = true;
 
-	public TargetOffsetPane(ScreenImage simg, String patFilename, Location initOffset) {
+	public PatternPaneTargetOffset(ScreenImage simg, String patFilename, Location initOffset) {
 		_simg = simg;
 		_ratio = DEFAULT_PATTERN_RATIO;
 		Rectangle r = _simg.getROI();
@@ -68,7 +68,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 				} catch (IOException e) {
 					Debug.error("Can't load " + patFilename);
 				}
-				synchronized (TargetOffsetPane.this) {
+				synchronized (PatternPaneTargetOffset.this) {
 					_finding = false;
 				}
 				repaint();
@@ -78,7 +78,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 	}
 
 	static String _I(String key, Object... args) {
-		return I18N._I(key, args);
+		return SikuliIDEI18N._I(key, args);
 	}
 
 	private void zoomToMatch() {
@@ -284,7 +284,7 @@ class TargetOffsetPane extends JPanel implements MouseListener, MouseWheelListen
 		int w = (int) (getWidth() * _ratio),
 						h = (int) ((float) w / _img.getWidth() * _img.getHeight());
 		int x = getWidth() / 2 - w / 2, y = getHeight() / 2 - h / 2;
-		Color c = SimilaritySlider.getScoreColor(_match.getScore());
+		Color c = PatternSimilaritySlider.getScoreColor(_match.getScore());
 		g2d.setColor(c);
 		g2d.fillRect(x, y, w, h);
 		g2d.drawRect(x, y, w - 1, h - 1);
