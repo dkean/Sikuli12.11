@@ -24,16 +24,16 @@ import javax.swing.text.Utilities;
 
 /**
  * Thanks: http://groups.google.com/group/de.comp.lang.java/msg/2bbeb016abad270
- * 
+ *
  * IMPORTANT NOTE: regex should contain 1 group.
- * 
+ *
  * Using PlainView here because we don't want line wrapping to occur.
- * 
+ *
  * @author kees
  * @date 13-jan-2006
  *
  */
-public class SikuliView extends PlainView {
+public class EditorView extends PlainView {
 
     private static HashMap<Pattern, Color> patternColors;
     private static String TAG_PATTERN = "(</?[a-z]*)\\s?>?";
@@ -44,11 +44,11 @@ public class SikuliView extends PlainView {
     private static String TAG_CDATA_START = "(\\<!\\[CDATA\\[).*";
     private static String TAG_CDATA_END = ".*(]]>)";
     private static String[] keywords = {
-       "and",       "del",       "for",       "is",        "raise",    
-       "assert",    "elif",      "from",      "lambda",    "return",   
-       "break",     "else",      "global",    "not",       "try",      
-       "class",     "except",    "if",        "or",        "while",    
-       "continue",  "exec",      "import",    "pass",      "yield",    
+       "and",       "del",       "for",       "is",        "raise",
+       "assert",    "elif",      "from",      "lambda",    "return",
+       "break",     "else",      "global",    "not",       "try",
+       "class",     "except",    "if",        "or",        "while",
+       "continue",  "exec",      "import",    "pass",      "yield",
        "def",       "finally",   "in",        "print" };
 
     static {
@@ -72,7 +72,7 @@ public class SikuliView extends PlainView {
         */
     }
 
-    public SikuliView(Element element) {
+    public EditorView(Element element) {
 
         super(element);
 
@@ -104,7 +104,7 @@ public class SikuliView extends PlainView {
         }
 
         // TODO: check the map for overlapping parts
-        
+
         int i = 0;
 
         // Colour the parts

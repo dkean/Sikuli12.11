@@ -13,11 +13,11 @@ import java.util.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
 
-public class LineNumberView extends JComponent
+public class EditorLineNumberView extends JComponent
 {
 
    private static ImageIcon ERROR_ICON = SikuliIDE.getIconResource("/icons/error_icon.gif");
-   
+
    // This is for the border to the right of the line numbers.
    // There's probably a UIDefaults value that could be used for this.
    private static final Color BORDER_COLOR = new Color(155,155,155);
@@ -49,7 +49,7 @@ public class LineNumberView extends JComponent
     * @param structureChanged if <tt>true</tt>, ignore the line number and
     *     update all the line heights.
     */
-   public LineNumberView( JTextComponent text )
+   public EditorLineNumberView( JTextComponent text )
    {
       if ( text == null )
       {

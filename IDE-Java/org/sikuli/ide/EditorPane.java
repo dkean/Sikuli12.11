@@ -2,10 +2,10 @@
  * Copyright 2010-2011, Sikuli.org
  * Released under the MIT License.
  *
+ * modified RaiMan 2012
  */
 package org.sikuli.ide;
 
-import org.sikuli.ide.util.Utils;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
@@ -24,38 +24,48 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import org.python.util.PythonInterpreter;
 import org.sikuli.core.ImageLocator;
+import org.sikuli.core.Settings;
 import org.sikuli.ide.indentation.PythonIndentation;
+import org.sikuli.ide.util.Utils;
 import org.sikuli.script.ScriptRunner;
 import org.sikuli.utility.Debug;
 
-public class SikuliPane extends JTextPane implements KeyListener, CaretListener {
+public class EditorPane extends JTextPane implements KeyListener, CaretListener {
 
 	private File _editingFile;
 	private String _srcBundlePath = null;
 	private boolean _dirty = false;
 	private Class _historyBtnClass;
-	private CurrentLineHighlighter _highlighter;
+	private EditorCurrentLineHighlighter _highlighter;
 	private String _tabString = "   ";
 	private Pattern _lastSearchPattern = null;
 	private String _lastSearchString = null;
 	private Matcher _lastSearchMatcher;
-	private UndoManager _undo = null;
+	private EditorUndoManager _undo = null;
 	// TODO: move to SikuliDocument
 	private PythonIndentation _indentationLogic;
+	final static InputStream SikuliToHtmlConverter =
+					SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
+	static String pyConverter =
+					Utils.convertStreamToString(SikuliToHtmlConverter);
+	final static InputStream SikuliBundleCleaner =
+					SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
+	static String pyBundleCleaner =
+					Utils.convertStreamToString(SikuliBundleCleaner);
 
-	public SikuliPane() {
-		UserPreferences pref = UserPreferences.getInstance();
-		setEditorKitForContentType("text/python", new SikuliEditorKit());
+	public EditorPane() {
+		PreferencesUser pref = PreferencesUser.getInstance();
+		setEditorKitForContentType("text/python", new EditorKit());
 		setContentType("text/python");
 		initKeyMap();
 		setTransferHandler(new MyTransferHandler());
-		_highlighter = new CurrentLineHighlighter(this);
+		_highlighter = new EditorCurrentLineHighlighter(this);
 		addCaretListener(_highlighter);
 		setFont(new Font(pref.getFontName(), Font.PLAIN, pref.getFontSize()));
 		setMargin(new Insets(3, 3, 3, 3));
 		//setTabSize(4);
 		setBackground(Color.WHITE);
-		if (!Utils.isMacOSX()) {
+		if (!Settings.isMac()) {
 			setSelectionColor(new Color(170, 200, 255));
 		}
 		updateDocumentListeners();
@@ -71,10 +81,10 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 				}
 			}
 		});
-		initSikuliPane();
+		initEditorPane();
 	}
 
-	private void initSikuliPane() {
+	private void initEditorPane() {
 		addKeyListener(this);
 		addCaretListener(this);
 	}
@@ -84,9 +94,9 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		getDocument().addUndoableEditListener(_undo);
 	}
 
-	public UndoManager getUndoManager() {
+	public EditorUndoManager getUndoManager() {
 		if (_undo == null) {
-			_undo = new UndoManager();
+			_undo = new EditorUndoManager();
 		}
 		return _undo;
 	}
@@ -99,7 +109,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		InputMap map = this.getInputMap();
 		int shift = InputEvent.SHIFT_MASK;
 		map.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, shift),
-						SikuliEditorKit.sklDeindentAction);
+						EditorKit.sklDeindentAction);
 	}
 
 	public void setTabSize(int charactersPerTab) {
@@ -140,11 +150,14 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 			return;
 		}
 		_dirty = flag;
+		//<editor-fold defaultstate="collapsed" desc="RaiMan no global dirty">
 		if (flag) {
 			//RaiManMod getRootPane().putClientProperty("Window.documentModified", true);
 		} else {
-			SikuliIDE.getInstance().checkDirtyPanes();
+			//SikuliIDE.getInstance().checkDirtyPanes();
 		}
+		//</editor-fold>
+		SikuliIDE.getInstance().setCurrentFileTabTitleDirty(_dirty);
 	}
 
 	public int getLineAtCaret(int caretPosition) {
@@ -194,16 +207,16 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		repaint();
 	}
 
-	private void setHistoryCaptureButton(CaptureButton btn) {
+	private void setHistoryCaptureButton(ButtonCapture btn) {
 		_historyBtnClass = btn.getClass();
 	}
 
 	public boolean close() throws IOException {
 		if (isDirty()) {
-			Object[] options = {I18N._I("yes"), I18N._I("no"), I18N._I("cancel")};
+			Object[] options = {SikuliIDEI18N._I("yes"), SikuliIDEI18N._I("no"), SikuliIDEI18N._I("cancel")};
 			int ans = JOptionPane.showOptionDialog(this,
-							I18N._I("msgAskSaveChanges", getCurrentShortFilename()),
-							I18N._I("dlgAskCloseTab"),
+							SikuliIDEI18N._I("msgAskSaveChanges", getCurrentShortFilename()),
+							SikuliIDEI18N._I("dlgAskCloseTab"),
 							JOptionPane.YES_NO_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE,
 							null,
@@ -238,14 +251,6 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		}
 		return _editingFile;
 	}
-	final static InputStream SikuliToHtmlConverter =
-					SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
-	static String pyConverter =
-					Utils.convertStreamToString(SikuliToHtmlConverter);
-	final static InputStream SikuliBundleCleaner =
-					SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
-	static String pyBundleCleaner =
-					Utils.convertStreamToString(SikuliBundleCleaner);
 
 	private void convertSrcToHtml(String bundle) {
 		PythonInterpreter py = ScriptRunner.getPythonInterpreter();
@@ -261,7 +266,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 	}
 
 	private void cleanBundle(String bundle) {
-		if (!UserPreferences.getInstance().getAtSaveCleanBundle()) {
+		if (!PreferencesUser.getInstance().getAtSaveCleanBundle()) {
 			return;
 		}
 		PythonInterpreter py = ScriptRunner.getPythonInterpreter();
@@ -286,13 +291,13 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		if (_editingFile == null) {
 			return saveAsFile();
 		} else {
-			writeSrcFile(UserPreferences.getInstance().getAtSaveMakeHTML());
+			writeSrcFile(PreferencesUser.getInstance().getAtSaveMakeHTML());
 			return getCurrentShortFilename();
 		}
 	}
 
 	public String saveAsFile() throws IOException {
-		File file = new FileChooser(SikuliIDE.getInstance()).save();
+		File file = new SikuliIDEFileChooser(SikuliIDE.getInstance()).save();
 		if (file == null) {
 			return null;
 		}
@@ -303,8 +308,8 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		}
 		if (Utils.exists(bundlePath)) {
 			int res = JOptionPane.showConfirmDialog(
-							null, I18N._I("msgFileExists", bundlePath),
-							I18N._I("dlgFileExists"), JOptionPane.YES_NO_OPTION);
+							null, SikuliIDEI18N._I("msgFileExists", bundlePath),
+							SikuliIDEI18N._I("dlgFileExists"), JOptionPane.YES_NO_OPTION);
 			if (res != JOptionPane.YES_OPTION) {
 				return null;
 			}
@@ -315,7 +320,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 	}
 
 	public String exportAsZip() throws IOException, FileNotFoundException {
-		File file = new FileChooser(SikuliIDE.getInstance()).export();
+		File file = new SikuliIDEFileChooser(SikuliIDE.getInstance()).export();
 		if (file == null) {
 			return null;
 		}
@@ -343,7 +348,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		setSrcBundle(bundlePath);
 		_editingFile = createSourceFile(bundlePath, ".py");
 		Debug.log(2, "save to bundle: " + getSrcBundle());
-		writeSrcFile(UserPreferences.getInstance().getAtSaveMakeHTML());
+		writeSrcFile(PreferencesUser.getInstance().getAtSaveMakeHTML());
 		//TODO: update all bundle references in ImageButtons
 		//BUG: if save and rename images, the images will be gone..
 	}
@@ -395,7 +400,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 	}
 
 	public String loadFile() throws IOException {
-		File file = new FileChooser(SikuliIDE.getInstance()).load();
+		File file = new SikuliIDEFileChooser(SikuliIDE.getInstance()).load();
 		if (file == null) {
 			return null;
 		}
@@ -643,14 +648,14 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		Component comp = null;
 
 		if (ptn == patPatternStr || ptn == patPngStr) {
-			comp = ImageButton.createFromString(this, imgStr);
+			comp = PatternImageButton.createFromString(this, imgStr);
 		} else if (ptn == patSubregionStr) {
-			comp = RegionButton.createFromString(this, imgStr);
+			comp = ButtonRegion.createFromString(this, imgStr);
 		} else if (ptn == patCaptureBtn) {
 			Element root = doc.getDefaultRootElement();
 			int lineIdx = root.getElementIndex(endOff);
 			Element line = root.getElement(lineIdx);
-			comp = new CaptureButton(this, line);
+			comp = new ButtonCapture(this, line);
 		}
 
 		if (comp != null) {
@@ -674,7 +679,7 @@ public class SikuliPane extends JTextPane implements KeyListener, CaretListener 
 		if (strLine.endsWith("find") && ke.getKeyChar() == '(') {
 			ke.consume();
 			doc.insertString(pos, "(", null);
-			CaptureButton btnCapture = new CaptureButton(this, line);
+			ButtonCapture btnCapture = new ButtonCapture(this, line);
 			insertComponent(btnCapture);
 			doc.insertString(pos + 2, ")", null);
 		}
@@ -874,7 +879,7 @@ class MyTransferHandler extends TransferHandler {
 	protected Transferable createTransferable(JComponent c) {
 		JTextPane aTextPane = (JTextPane) c;
 
-		SikuliEditorKit kit = ((SikuliEditorKit) aTextPane.getEditorKit());
+		EditorKit kit = ((EditorKit) aTextPane.getEditorKit());
 		Document doc = aTextPane.getDocument();
 		int sel_start = aTextPane.getSelectionStart();
 		int sel_end = aTextPane.getSelectionEnd();
@@ -907,7 +912,7 @@ class MyTransferHandler extends TransferHandler {
 		if (canImport(comp, t.getTransferDataFlavors())) {
 			try {
 				String transferString = (String) t.getTransferData(htmlFlavor);
-				SikuliPane targetTextPane = (SikuliPane) comp;
+				EditorPane targetTextPane = (EditorPane) comp;
 				for (Map.Entry<String, String> entry : _copiedImgs.entrySet()) {
 					String imgName = entry.getKey();
 					String imgPath = entry.getValue();

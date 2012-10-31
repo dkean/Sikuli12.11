@@ -5,14 +5,12 @@
  */
 package org.sikuli.ide;
 
-import javax.swing.text.*;
-import java.util.*;
 import java.awt.*;
-import javax.swing.text.AbstractDocument;
-
+import java.util.*;
+import javax.swing.text.*;
 import org.sikuli.utility.Debug;
 
-public class SikuliDocument extends DefaultStyledDocument{
+public class EditorDocument extends DefaultStyledDocument{
    private String word = "";
    private SimpleAttributeSet keyword = new SimpleAttributeSet();
    private SimpleAttributeSet string = new SimpleAttributeSet();
@@ -28,19 +26,19 @@ public class SikuliDocument extends DefaultStyledDocument{
    private int mode = TEXT_MODE;
 
     private static String[] arrKeywords = {
-       "and",       "del",       "for",       "is",        "raise",    
-       "assert",    "elif",      "from",      "lambda",    "return",   
-       "break",     "else",      "global",    "not",       "try",      
-       "class",     "except",    "if",        "or",        "while",    
-       "continue",  "exec",      "import",    "pass",      "yield",    
+       "and",       "del",       "for",       "is",        "raise",
+       "assert",    "elif",      "from",      "lambda",    "return",
+       "break",     "else",      "global",    "not",       "try",
+       "class",     "except",    "if",        "or",        "while",
+       "continue",  "exec",      "import",    "pass",      "yield",
        "def",       "finally",   "in",        "print" };
 
    private void initKeywords(){
       for(int i=0;i<arrKeywords.length;i++)
          keywords.add(arrKeywords[i]);
    }
-   
-   public SikuliDocument() {
+
+   public EditorDocument() {
       initKeywords();
       //set the bold attribute
       StyleConstants.setBold(keyword, true);
@@ -360,29 +358,29 @@ public class SikuliDocument extends DefaultStyledDocument{
    }
 
    // line starting from 0
-   public int getLineStartOffset(int linenum) throws BadLocationException { 
-      Element map = this.getDefaultRootElement(); 
+   public int getLineStartOffset(int linenum) throws BadLocationException {
+      Element map = this.getDefaultRootElement();
       if (linenum < 0) {
-         throw new BadLocationException("Negative line", -1); 
+         throw new BadLocationException("Negative line", -1);
       } else if (linenum >= map.getElementCount()) {
-         throw new BadLocationException("No such line", this.getLength()+1); 
+         throw new BadLocationException("No such line", this.getLength()+1);
       } else {
          Element lineElem = map.getElement(linenum);
-         return lineElem.getStartOffset(); 
-      }  
-   }   
+         return lineElem.getStartOffset();
+      }
+   }
 
    public int getLineLength(int linenum) throws BadLocationException {
       Element map = this.getDefaultRootElement();
       if (linenum < 0) {
-         throw new BadLocationException("Negative line", -1); 
+         throw new BadLocationException("Negative line", -1);
       } else if (linenum >= map.getElementCount()) {
-         throw new BadLocationException("No such line", this.getLength()+1); 
+         throw new BadLocationException("No such line", this.getLength()+1);
       } else {
          Element lineElem = map.getElement(linenum);
          return lineElem.getEndOffset() - lineElem.getStartOffset();
-      }  
-   }   
+      }
+   }
 
    /**
     * Change the indentation of a line. Any existing leading whitespace is replaced by
@@ -403,7 +401,7 @@ public class SikuliDocument extends DefaultStyledDocument{
       // determine current indentation and number of whitespace characters
       int wsChars;
       int indentation = 0;
-      int tabWidth = UserPreferences.getInstance().getTabWidth();
+      int tabWidth = PreferencesUser.getInstance().getTabWidth();
       for (wsChars = 0; wsChars < line.length(); wsChars++) {
          char c = line.charAt(wsChars);
          if (c == ' ') {
@@ -443,4 +441,4 @@ public class SikuliDocument extends DefaultStyledDocument{
          this.keywords = aKeywordList;
       }
    }
-} 
+}

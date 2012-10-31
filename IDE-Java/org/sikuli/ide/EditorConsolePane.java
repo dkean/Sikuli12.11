@@ -27,7 +27,8 @@ import org.python.util.PythonInterpreter;
 import org.sikuli.script.ScriptRunner;
 import org.sikuli.utility.Debug;
 
-public class ConsolePane extends JPanel implements Runnable {
+
+public class EditorConsolePane extends JPanel implements Runnable {
 
 	static boolean ENABLE_IO_REDIRECT = true;
 
@@ -45,12 +46,12 @@ public class ConsolePane extends JPanel implements Runnable {
 	private final PipedInputStream[] pin = new PipedInputStream[NUM_PIPES];
 	Thread errorThrower; // just for testing (Throws an Exception at this Console
 
-	public ConsolePane() {
+	public EditorConsolePane() {
 		super();
 		textArea = new JTextPane();
 		textArea.setEditorKit(new HTMLEditorKit());
 		textArea.setTransferHandler(new JTextPaneHTMLTransferHandler());
-		String css = UserPreferences.getInstance().getConsoleCSS();
+		String css = PreferencesUser.getInstance().getConsoleCSS();
 		((HTMLEditorKit) textArea.getEditorKit()).getStyleSheet().addRule(css);
 		textArea.setEditable(false);
 
@@ -187,7 +188,6 @@ public class ConsolePane extends JPanel implements Runnable {
 		textArea.setText("");
 	}
 }
-
 class JTextPaneHTMLTransferHandler extends TransferHandler {
 
 	public JTextPaneHTMLTransferHandler() {

@@ -47,7 +47,7 @@ class MyCompoundEdit extends CompoundEdit {
 
 }
 
-public class UndoManager extends AbstractUndoableEdit 
+public class EditorUndoManager extends AbstractUndoableEdit
                   implements UndoableEditListener {
    String lastEditName=null;
    ArrayList<MyCompoundEdit> edits=new ArrayList<MyCompoundEdit>();
@@ -62,11 +62,11 @@ public class UndoManager extends AbstractUndoableEdit
          int len=event.getLength();
          Debug.log(9, "undoableEditHappened " + start + "," + len);
          boolean isNeedStart=false;
-         if(event.getType().equals(DocumentEvent.EventType.CHANGE) || 
+         if(event.getType().equals(DocumentEvent.EventType.CHANGE) ||
             event.getType().equals(DocumentEvent.EventType.INSERT) ){
             try {
                String text=event.getDocument().getText(start, len);
-               if (text.contains("\n")) 
+               if (text.contains("\n"))
                   isNeedStart=true;
             } catch (BadLocationException e1) {
                e1.printStackTrace();

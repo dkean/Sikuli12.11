@@ -13,7 +13,9 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.*;
 
 
-public class CurrentLineHighlighter implements CaretListener
+
+
+public class EditorCurrentLineHighlighter implements CaretListener
 {
    static final Color DEFAULT_COLOR = new Color(230, 230, 210);
    static final Color ERROR_COLOR = new Color(255, 105, 105);
@@ -22,12 +24,12 @@ public class CurrentLineHighlighter implements CaretListener
    private Object highlight;
    private int _errorLine=-1;
 
-   public CurrentLineHighlighter(JTextPane textPane)
+   public EditorCurrentLineHighlighter(JTextPane textPane)
    {
       this(textPane, null);
    }
 
-   public CurrentLineHighlighter(JTextPane textPane, Color highlightColor)
+   public EditorCurrentLineHighlighter(JTextPane textPane, Color highlightColor)
    {
       Color c = highlightColor != null ? highlightColor : DEFAULT_COLOR;
       MyHighlighter h = new MyHighlighter();
@@ -59,7 +61,7 @@ public class CurrentLineHighlighter implements CaretListener
       Element elem = Utilities.getParagraphElement(comp, pos);
       int start = elem.getStartOffset();
       int end = elem.getEndOffset();
-      
+
       Document doc = comp.getDocument();
       Element root = doc.getDefaultRootElement();
       int lineIdx = root.getElementIndex(pos);
@@ -78,8 +80,6 @@ public class CurrentLineHighlighter implements CaretListener
       }
    }
 }
-
-
 class MyHighlighter extends DefaultHighlighter {
 
    private JTextComponent component;
@@ -106,7 +106,7 @@ class MyHighlighter extends DefaultHighlighter {
 
    /**
     * Same algo, except width is not modified with the insets.
-    * 
+    *
     * @see javax.swing.text.DefaultHighlighter#paint(java.awt.Graphics)
     */
    @Override

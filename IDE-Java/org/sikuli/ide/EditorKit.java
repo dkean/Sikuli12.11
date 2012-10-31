@@ -7,26 +7,22 @@ package org.sikuli.ide;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Map;
-
 import javax.swing.*;
 import javax.swing.text.*;
-
 import org.sikuli.ide.indentation.PythonIndentation;
-
 import org.sikuli.utility.Debug;
 
-public class SikuliEditorKit extends StyledEditorKit {
+public class EditorKit extends StyledEditorKit {
 
    public static final String sklDeindentAction = "SKL.DeindentAction";
 
    private ViewFactory _viewFactory;;
 
-   public SikuliEditorKit() {
-      _viewFactory = new SikuliViewFactory();
+   public EditorKit() {
+      _viewFactory = new EditorViewFactory();
    }
 
    private static final TextAction[] defaultActions = {
@@ -39,15 +35,15 @@ public class SikuliEditorKit extends StyledEditorKit {
       new NextVisualPositionAction(selectionBackwardAction, true, SwingConstants.WEST),
       new NextVisualPositionAction(upAction, false, SwingConstants.NORTH),
       new NextVisualPositionAction(downAction, false, SwingConstants.SOUTH),
-      new NextVisualPositionAction(selectionUpAction, true, SwingConstants.NORTH),   
+      new NextVisualPositionAction(selectionUpAction, true, SwingConstants.NORTH),
       new NextVisualPositionAction(selectionDownAction, true, SwingConstants.SOUTH),
 
    };
 
    public Action[] getActions() {
       return TextAction.augmentList(super.getActions(),
-            SikuliEditorKit.defaultActions);
-   }  
+            EditorKit.defaultActions);
+   }
 
    @Override
    public ViewFactory getViewFactory() {
@@ -60,14 +56,14 @@ public class SikuliEditorKit extends StyledEditorKit {
    }
 
    @Override
-   public void read(Reader in, Document doc, int pos) 
+   public void read(Reader in, Document doc, int pos)
                            throws IOException, BadLocationException{
       Debug.log(3, "SikuliEditorKit.read");
       super.read(in,doc,pos);
 
    }
 
-   public void write(Writer out, Document doc, int pos, int len, Map<String,String> copiedImgs) 
+   public void write(Writer out, Document doc, int pos, int len, Map<String,String> copiedImgs)
                            throws IOException, BadLocationException{
       Debug.log(9,"SikuliEditorKit.write %d %d", pos, len);
       DefaultStyledDocument sdoc = (DefaultStyledDocument)doc;
@@ -81,8 +77,8 @@ public class SikuliEditorKit extends StyledEditorKit {
             AttributeSet attr=e.getAttributes();
             Component com=StyleConstants.getComponent(attr);
             out.write( com.toString() );
-            if(copiedImgs != null && com instanceof ImageButton){
-               ImageButton btn = (ImageButton)com; 
+            if(copiedImgs != null && com instanceof PatternImageButton){
+               PatternImageButton btn = (PatternImageButton)com;
                String absPath = btn.getFilename();
                String fname = (new File(absPath)).getName();
                copiedImgs.put(fname, absPath);
@@ -101,7 +97,7 @@ public class SikuliEditorKit extends StyledEditorKit {
    }
 
    @Override
-   public void write(Writer out, Document doc, int pos, int len) 
+   public void write(Writer out, Document doc, int pos, int len)
                            throws IOException, BadLocationException{
       write(out, doc, pos, len, null);
    }
@@ -168,9 +164,9 @@ public class SikuliEditorKit extends StyledEditorKit {
                      Position.Bias.Forward, direction, bias);
             }
             else {
-               if(direction == SwingConstants.NORTH || 
+               if(direction == SwingConstants.NORTH ||
                   direction == SwingConstants.SOUTH )
-                  dot = getNSVisualPosition((SikuliPane)textArea, dot, direction);
+                  dot = getNSVisualPosition((EditorPane)textArea, dot, direction);
                else
                   dot = textArea.getUI().getNextVisualPositionFrom(
                         textArea, dot,
@@ -195,7 +191,7 @@ public class SikuliEditorKit extends StyledEditorKit {
 
    }
 
-   static int getNSVisualPosition(SikuliPane txt, int pos, int direction){
+   static int getNSVisualPosition(EditorPane txt, int pos, int direction){
       int line = txt.getLineAtCaret(pos);
       int tarLine = direction==SwingConstants.NORTH? line-1 : line+1;
       try{
@@ -229,15 +225,15 @@ public class SikuliEditorKit extends StyledEditorKit {
 
 
    public static class InsertTabAction extends TextAction {
-         
+
       public InsertTabAction() {
          super(insertTabAction);
-      }  
-         
+      }
+
       public InsertTabAction(String name) {
          super(name);
-      }  
-         
+      }
+
       public void actionPerformed(ActionEvent e) {
          Debug.log(5, "InsertTabAction " + e);
          JTextComponent textArea = (JTextComponent)e.getSource();
@@ -247,7 +243,7 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea) {
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
-         UserPreferences pref = UserPreferences.getInstance();
+         PreferencesUser pref = PreferencesUser.getInstance();
          boolean expandTab = pref.getExpandTab();
          String tabWhitespace;
          if (expandTab) {
@@ -256,7 +252,7 @@ public class SikuliEditorKit extends StyledEditorKit {
             Arrays.fill(blanks, ' ');
             tabWhitespace = new String(blanks);
          } else {
-            tabWhitespace = "\t"; 
+            tabWhitespace = "\t";
          }
          Caret c = textArea.getCaret();
          int dot = c.getDot();
@@ -267,7 +263,7 @@ public class SikuliEditorKit extends StyledEditorKit {
          if (dotLine!=markLine) {
             int first = Math.min(dotLine, markLine);
             int last = Math.max(dotLine, markLine);
-            Element elem; 
+            Element elem;
             int start;
             try {
                for (int i=first; i<last; i++) {
@@ -313,7 +309,7 @@ public class SikuliEditorKit extends StyledEditorKit {
       public void actionPerformed(JTextComponent textArea){
          Document document = textArea.getDocument();
          Element map = document.getDefaultRootElement();
-         UserPreferences pref = UserPreferences.getInstance();
+         PreferencesUser pref = PreferencesUser.getInstance();
          Caret c = textArea.getCaret();
          int dot = c.getDot();
          int mark = c.getMark();
@@ -355,7 +351,7 @@ public class SikuliEditorKit extends StyledEditorKit {
       private final void handleDecreaseIndent(Element elem, Document doc,
                                  int tabSize) throws BadLocationException {
          int start = elem.getStartOffset();
-         int end = elem.getEndOffset() - 1; 
+         int end = elem.getEndOffset() - 1;
          doc.getText(start,end-start, s);
          int i = s.offset;
          end = i+s.count;
@@ -425,11 +421,11 @@ public class SikuliEditorKit extends StyledEditorKit {
          }
          return ret;
       }
-      
+
       static String getLeadingWhitespace(String text){
          int len = text.length();
          int count = 0;
-         while (count<len && isWhitespace(text.charAt(count))) 
+         while (count<len && isWhitespace(text.charAt(count)))
             count++;
          return text.substring(0, count);
       }
@@ -451,10 +447,10 @@ public class SikuliEditorKit extends StyledEditorKit {
             int lineNum = map.getElementIndex(caretPos);
             Element line = map.getElement(lineNum);
             int start = line.getStartOffset();
-            int end = line.getEndOffset()-1; 
+            int end = line.getEndOffset()-1;
             int len = end-start;
             String s = doc.getText(start, len);
-            PythonIndentation indentationLogic = ((SikuliPane)txt).getIndentationLogic();
+            PythonIndentation indentationLogic = ((EditorPane)txt).getIndentationLogic();
 
             String leadingWS = getLeadingWhitespace(doc, start, caretPos-start);
             StringBuffer sb = new StringBuffer("\n");
@@ -525,7 +521,7 @@ public class SikuliEditorKit extends StyledEditorKit {
                }
             }
 
-         } catch (BadLocationException ble) { 
+         } catch (BadLocationException ble) {
             txt.replaceSelection("\n");
             ble.printStackTrace();
          }
@@ -546,7 +542,7 @@ public class SikuliEditorKit extends StyledEditorKit {
        * characters if necessary) if tab expansion in the user preferences is
        * true, or the appropriate number of blank characters if tab expansion is
        * false.
-       * 
+       *
        * @param linenum
        *           the line number (0-based)
        * @param columns
@@ -559,16 +555,16 @@ public class SikuliEditorKit extends StyledEditorKit {
       // TODO: make this a method of SikuliDocument, no need to pass document as argument
       private void changeIndentation(DefaultStyledDocument document, int linenum,
             int columns) throws BadLocationException {
-         UserPreferences pref = UserPreferences.getInstance();
+         PreferencesUser pref = PreferencesUser.getInstance();
          boolean expandTab = pref.getExpandTab();
          int tabWidth = pref.getTabWidth();
 
          if (linenum < 0) {
-            throw new BadLocationException("Negative line", -1); 
+            throw new BadLocationException("Negative line", -1);
          }
          Element map = document.getDefaultRootElement();
          if (linenum >= map.getElementCount()) {
-            throw new BadLocationException("No such line", document.getLength() + 1); 
+            throw new BadLocationException("No such line", document.getLength() + 1);
          }
          if (columns == 0) return;
 

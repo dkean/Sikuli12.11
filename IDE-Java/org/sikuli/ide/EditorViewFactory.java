@@ -18,10 +18,12 @@ import java.util.regex.Pattern;
 
 import javax.swing.event.*;
 import javax.swing.SizeRequirements;
+import org.sikuli.core.Settings;
 
 import org.sikuli.utility.Debug;
 
-public class SikuliViewFactory implements ViewFactory {
+
+public class EditorViewFactory implements ViewFactory {
 
     /**
      * @see javax.swing.text.ViewFactory#create(javax.swing.text.Element)
@@ -65,7 +67,6 @@ public class SikuliViewFactory implements ViewFactory {
    }
 
 }
-
 class MyParagraphView extends ParagraphView
 {
 
@@ -165,9 +166,9 @@ class SectionBoxView extends BoxView
 class HighlightLabelView extends LabelView {
 
    static FontMetrics _fMetrics = null;
-   static String tabStr = nSpaces(UserPreferences.getInstance().getTabWidth());
+   static String tabStr = nSpaces(PreferencesUser.getInstance().getTabWidth());
    static {
-      UserPreferences.getInstance().addPreferenceChangeListener(
+      PreferencesUser.getInstance().addPreferenceChangeListener(
             new PreferenceChangeListener(){
                @Override
                public void preferenceChange(PreferenceChangeEvent event){
@@ -324,7 +325,7 @@ class HighlightLabelView extends LabelView {
 
    private float getRealTabWidth(){
       final int tabCharWidth;
-      if(Utils.isMacOSX())
+      if(Settings.isMac())
          tabCharWidth = stringWidth("\t");
       else
          tabCharWidth = stringWidth(" ");
@@ -334,7 +335,7 @@ class HighlightLabelView extends LabelView {
    private float tabbedWidth(){
       String str = getText(getStartOffset(), getEndOffset()).toString();
       int tab = countTab(str);
-      if(Utils.isMacOSX())
+      if(Settings.isMac())
          return stringWidth(str) + getRealTabWidth()*tab;
       else
          return stringWidth(str) + getTabWidth()*tab;
