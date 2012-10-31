@@ -40,7 +40,7 @@ import org.sikuli.utility.Debug;
 
 
 public class PreferencesWin extends JFrame {
-   UserPreferences pref = UserPreferences.getInstance();
+   PreferencesUser pref = PreferencesUser.getInstance();
    int _cap_hkey, _cap_mod;
    int _old_cap_hkey, _old_cap_mod;
 
@@ -58,13 +58,13 @@ public class PreferencesWin extends JFrame {
       _old_cap_mod = _cap_mod = pref.getCaptureHotkeyModifiers();
       setTxtHotkey(_cap_hkey, _cap_mod);
       switch(pref.getAutoNamingMethod()){
-         case UserPreferences.AUTO_NAMING_TIMESTAMP:
+         case PreferencesUser.AUTO_NAMING_TIMESTAMP:
             _radTimestamp.setSelected(true);
             break;
-         case UserPreferences.AUTO_NAMING_OCR:
+         case PreferencesUser.AUTO_NAMING_OCR:
             _radOCR.setSelected(true);
             break;
-         case UserPreferences.AUTO_NAMING_OFF:
+         case PreferencesUser.AUTO_NAMING_OFF:
             _radOff.setSelected(true);
             break;
          default:
@@ -84,7 +84,7 @@ public class PreferencesWin extends JFrame {
          "da", "ko", "uk", "de", "nl", "zh_CN", "en_US", "pl", "zh_TW"
       };
       Locale[] sortedLocales = new Locale[SUPPORT_LOCALES.length];
-      UserPreferences pref = UserPreferences.getInstance();
+      PreferencesUser pref = PreferencesUser.getInstance();
       int count = 0;
       for (String locale_code: SUPPORT_LOCALES){
          Locale l;
@@ -120,7 +120,7 @@ public class PreferencesWin extends JFrame {
 
 
    private void initFontPrefs(){
-      UserPreferences pref = UserPreferences.getInstance();
+      PreferencesUser pref = PreferencesUser.getInstance();
       String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment()
                               .getAvailableFontFamilyNames();
       for (String font: fontList)
@@ -135,9 +135,9 @@ public class PreferencesWin extends JFrame {
       pref.setCaptureHotkey(_cap_hkey);
       pref.setCaptureHotkeyModifiers(_cap_mod);
       pref.setAutoNamingMethod(
-            _radTimestamp.isSelected()?UserPreferences.AUTO_NAMING_TIMESTAMP:
-            _radOCR.isSelected()?UserPreferences.AUTO_NAMING_OCR:
-            UserPreferences.AUTO_NAMING_OFF);
+            _radTimestamp.isSelected()?PreferencesUser.AUTO_NAMING_TIMESTAMP:
+            _radOCR.isSelected()?PreferencesUser.AUTO_NAMING_OCR:
+            PreferencesUser.AUTO_NAMING_OFF);
       if(_old_cap_hkey != _cap_hkey || _old_cap_mod != _cap_mod){
          ide.removeCaptureHotkey(_old_cap_hkey, _old_cap_mod);
          ide.installCaptureHotkey(_cap_hkey, _cap_mod);
@@ -152,7 +152,7 @@ public class PreferencesWin extends JFrame {
 
       Locale locale = (Locale)_cmbLang.getSelectedItem();
       pref.setLocale(locale);
-      I18N.setLocale(locale);
+      SikuliIDEI18N.setLocale(locale);
    }
 
    private void setTxtHotkey(int code, int mod){
@@ -323,7 +323,7 @@ public class PreferencesWin extends JFrame {
                      .add(80, 80, 80))
             );
          }
-         _tabPane.addTab(I18N._I("prefTabScreenCapturing"), paneCapture);
+         _tabPane.addTab(SikuliIDEI18N._I("prefTabScreenCapturing"), paneCapture);
 
 
          //======== _paneTextEditing ========
@@ -408,7 +408,7 @@ public class PreferencesWin extends JFrame {
             _paneTextEditingLayout.linkSize(new Component[] {_lblTabWidth, _spnTabWidth}, GroupLayout.VERTICAL);
             _paneTextEditingLayout.linkSize(new Component[] {_cmbFontName, _lblFont}, GroupLayout.VERTICAL);
          }
-         _tabPane.addTab(I18N._I("PreferencesWin.paneTextEditing.tab.title"), _paneTextEditing);
+         _tabPane.addTab(SikuliIDEI18N._I("PreferencesWin.paneTextEditing.tab.title"), _paneTextEditing);
 
 
          //======== paneGeneral ========
@@ -455,7 +455,7 @@ public class PreferencesWin extends JFrame {
                      .addContainerGap(196, Short.MAX_VALUE))
             );
          }
-         _tabPane.addTab(I18N._I("prefTabGeneralSettings"), paneGeneral);
+         _tabPane.addTab(SikuliIDEI18N._I("prefTabGeneralSettings"), paneGeneral);
 
       }
       contentPane.add(_tabPane, BorderLayout.CENTER);
@@ -507,28 +507,28 @@ public class PreferencesWin extends JFrame {
 
    private void initComponentsI18n() {
       // JFormDesigner - Component i18n initialization - DO NOT MODIFY  //GEN-BEGIN:initI18n
-      DefaultComponentFactory.setTextAndMnemonic(_titleAppearance, I18N._I("PreferencesWin.titleAppearance.textWithMnemonic"));
-      DefaultComponentFactory.setTextAndMnemonic(_titleIndentation, I18N._I("PreferencesWin.titleIndentation.textWithMnemonic"));
-      _lblHotkey.setText(I18N._I("prefCaptureHotkey"));
-      _lblDelay.setText(I18N._I("prefCaptureDelay"));
-      _lblDelaySecs.setText(I18N._I("prefSeconds"));
-      _lblNaming.setText(I18N._I("prefAutoNaming"));
-      _radTimestamp.setText(I18N._I("prefTimestamp"));
-      _radOCR.setText(I18N._I("prefRecognizedText"));
-      _radOff.setText(I18N._I("prefManualInput"));
-      _tabPane.setTitleAt(0, I18N._I("prefTabScreenCapturing"));
-      _chkExpandTab.setText(I18N._I("PreferencesWin.chkExpandTab.text"));
-      _lblTabWidth.setText(I18N._I("PreferencesWin.lblTabWidth.text"));
-      _lblFont.setText(I18N._I("PreferencesWin.lblFont.text"));
-      _lblFontSize.setText(I18N._I("PreferencesWin.lblFontSize.text"));
-      _tabPane.setTitleAt(1, I18N._I("PreferencesWin.paneTextEditing.tab.title"));
-      _chkAutoUpdate.setText(I18N._I("prefGeneralAutoCheck"));
-      _lblUpdates.setText(I18N._I("PreferencesWin.lblUpdates.text"));
-      _lblLanguage.setText(I18N._I("PreferencesWin.lblLanguage.text"));
-      _tabPane.setTitleAt(2, I18N._I("prefTabGeneralSettings"));
-      _btnOk.setText(I18N._I("ok"));
-      _btnApply.setText(I18N._I("apply"));
-      _btnCancel.setText(I18N._I("cancel"));
+      DefaultComponentFactory.setTextAndMnemonic(_titleAppearance, SikuliIDEI18N._I("PreferencesWin.titleAppearance.textWithMnemonic"));
+      DefaultComponentFactory.setTextAndMnemonic(_titleIndentation, SikuliIDEI18N._I("PreferencesWin.titleIndentation.textWithMnemonic"));
+      _lblHotkey.setText(SikuliIDEI18N._I("prefCaptureHotkey"));
+      _lblDelay.setText(SikuliIDEI18N._I("prefCaptureDelay"));
+      _lblDelaySecs.setText(SikuliIDEI18N._I("prefSeconds"));
+      _lblNaming.setText(SikuliIDEI18N._I("prefAutoNaming"));
+      _radTimestamp.setText(SikuliIDEI18N._I("prefTimestamp"));
+      _radOCR.setText(SikuliIDEI18N._I("prefRecognizedText"));
+      _radOff.setText(SikuliIDEI18N._I("prefManualInput"));
+      _tabPane.setTitleAt(0, SikuliIDEI18N._I("prefTabScreenCapturing"));
+      _chkExpandTab.setText(SikuliIDEI18N._I("PreferencesWin.chkExpandTab.text"));
+      _lblTabWidth.setText(SikuliIDEI18N._I("PreferencesWin.lblTabWidth.text"));
+      _lblFont.setText(SikuliIDEI18N._I("PreferencesWin.lblFont.text"));
+      _lblFontSize.setText(SikuliIDEI18N._I("PreferencesWin.lblFontSize.text"));
+      _tabPane.setTitleAt(1, SikuliIDEI18N._I("PreferencesWin.paneTextEditing.tab.title"));
+      _chkAutoUpdate.setText(SikuliIDEI18N._I("prefGeneralAutoCheck"));
+      _lblUpdates.setText(SikuliIDEI18N._I("PreferencesWin.lblUpdates.text"));
+      _lblLanguage.setText(SikuliIDEI18N._I("PreferencesWin.lblLanguage.text"));
+      _tabPane.setTitleAt(2, SikuliIDEI18N._I("prefTabGeneralSettings"));
+      _btnOk.setText(SikuliIDEI18N._I("ok"));
+      _btnApply.setText(SikuliIDEI18N._I("apply"));
+      _btnCancel.setText(SikuliIDEI18N._I("cancel"));
       // JFormDesigner - End of component i18n initialization  //GEN-END:initI18n
    }
 

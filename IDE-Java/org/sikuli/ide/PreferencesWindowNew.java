@@ -8,12 +8,12 @@ package org.sikuli.ide;
  *
  * @author rhocke
  */
-public class NewPref extends javax.swing.JPanel {
+public class PreferencesWindowNew extends javax.swing.JPanel {
 
   /**
    * Creates new form NewPref
    */
-  public NewPref() {
+  public PreferencesWindowNew() {
     initComponents();
   }
 

@@ -13,24 +13,24 @@ import java.util.Locale;
 import java.util.prefs.*;
 import org.sikuli.utility.Debug;
 
-public class UserPreferences {
+public class PreferencesUser {
 
   final static int yes = 1;
   final static int no = 0;
   final static int AUTO_NAMING_TIMESTAMP = 0;
 	final static int AUTO_NAMING_OCR = 1;
 	final static int AUTO_NAMING_OFF = 2;
-	static UserPreferences _instance = null;
+	static PreferencesUser _instance = null;
 	Preferences pref = Preferences.userNodeForPackage(SikuliIDE.class);
 
-	public static UserPreferences getInstance() {
+	public static PreferencesUser getInstance() {
 		if (_instance == null) {
-			_instance = new UserPreferences();
+			_instance = new PreferencesUser();
 		}
 		return _instance;
 	}
 
-	protected UserPreferences() {
+	protected PreferencesUser() {
 		Debug.log(2, "init user preferences");
 	}
 
