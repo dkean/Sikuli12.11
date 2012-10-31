@@ -59,8 +59,8 @@ Information on fixes and improvements
 IDE
 ---
 - revised the main window
--- as standard: no command bar, vertically split (left code, right messages)
--- eliminated menus/features: export, extensions (might come back later), unit test
+ - as standard: no command bar, vertically split (left code, right messages)
+ - eliminated menus/features: export, extensions (might come back later), unit test
 - revised the Preview window (only one at a time, apply button added to do more than one change, ...)
 
 Script API
