@@ -116,6 +116,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * @param title the title to be displayed in this tab
    * @param component the component to be displayed when this tab is clicked
    */
+	@Override
   public void addTab(String title, Component component) {
     addTab(title, component, null);
   }
@@ -153,6 +154,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * a component.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseClicked(MouseEvent e) {
     processMouseEvents(e);
   }
@@ -161,12 +163,14 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * Invoked when the mouse enters a component.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseEntered(MouseEvent e) { }
 
   /**
    * Invoked when the mouse exits a component.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseExited(MouseEvent e) {
     for (int i=0; i<getTabCount(); i++) {
       CloseTabIcon icon = (CloseTabIcon) getIconAt(i);
@@ -180,6 +184,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * Invoked when a mouse button has been pressed on a component.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mousePressed(MouseEvent e) {
     processMouseEvents(e);
   }
@@ -188,6 +193,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * Invoked when a mouse button has been released on a component.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseReleased(MouseEvent e) { }
 
   /**
@@ -202,6 +208,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * Drag&amp;Drop operation.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseDragged(MouseEvent e) {
     processMouseEvents(e);
   }
@@ -211,6 +218,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
    * buttons have been pushed.
    * @param e the <code>MouseEvent</code>
    */
+	@Override
   public void mouseMoved(MouseEvent e) {
     processMouseEvents(e);
   }
@@ -494,6 +502,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     }
 
     Color darkTabColor = new Color(200,200,200);
+		@Override
     protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected){
 
        super.paintTabBackground(g, tabPlacement, tabIndex, x, y, w, h, isSelected);
@@ -514,6 +523,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * @param textRect the text boundaries
      * @param isSelected true whether the tab is selected, false otherwise
      */
+		@Override
     protected void layoutLabel(int tabPlacement, FontMetrics metrics,
                                int tabIndex, String title, Icon icon,
                                Rectangle tabRect, Rectangle iconRect,
@@ -586,6 +596,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * @param textRect the text boundaries
      * @param isSelected true whether the tab is selected, false otherwise
      */
+		@Override
     protected void layoutLabel(int tabPlacement, FontMetrics metrics,
                                int tabIndex, String title, Icon icon,
                                Rectangle tabRect, Rectangle iconRect,
