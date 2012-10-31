@@ -3,7 +3,7 @@
  * Released under the MIT License.
  *
  */
-package org.sikuli.ide;
+package org.sikuli.ide.util;
 
 import org.sikuli.utility.Subject;
 
