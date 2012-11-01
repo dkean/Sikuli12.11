@@ -60,6 +60,21 @@ Information on fixes and improvements
 =====================================
 IDE
 ---
+
+-----
+Alternative IDE: **JEdit (http://www.jedit.org)** 
+
+Besides fixing some major bugs and adding some slight improvements in the current IDE, I just decided, to develop a plugin for JEdit, so it can be used as a more advanced Sikuli Script IDE, that in the standard has many features and plugins, that in Sikuli IDE are still missing. 
+
+Since the main specific features of the Sikuli IDE like Image capture, Preview window and others are rather well encapsulated, it should be rather easy, to implement these as JEdit Beans, commands or macros. Furthermore this would allow, to easily reuse this Sikuli plugin for other scripting languages, that are already supported by JEdit plugins (JRuby, Scala, Groovy, Closure, ...). 
+
+And it might be possible to implement a synthetic language, that allows, to implement typical Sikuli workflows rather easy, without the need to implement every convenience feture in the API itself.
+
+I have made up a new Git Repo and I will try to make it ready latest shortly after end of November.
+
+-----
+
+Changes/Fixes in current IDE
 - revised the main window
  - as standard: no command bar, vertically split (left code, right messages)
  - eliminated menus/features: export, extensions (might come back later), unit test
@@ -73,6 +88,7 @@ IDE
 
 Script API
 ----------
+Changes/Fixes to the Scripting API
 - constantly adding javadocs to all public (and important protected) methods
 - totally revised the ImagePath feature and the usage of ImageLocator (including the usage with Jython import)
 - revising the command line usage to make it equal for ide.jar and script.jar running Sikuli scripts
