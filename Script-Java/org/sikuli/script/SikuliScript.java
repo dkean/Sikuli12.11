@@ -28,13 +28,13 @@ public class SikuliScript {
   public static void main(String[] args) {
     int exitCode = 0;
 
-		Debug.log(2, "Running on Java " + Settings.JavaVersion);
+    Debug.log(2, "Running on Java " + Settings.JavaVersion);
 
     CommandArgs cmdArgs = new CommandArgs("SCRIPT");
     cmdLine = cmdArgs.getCommandLine(args);
 
     //TODO downward compatibel
-    if (!args[0].startsWith("-")) {
+    if (args.length > 0 && !args[0].startsWith("-")) {
       ScriptRunner runner = new ScriptRunner(CommandArgs.getPyArgs(cmdLine));
       exitCode = runner.runPython(null);
       Debug.info("You are using deprecated command line argument syntax!");

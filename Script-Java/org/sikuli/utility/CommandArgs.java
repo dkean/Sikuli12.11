@@ -12,14 +12,14 @@ import org.apache.commons.cli.*;
 public class CommandArgs {
 
   public static String[] getPyArgs(CommandLine cl) {
-    ArrayList<String> pargs;
+    ArrayList<String> pargs = new ArrayList<String>();
+    if (cl.hasOption("run")) {
+      pargs.add(cl.getOptionValue("run"));
+    }
     if (cl.hasOption("args")) {
-      pargs = new ArrayList<String>(Arrays.asList(cl.getOptionValues("args")));
-      if (cl.hasOption("run")) {
-        pargs.add(0, cl.getOptionValue("run"));
-      }
+      pargs.addAll(Arrays.asList(cl.getOptionValues("args")));
     } else {
-      pargs = new ArrayList<String>(Arrays.asList(cl.getArgs()));
+      pargs.addAll(Arrays.asList(cl.getArgs()));
     }
     return pargs.toArray(new String[0]);
   }
