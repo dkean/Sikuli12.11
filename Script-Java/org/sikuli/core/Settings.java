@@ -33,6 +33,7 @@ public class Settings {
   public static String OcrDataPath = null;
   public static String libSource = "META-INF/lib/";
   public static String libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
+  public static String libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
   public static boolean ShowActions = false;
   public static boolean ActionLogs = true;
   public static boolean InfoLogs = true;
