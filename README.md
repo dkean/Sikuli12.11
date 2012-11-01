@@ -62,15 +62,15 @@ IDE
 ---
 
 -----
-Alternative IDE: **JEdit (http://www.jedit.org)** 
+Alternative IDE: **jEdit (http://www.jedit.org)** 
 
-Besides fixing some major bugs and adding some slight improvements in the current IDE, I just decided, to develop a plugin for JEdit, so it can be used as a more advanced Sikuli Script IDE, that in the standard has many features and plugins, that in Sikuli IDE are still missing. 
+Besides fixing some major bugs and adding some slight improvements in the current IDE, I just decided, to develop a plugin for jEdit, so it can be used as a more advanced Sikuli Script IDE, that in the standard has many features and plugins, that in Sikuli IDE are still missing. 
 
-Since the main specific features of the Sikuli IDE like Image capture, Preview window and others are rather well encapsulated, it should be rather easy, to implement these as JEdit Beans, commands or macros. Furthermore this would allow, to easily reuse this Sikuli plugin for other scripting languages, that are already supported by JEdit plugins (JRuby, Scala, Groovy, Closure, ...). 
+Since the main specific features of the Sikuli IDE like Image capture, Preview window and others are rather well encapsulated, it should be rather easy, to implement these as jEdit Beans, commands or macros. Furthermore this would allow, to easily reuse this Sikuli plugin for other scripting languages, that are already supported by jEdit plugins (JRuby, Scala, Groovy, Closure, ...). 
 
 And it might be possible to implement a synthetic language, that allows, to implement typical Sikuli workflows rather easy, without the need to implement every convenience feture in the API itself.
 
-I have made up a new Git Repo and I will try to make it ready latest shortly after end of November.
+I have made up a new Git Repo (https://github.com/RaiMan/Sikuli-jEdit) and I will try to make it ready latest shortly after end of November.
 
 -----
 
