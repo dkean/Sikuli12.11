@@ -23,7 +23,7 @@ public class LibLoader {
     libPathsSettings = new String[]{
       Util.slashify(System.getenv("SIKULI_HOME"), true) + "libs",
       System.getenv("SIKULI_HOME"),
-			Settings.libPathMac};
+			Settings.libPathMac, Settings.libPathWin};
     libPaths = new ArrayList<String>(Arrays.asList(libPathsSettings));
   }
 
