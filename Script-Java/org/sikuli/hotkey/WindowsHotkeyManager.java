@@ -5,17 +5,12 @@
  */
 package org.sikuli.hotkey;
 
-import org.sikuli.core.HotkeyManager;
-import java.lang.reflect.*;
-import java.awt.Event;
-import java.awt.event.*;
-import java.util.*;
-import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
-
-import org.sikuli.utility.Debug;
-import org.sikuli.core.HotkeyListener;
+import java.util.*;
 import org.sikuli.core.HotkeyEvent;
+import org.sikuli.core.HotkeyListener;
+import org.sikuli.core.HotkeyManager;
+import org.sikuli.utility.Debug;
 
 public class WindowsHotkeyManager extends HotkeyManager {
    class HotkeyData {
@@ -31,6 +26,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
 
    class JIntellitypeHandler implements
                                com.melloware.jintellitype.HotkeyListener{
+     @Override
       public void onHotKey(int id){
          Debug.log(4, "Hotkey pressed");
          HotkeyData data = _idCallbackMap.get(id);
@@ -42,6 +38,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
    private Map<Integer, HotkeyData> _idCallbackMap = new HashMap<Integer,HotkeyData >();
    private int _gHotkeyId = 1;
 
+  @Override
    public boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener){
       JIntellitype itype = JIntellitype.getInstance();
 
@@ -58,6 +55,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
       return true;
    }
 
+  @Override
    public boolean _removeHotkey(int keyCode, int modifiers){
       for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
          HotkeyData data = entry.getValue();
@@ -73,6 +71,7 @@ public class WindowsHotkeyManager extends HotkeyManager {
    }
 
 
+  @Override
    public void cleanUp(){
       JIntellitype itype = JIntellitype.getInstance();
       for( Map.Entry<Integer, HotkeyData> entry : _idCallbackMap.entrySet() ){
