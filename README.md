@@ -1,7 +1,7 @@
 Sikuli12.11
 ===========
 
-revised Sikuli X-1.0rc3 (r930)
+revised Sikuli X-1.0rc3 (r930)  planned to be released as Sikuli Script X 1.0
 
 BE AWARE
 ========
@@ -58,6 +58,9 @@ Part 3: (as support for further developement)
 
 Information on fixes and improvements
 =====================================
+
+I have made up a release information for X-1.0 on launchpad, so you can see the bugs, that will be fixed or are at least in progress: https://launchpad.net/sikuli/sikuli-x/x1.0
+
 IDE
 ---
 
@@ -75,6 +78,7 @@ I have made up a new Git Repo (https://github.com/RaiMan/Sikuli-jEdit) and I wil
 -----
 
 Changes/Fixes in current IDE
+- Windows: no more .exe, only .cmd batch files and better support to avoid start-up problems
 - revised the main window
  - as standard: no command bar, vertically split (left code, right messages)
  - eliminated menus/features: export, extensions (might come back later), unit test
