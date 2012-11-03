@@ -150,12 +150,20 @@ msgstr ""
 msgid "Check Update..."
 msgstr ""
 
+#: menuHelpQuickStart
+msgid "Quick Start Guide"
+msgstr ""
+
 #: menuHelpGuide
 msgid "The Complete Guide to Sikuli Script"
 msgstr ""
 
 #: menuHelpDocumentations
 msgid "Tutorials, Examples, How-To's"
+msgstr ""
+
+#: menuHelpFAQ
+msgid "Frequently Asked Questions"
 msgstr ""
 
 #: menuHelpAsk

@@ -1043,6 +1043,8 @@ public class SikuliIDE extends JFrame {
 						null, new HelpAction(HelpAction.OPEN_GUIDE)));
 		_helpMenu.add(createMenuItem(_I("menuHelpDocumentations"),
 						null, new HelpAction(HelpAction.OPEN_DOC)));
+		_helpMenu.add(createMenuItem(_I("menuHelpFAQ"),
+						null, new HelpAction(HelpAction.OPEN_FAQ)));
 		_helpMenu.add(createMenuItem(_I("menuHelpAsk"),
 						null, new HelpAction(HelpAction.OPEN_ASK)));
 		_helpMenu.add(createMenuItem(_I("menuHelpBugReport"),
@@ -1065,7 +1067,8 @@ public class SikuliIDE extends JFrame {
 		static final String CHECK_UPDATE = "doCheckUpdate";
 		static final String QUICK_START = "openQuickStart";
 		static final String OPEN_DOC = "openDoc";
-		static final String OPEN_GUIDE = "openGuide";
+		static final String OPEN_GUIDE = "openTutor";
+		static final String OPEN_FAQ = "openFAQ";
 		static final String OPEN_ASK = "openAsk";
 		static final String OPEN_BUG_REPORT = "openBugReport";
 		static final String OPEN_TRANSLATION = "openTranslation";
@@ -1084,11 +1087,15 @@ public class SikuliIDE extends JFrame {
 		}
 
 		public void openDoc(ActionEvent ae) {
-			openURL("http://sikuli.org/documentation.shtml");
+			openURL("http://doc.sikuli.org");
 		}
 
-		public void openGuide(ActionEvent ae) {
-			openURL("http://sikuli.org/guide-x");
+		public void openTutor(ActionEvent ae) {
+			openURL("http://www.sikuli.org/videos.html");
+		}
+
+		public void openFAQ(ActionEvent ae) {
+			openURL("https://answers.launchpad.net/sikuli/+faqs");
 		}
 
 		public void openAsk(ActionEvent ae) {
