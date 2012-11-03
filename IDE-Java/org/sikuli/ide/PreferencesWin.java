@@ -40,9 +40,17 @@ import org.sikuli.utility.Debug;
 public class PreferencesWin extends JFrame {
 
   PreferencesUser pref = PreferencesUser.getInstance();
-  int _cap_hkey, _cap_mod;
-  int _old_cap_hkey, _old_cap_mod;
-  Font oldFont;
+  int cap_hkey, cap_mod;
+  int old_cap_hkey, old_cap_mod;
+  Font _oldFont;
+  private double _delay;
+  private int _old_cap_hkey, _old_cap_mod;
+  private int _autoNamingMethod;
+  private boolean _chkAutoUpdate;
+  private boolean _chkExpandTab;
+  private int _spnTabWidth;
+  Locale _locale;
+
   boolean isDirty = false;
 
   //<editor-fold defaultstate="collapsed" desc="JFormDesigner - Variables declaration">
@@ -51,23 +59,23 @@ public class PreferencesWin extends JFrame {
   private JTextField _txtHotkey;
   private JLabel _lblHotkey;
   private JLabel _lblDelay;
-  private JSpinner _spnDelay;
+  private JSpinner spnDelay;
   private JLabel _lblDelaySecs;
   private JLabel _lblNaming;
   private JRadioButton _radTimestamp;
   private JRadioButton _radOCR;
   private JRadioButton _radOff;
   private JPanel _paneTextEditing;
-  private JCheckBox _chkExpandTab;
+  private JCheckBox chkExpandTab;
   private JLabel _lblTabWidth;
   private JComboBox _cmbFontName;
   private JLabel _lblFont;
   private JLabel _titleAppearance;
   private JLabel _titleIndentation;
-  private JSpinner _spnTabWidth;
+  private JSpinner spnTabWidth;
   private JLabel _lblFontSize;
   private JSpinner _spnFontSize;
-  private JCheckBox _chkAutoUpdate;
+  private JCheckBox chkAutoUpdate;
   private JComboBox _cmbLang;
   private JLabel _lblUpdates;
   private JLabel _lblLanguage;
@@ -91,24 +99,24 @@ public class PreferencesWin extends JFrame {
     _txtHotkey = new JTextField();
     _lblHotkey = new JLabel();
     _lblDelay = new JLabel();
-    _spnDelay = new JSpinner();
+    spnDelay = new JSpinner();
     _lblDelaySecs = new JLabel();
     _lblNaming = new JLabel();
     _radTimestamp = new JRadioButton();
     _radOCR = new JRadioButton();
     _radOff = new JRadioButton();
     _paneTextEditing = new JPanel();
-    _chkExpandTab = new JCheckBox();
+    chkExpandTab = new JCheckBox();
     _lblTabWidth = new JLabel();
     _cmbFontName = new JComboBox();
     _lblFont = new JLabel();
     _titleAppearance = compFactory.createTitle("");
     _titleIndentation = compFactory.createTitle("");
-    _spnTabWidth = new JSpinner();
+    spnTabWidth = new JSpinner();
     _lblFontSize = new JLabel();
     _spnFontSize = new JSpinner();
     JPanel paneGeneral = new JPanel();
-    _chkAutoUpdate = new JCheckBox();
+    chkAutoUpdate = new JCheckBox();
     _cmbLang = new JComboBox();
     _lblUpdates = new JLabel();
     _lblLanguage = new JLabel();
@@ -148,10 +156,10 @@ public class PreferencesWin extends JFrame {
         _lblHotkey.setLabelFor(_txtHotkey);
 
         //---- _lblDelay ----
-        _lblDelay.setLabelFor(_spnDelay);
+        _lblDelay.setLabelFor(spnDelay);
 
         //---- _spnDelay ----
-        _spnDelay.setModel(new SpinnerNumberModel(1.0, 0.0, null, 0.1));
+        spnDelay.setModel(new SpinnerNumberModel(1.0, 0.0, null, 0.1));
 
         //---- _radTimestamp ----
         _radTimestamp.setSelected(true);
@@ -172,7 +180,7 @@ public class PreferencesWin extends JFrame {
                 .add(_radOCR)
                 .add(_radOff)
                 .add(paneCaptureLayout.createSequentialGroup()
-                .add(_spnDelay, GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .add(spnDelay, GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(_lblDelaySecs, GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
                 .add(_txtHotkey, GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
@@ -187,7 +195,7 @@ public class PreferencesWin extends JFrame {
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(paneCaptureLayout.createParallelGroup()
                 .add(_lblDelay, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                .add(_spnDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .add(spnDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .add(_lblDelaySecs, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(paneCaptureLayout.createParallelGroup(GroupLayout.LEADING, false)
@@ -210,7 +218,7 @@ public class PreferencesWin extends JFrame {
       {
 
         //---- _lblTabWidth ----
-        _lblTabWidth.setLabelFor(_spnTabWidth);
+        _lblTabWidth.setLabelFor(spnTabWidth);
 
         //---- _cmbFontName ----
         _cmbFontName.addItemListener(new ItemListener() {
@@ -254,9 +262,9 @@ public class PreferencesWin extends JFrame {
                 .add(_paneTextEditingLayout.createParallelGroup()
                 .add(_cmbFontName, 0, 218, Short.MAX_VALUE)
                 .add(_spnFontSize, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-                .add(_spnTabWidth, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
+                .add(spnTabWidth, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.RELATED, 97, Short.MAX_VALUE))
-                .add(_chkExpandTab, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))))
+                .add(chkExpandTab, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))))
                 .addContainerGap()));
         _paneTextEditingLayout.setVerticalGroup(
                 _paneTextEditingLayout.createParallelGroup()
@@ -269,11 +277,11 @@ public class PreferencesWin extends JFrame {
                 .add(_titleAppearance, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .add(_paneTextEditingLayout.createSequentialGroup()
                 .addPreferredGap(LayoutStyle.RELATED)
-                .add(_chkExpandTab)
+                .add(chkExpandTab)
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(_paneTextEditingLayout.createParallelGroup()
                 .add(_lblTabWidth, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-                .add(_spnTabWidth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .add(spnTabWidth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .add(40, 40, 40)
                 .add(_paneTextEditingLayout.createParallelGroup(GroupLayout.BASELINE)
                 .add(_lblFont)
@@ -283,7 +291,7 @@ public class PreferencesWin extends JFrame {
                 .add(_lblFontSize, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
                 .add(_spnFontSize, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(154, Short.MAX_VALUE)));
-        _paneTextEditingLayout.linkSize(new Component[]{_lblTabWidth, _spnTabWidth}, GroupLayout.VERTICAL);
+        _paneTextEditingLayout.linkSize(new Component[]{_lblTabWidth, spnTabWidth}, GroupLayout.VERTICAL);
         _paneTextEditingLayout.linkSize(new Component[]{_cmbFontName, _lblFont}, GroupLayout.VERTICAL);
       }
       _tabPane.addTab(SikuliIDEI18N._I("PreferencesWin.paneTextEditing.tab.title"), _paneTextEditing);
@@ -316,7 +324,7 @@ public class PreferencesWin extends JFrame {
                 .add(318, 318, 318))
                 .add(GroupLayout.TRAILING, paneGeneralLayout.createSequentialGroup()
                 .add(38, 38, 38)
-                .add(_chkAutoUpdate, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)))
+                .add(chkAutoUpdate, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)))
                 .addContainerGap()));
         paneGeneralLayout.setVerticalGroup(
                 paneGeneralLayout.createParallelGroup()
@@ -324,7 +332,7 @@ public class PreferencesWin extends JFrame {
                 .add(26, 26, 26)
                 .add(_lblUpdates)
                 .addPreferredGap(LayoutStyle.RELATED)
-                .add(_chkAutoUpdate)
+                .add(chkAutoUpdate)
                 .add(40, 40, 40)
                 .add(_lblLanguage)
                 .addPreferredGap(LayoutStyle.RELATED)
@@ -393,12 +401,12 @@ public class PreferencesWin extends JFrame {
     _radOCR.setText(SikuliIDEI18N._I("prefRecognizedText"));
     _radOff.setText(SikuliIDEI18N._I("prefManualInput"));
     _tabPane.setTitleAt(0, SikuliIDEI18N._I("prefTabScreenCapturing"));
-    _chkExpandTab.setText(SikuliIDEI18N._I("PreferencesWin.chkExpandTab.text"));
+    chkExpandTab.setText(SikuliIDEI18N._I("PreferencesWin.chkExpandTab.text"));
     _lblTabWidth.setText(SikuliIDEI18N._I("PreferencesWin.lblTabWidth.text"));
     _lblFont.setText(SikuliIDEI18N._I("PreferencesWin.lblFont.text"));
     _lblFontSize.setText(SikuliIDEI18N._I("PreferencesWin.lblFontSize.text"));
     _tabPane.setTitleAt(1, SikuliIDEI18N._I("PreferencesWin.paneTextEditing.tab.title"));
-    _chkAutoUpdate.setText(SikuliIDEI18N._I("prefGeneralAutoCheck"));
+    chkAutoUpdate.setText(SikuliIDEI18N._I("prefGeneralAutoCheck"));
     _lblUpdates.setText(SikuliIDEI18N._I("PreferencesWin.lblUpdates.text"));
     _lblLanguage.setText(SikuliIDEI18N._I("PreferencesWin.lblLanguage.text"));
     _tabPane.setTitleAt(2, SikuliIDEI18N._I("prefTabGeneralSettings"));
@@ -410,12 +418,13 @@ public class PreferencesWin extends JFrame {
 
   private void loadPrefs() {
     SikuliIDE ide = SikuliIDE.getInstance();
-    double delay = pref.getCaptureDelay();
-    _spnDelay.setValue(delay);
-    _old_cap_hkey = _cap_hkey = pref.getCaptureHotkey();
-    _old_cap_mod = _cap_mod = pref.getCaptureHotkeyModifiers();
-    setTxtHotkey(_cap_hkey, _cap_mod);
-    switch (pref.getAutoNamingMethod()) {
+    _delay = pref.getCaptureDelay();
+    spnDelay.setValue(_delay);
+    _old_cap_hkey = old_cap_hkey = cap_hkey = pref.getCaptureHotkey();
+    _old_cap_mod = old_cap_mod = cap_mod = pref.getCaptureHotkeyModifiers();
+    setTxtHotkey(cap_hkey, cap_mod);
+    _autoNamingMethod = pref.getAutoNamingMethod();
+    switch (_autoNamingMethod) {
       case PreferencesUser.AUTO_NAMING_TIMESTAMP:
         _radTimestamp.setSelected(true);
         break;
@@ -428,33 +437,37 @@ public class PreferencesWin extends JFrame {
       default:
         Debug.error("Error in reading auto naming method preferences");
     }
-    _chkAutoUpdate.setSelected(pref.getCheckUpdate());
+    _chkAutoUpdate = pref.getCheckUpdate();
+    chkAutoUpdate.setSelected(_chkAutoUpdate);
 
-    _chkExpandTab.setSelected(pref.getExpandTab());
-    _spnTabWidth.setValue(pref.getTabWidth());
+    _chkExpandTab = pref.getExpandTab();
+    chkExpandTab.setSelected(_chkExpandTab);
+
+    _spnTabWidth = pref.getTabWidth();
+    spnTabWidth.setValue(_spnTabWidth);
     initFontPrefs();
     initLangPrefs();
-    ide = SikuliIDE.getInstance();
-    oldFont = ide.getCurrentCodePane().getFont();
+    _oldFont = ide.getCurrentCodePane().getFont();
+    _locale = pref.getLocale();
   }
 
   private void savePrefs() {
     SikuliIDE ide = SikuliIDE.getInstance();
-    pref.setCaptureDelay((Double) _spnDelay.getValue());
-    pref.setCaptureHotkey(_cap_hkey);
-    pref.setCaptureHotkeyModifiers(_cap_mod);
+    pref.setCaptureDelay((Double) spnDelay.getValue());
+    pref.setCaptureHotkey(cap_hkey);
+    pref.setCaptureHotkeyModifiers(cap_mod);
     pref.setAutoNamingMethod(
             _radTimestamp.isSelected() ? PreferencesUser.AUTO_NAMING_TIMESTAMP
             : _radOCR.isSelected() ? PreferencesUser.AUTO_NAMING_OCR
             : PreferencesUser.AUTO_NAMING_OFF);
-    if (_old_cap_hkey != _cap_hkey || _old_cap_mod != _cap_mod) {
-      ide.removeCaptureHotkey(_old_cap_hkey, _old_cap_mod);
-      ide.installCaptureHotkey(_cap_hkey, _cap_mod);
+    if (old_cap_hkey != cap_hkey || old_cap_mod != cap_mod) {
+      ide.removeCaptureHotkey(old_cap_hkey, old_cap_mod);
+      ide.installCaptureHotkey(cap_hkey, cap_mod);
     }
-    pref.setCheckUpdate(_chkAutoUpdate.isSelected());
+    pref.setCheckUpdate(chkAutoUpdate.isSelected());
 
-    pref.setExpandTab(_chkExpandTab.isSelected());
-    pref.setTabWidth((Integer) _spnTabWidth.getValue());
+    pref.setExpandTab(chkExpandTab.isSelected());
+    pref.setTabWidth((Integer) spnTabWidth.getValue());
 
     pref.setFontName((String) _cmbFontName.getSelectedItem());
     pref.setFontSize((Integer) _spnFontSize.getValue());
@@ -462,6 +475,30 @@ public class PreferencesWin extends JFrame {
     Locale locale = (Locale) _cmbLang.getSelectedItem();
     pref.setLocale(locale);
     SikuliIDEI18N.setLocale(locale);
+    isDirty = true;
+  }
+
+  private void resetPrefs() {
+    SikuliIDE ide = SikuliIDE.getInstance();
+    pref.setCaptureDelay(_delay);
+    pref.setCaptureHotkey(_old_cap_hkey);
+    pref.setCaptureHotkeyModifiers(_old_cap_mod);
+    if (old_cap_hkey != _old_cap_hkey || old_cap_mod != _old_cap_mod) {
+      ide.removeCaptureHotkey(old_cap_hkey, old_cap_mod);
+      ide.installCaptureHotkey(_old_cap_hkey, old_cap_mod);
+    }
+    pref.setAutoNamingMethod(_autoNamingMethod);
+    pref.setCheckUpdate(_chkAutoUpdate);
+
+    pref.setExpandTab(_chkExpandTab);
+    pref.setTabWidth(_spnTabWidth);
+
+    pref.setFontName(_oldFont.getFontName());
+    pref.setFontSize(_oldFont.getSize());
+    SikuliIDE.getInstance().getCurrentCodePane().setFont(_oldFont);
+
+    pref.setLocale(_locale);
+    SikuliIDEI18N.setLocale(_locale);
   }
 
   private void initFontPrefs() {
@@ -527,15 +564,14 @@ public class PreferencesWin extends JFrame {
 
   private void btnCancelActionPerformed(ActionEvent e) {
     if (isDirty) {
-      //FIXED 1033667 reset to original font if cancelled
-      SikuliIDE.getInstance().getCurrentCodePane().setFont(oldFont);
+      resetPrefs();
     }
     this.dispose();
   }
 
   private void setTxtHotkey(int code, int mod) {
-    _cap_hkey = code;
-    _cap_mod = mod;
+    cap_hkey = code;
+    cap_mod = mod;
     _txtHotkey.setText(Utils.convertKeyToText(code, mod));
   }
 
