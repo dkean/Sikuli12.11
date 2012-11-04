@@ -8,6 +8,8 @@ package org.sikuli.script;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import javax.swing.*;
 import org.python.util.PythonInterpreter;
@@ -98,14 +100,18 @@ public class ScriptRunner {
 		String prefix = pyFile.getName().substring(0, pyFile.getName().lastIndexOf('.'));
 		pyFile = new File(pyFile.getPath(), prefix + ".py");
 		if (pyFile.exists()) {
-			return runPython(bundlePath, pyFile);
+      try {
+        return runPython(bundlePath, pyFile);
+      } catch (Exception ex) {
+        return -1;
+      }
 		} else {
 			Debug.error("No runnable script found: " + pyFile.getPath());
 			return -2;
 		}
 	}
 
-	public int runPython(String bundlePath, File pyFile) {
+	public int runPython(String bundlePath, File pyFile) throws Exception {
 		if (CommandArgs.isIDE(_runType)) {
 			if (sysargv.isEmpty()) {
 				sysargv.add(bundlePath);
@@ -151,6 +157,9 @@ public class ScriptRunner {
 		try {
 			py.execfile(pyFile.getAbsolutePath());
 		} catch (Exception e) {
+      if (CommandArgs.isIDE(_runType)) {
+        throw e;
+      }
 			java.util.regex.Pattern p =
 							java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
 			Matcher matcher = p.matcher(e.toString());
