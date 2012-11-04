@@ -339,9 +339,9 @@ public class EditorDocument extends DefaultStyledDocument{
    }
 
 
-   public void insertString(int offs,
-         String str,
-         AttributeSet a) throws BadLocationException{
+  @Override
+   public void insertString(int offs, String str, AttributeSet a)
+          throws BadLocationException{
       super.insertString(offs, str, normal);
 
       System.out.println("insertString");

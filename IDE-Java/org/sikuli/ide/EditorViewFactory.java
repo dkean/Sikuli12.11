@@ -5,21 +5,14 @@
  */
 package org.sikuli.ide;
 
-import org.sikuli.ide.util.Utils;
 import java.awt.*;
 import java.util.*;
-import javax.swing.text.*;
-import javax.swing.*;
-
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.event.*;
-import javax.swing.SizeRequirements;
+import javax.swing.text.*;
 import org.sikuli.core.Settings;
-
 import org.sikuli.utility.Debug;
 
 
@@ -28,6 +21,7 @@ public class EditorViewFactory implements ViewFactory {
     /**
      * @see javax.swing.text.ViewFactory#create(javax.swing.text.Element)
      */
+  @Override
    public View create(Element elem) {
       String kind = elem.getName();
       Debug.log(8, "create: " + kind );
@@ -67,17 +61,18 @@ public class EditorViewFactory implements ViewFactory {
    }
 
 }
+
 class MyParagraphView extends ParagraphView
 {
-
-
+  @Override
     protected View createRow(){
        Element elem = getElement();
        Debug.log(2, "createRow: " + elem);
        View row = new LineBoxView(elem, View.X_AXIS);
        return row;
     }
-    public MyParagraphView(Element elem){
+
+  public MyParagraphView(Element elem){
         super(elem);
     }
 }
