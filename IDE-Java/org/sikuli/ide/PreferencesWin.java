@@ -610,6 +610,10 @@ public class PreferencesWin extends JFrame {
     SikuliIDE ide = SikuliIDE.getInstance();
     Font font = new Font((String) _cmbFontName.getSelectedItem(), Font.PLAIN,
             (Integer) _spnFontSize.getValue());
+    try {
+      codePane.jumpTo(codePane.getLineAtCaret());
+    } catch (Exception ex) {
+    }
     codePane.setFont(font);
     isDirty = true;
   }
