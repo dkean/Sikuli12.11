@@ -22,9 +22,7 @@ public class NativeLayerForMac implements NativeLayer, PreferencesHandler, OpenF
 
 	@Override
 	public void handlePreferences(AppEvent.PreferencesEvent evt) {
-		Debug.log(2, "opening preferences setting");
-		SikuliIDE ide = SikuliIDE.getInstance();
-		ide.showPreferencesWindow();
+			SikuliIDE.getInstance().showPreferencesWindow();
 	}
 
 	@Override
