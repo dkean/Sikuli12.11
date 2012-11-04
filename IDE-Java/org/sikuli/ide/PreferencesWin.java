@@ -86,7 +86,7 @@ public class PreferencesWin extends JFrame {
   //</editor-fold>
 
   public PreferencesWin() {
-    super(SikuliIDE._I("winPreferences"));
+    setTitle(SikuliIDE._I("winPreferences"));
     initComponents();
     loadPrefs();
   }
@@ -502,14 +502,14 @@ public class PreferencesWin extends JFrame {
   }
 
   private void initFontPrefs() {
-    PreferencesUser pref = PreferencesUser.getInstance();
+    PreferencesUser upref = PreferencesUser.getInstance();
     String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getAvailableFontFamilyNames();
     for (String font : fontList) {
       _cmbFontName.addItem(font);
     }
-    _cmbFontName.setSelectedItem(pref.getFontName());
-    _spnFontSize.setValue(pref.getFontSize());
+    _cmbFontName.setSelectedItem(upref.getFontName());
+    _spnFontSize.setValue(upref.getFontSize());
   }
 
   private void initLangPrefs() {
@@ -518,7 +518,7 @@ public class PreferencesWin extends JFrame {
       "da", "ko", "uk", "de", "nl", "zh_CN", "en_US", "pl", "zh_TW"
     };
     Locale[] sortedLocales = new Locale[SUPPORT_LOCALES.length];
-    PreferencesUser pref = PreferencesUser.getInstance();
+    PreferencesUser upref = PreferencesUser.getInstance();
     int count = 0;
     for (String locale_code : SUPPORT_LOCALES) {
       Locale l;
@@ -540,7 +540,7 @@ public class PreferencesWin extends JFrame {
       _cmbLang.addItem(l);
     }
     _cmbLang.setRenderer(new LocaleListCellRenderer());
-    Locale curLocale = pref.getLocale();
+    Locale curLocale = upref.getLocale();
     _cmbLang.setSelectedItem(curLocale);
     if (!_cmbLang.getSelectedItem().equals(curLocale)) {
       if (curLocale.getVariant().length() > 0) {
