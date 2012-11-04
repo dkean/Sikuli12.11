@@ -512,8 +512,8 @@ public class PreferencesWin extends JFrame {
     } else {
       pref.setFontName(_oldFont.getFontName());
       pref.setFontSize(_oldFont.getSize());
+      codePane.setFont(_oldFont);
     }
-    SikuliIDE.getInstance().getCurrentCodePane().setFont(_oldFont);
 
     pref.setLocale(_locale);
     SikuliIDEI18N.setLocale(_locale);
@@ -610,7 +610,7 @@ public class PreferencesWin extends JFrame {
     SikuliIDE ide = SikuliIDE.getInstance();
     Font font = new Font((String) _cmbFontName.getSelectedItem(), Font.PLAIN,
             (Integer) _spnFontSize.getValue());
-    ide.getCurrentCodePane().setFont(font);
+    codePane.setFont(font);
     isDirty = true;
   }
 
