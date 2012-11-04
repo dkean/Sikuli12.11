@@ -54,6 +54,7 @@ public class SikuliIDE extends JFrame {
 	private static NativeLayer _native;
 	private Dimension _windowSize = PreferencesUser.getInstance().getIdeSize();
 	private CloseableTabbedPane _mainPane;
+  private EditorLineNumberView lineNumberColumn;
 	private JSplitPane _mainSplitPane;
 	private JTabbedPane _auxPane;
 	private EditorConsolePane _console;
@@ -578,7 +579,8 @@ public class SikuliIDE extends JFrame {
 		public void doNew(ActionEvent ae) {
 			EditorPane codePane = new EditorPane();
 			JScrollPane scrPane = new JScrollPane(codePane);
-			scrPane.setRowHeaderView(new EditorLineNumberView(codePane));
+      lineNumberColumn = new EditorLineNumberView(codePane);
+			scrPane.setRowHeaderView(lineNumberColumn);
 			_mainPane.addTab(_I("tabUntitled"), scrPane);
 			_mainPane.setSelectedIndex(_mainPane.getTabCount() - 1);
 			codePane.addCaretListener(new CaretListener() {
@@ -659,6 +661,7 @@ public class SikuliIDE extends JFrame {
 
 	public void showPreferencesWindow() {
 		PreferencesWin pwin = new PreferencesWin();
+    pwin.setAlwaysOnTop(true);
 		pwin.setVisible(true);
 	}
 
@@ -1574,7 +1577,7 @@ public class SikuliIDE extends JFrame {
 			EditorLineNumberView lnview = (EditorLineNumberView) (scrPane.getRowHeader().getView());
 			lnview.addErrorMark(line);
 			EditorPane codePane = SikuliIDE.this.getCurrentCodePane();
-			//codePane.setErrorHighlight(line);
+//			codePane.setErrorHighlight(line);
 		}
 
 		public void resetErrorMark() {

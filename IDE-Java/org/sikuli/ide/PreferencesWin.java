@@ -40,9 +40,12 @@ import org.sikuli.utility.Debug;
 public class PreferencesWin extends JFrame {
 
   PreferencesUser pref = PreferencesUser.getInstance();
+  private boolean isInitialized = false;
   int cap_hkey, cap_mod;
   int old_cap_hkey, old_cap_mod;
   Font _oldFont;
+  String _oldFontName;
+  int _oldFontSize;
   private double _delay;
   private int _old_cap_hkey, _old_cap_mod;
   private int _autoNamingMethod;
@@ -50,6 +53,7 @@ public class PreferencesWin extends JFrame {
   private boolean _chkExpandTab;
   private int _spnTabWidth;
   Locale _locale;
+  EditorPane codePane;
 
   boolean isDirty = false;
 
@@ -89,6 +93,7 @@ public class PreferencesWin extends JFrame {
     setTitle(SikuliIDE._I("winPreferences"));
     initComponents();
     loadPrefs();
+    isInitialized = true;
   }
 
   private void initComponents() {
@@ -222,6 +227,7 @@ public class PreferencesWin extends JFrame {
 
         //---- _cmbFontName ----
         _cmbFontName.addItemListener(new ItemListener() {
+          @Override
           public void itemStateChanged(ItemEvent e) {
             fontNameItemStateChanged(e);
           }
@@ -231,10 +237,11 @@ public class PreferencesWin extends JFrame {
         _lblFont.setLabelFor(_cmbFontName);
 
         //---- _lblFontSize ----
-        _lblFontSize.setLabelFor(_cmbFontName);
+        _lblFontSize.setLabelFor(_spnFontSize);
 
         //---- _spnFontSize ----
         _spnFontSize.addChangeListener(new ChangeListener() {
+          @Override
           public void stateChanged(ChangeEvent e) {
             fontSizeStateChanged(e);
           }
@@ -447,7 +454,13 @@ public class PreferencesWin extends JFrame {
     spnTabWidth.setValue(_spnTabWidth);
     initFontPrefs();
     initLangPrefs();
-    _oldFont = ide.getCurrentCodePane().getFont();
+    codePane = ide.getCurrentCodePane();
+    if (codePane != null) {
+      _oldFont = codePane.getFont();
+    } else {
+      _oldFontName = pref.getFontName();
+      _oldFontSize = pref.getFontSize();
+    }
     _locale = pref.getLocale();
   }
 
@@ -493,8 +506,13 @@ public class PreferencesWin extends JFrame {
     pref.setExpandTab(_chkExpandTab);
     pref.setTabWidth(_spnTabWidth);
 
-    pref.setFontName(_oldFont.getFontName());
-    pref.setFontSize(_oldFont.getSize());
+    if (codePane == null) {
+      pref.setFontName(_oldFontName);
+      pref.setFontSize(_oldFontSize);
+    } else {
+      pref.setFontName(_oldFont.getFontName());
+      pref.setFontSize(_oldFont.getSize());
+    }
     SikuliIDE.getInstance().getCurrentCodePane().setFont(_oldFont);
 
     pref.setLocale(_locale);
@@ -502,14 +520,13 @@ public class PreferencesWin extends JFrame {
   }
 
   private void initFontPrefs() {
-    PreferencesUser upref = PreferencesUser.getInstance();
     String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getAvailableFontFamilyNames();
     for (String font : fontList) {
       _cmbFontName.addItem(font);
     }
-    _cmbFontName.setSelectedItem(upref.getFontName());
-    _spnFontSize.setValue(upref.getFontSize());
+    _cmbFontName.setSelectedItem(pref.getFontName());
+    _spnFontSize.setValue(pref.getFontSize());
   }
 
   private void initLangPrefs() {
@@ -518,7 +535,6 @@ public class PreferencesWin extends JFrame {
       "da", "ko", "uk", "de", "nl", "zh_CN", "en_US", "pl", "zh_TW"
     };
     Locale[] sortedLocales = new Locale[SUPPORT_LOCALES.length];
-    PreferencesUser upref = PreferencesUser.getInstance();
     int count = 0;
     for (String locale_code : SUPPORT_LOCALES) {
       Locale l;
@@ -540,7 +556,7 @@ public class PreferencesWin extends JFrame {
       _cmbLang.addItem(l);
     }
     _cmbLang.setRenderer(new LocaleListCellRenderer());
-    Locale curLocale = upref.getLocale();
+    Locale curLocale = pref.getLocale();
     _cmbLang.setSelectedItem(curLocale);
     if (!_cmbLang.getSelectedItem().equals(curLocale)) {
       if (curLocale.getVariant().length() > 0) {
@@ -588,6 +604,9 @@ public class PreferencesWin extends JFrame {
   }
 
   private void updateFontPreview() {
+    if (! isInitialized || codePane == null) {
+      return;
+    }
     SikuliIDE ide = SikuliIDE.getInstance();
     Font font = new Font((String) _cmbFontName.getSelectedItem(), Font.PLAIN,
             (Integer) _spnFontSize.getValue());
