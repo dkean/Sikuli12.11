@@ -133,7 +133,7 @@ public class EditorLineNumberView extends JComponent {
     int first = sizes.getIndex(base);
     int last = sizes.getIndex(base + clip.height);
 
-    String lnum = "";
+    String lnum;
 
     for (int i = first; i < last; i++) {
       lnum = String.valueOf(i + 1);
@@ -147,7 +147,6 @@ public class EditorLineNumberView extends JComponent {
       } else {
         g.setColor(getForeground());
       }
-
       g.drawString(lnum, x, y);
     }
   }
@@ -234,6 +233,7 @@ public class EditorLineNumberView extends JComponent {
     /**
      * The text component was resized. 'Nuff said.
      */
+    @Override
     public void componentResized(ComponentEvent evt) {
       viewChanged(0, true);
     }
@@ -243,6 +243,7 @@ public class EditorLineNumberView extends JComponent {
      * font, border, and tab size affect the layout of the whole document, so we
      * invalidate all the line heights here.
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
       Object oldValue = evt.getOldValue();
       Object newValue = evt.getNewValue();
@@ -263,6 +264,7 @@ public class EditorLineNumberView extends JComponent {
     /**
      * Text was inserted into the document.
      */
+    @Override
     public void insertUpdate(DocumentEvent evt) {
       update(evt);
     }
@@ -270,6 +272,7 @@ public class EditorLineNumberView extends JComponent {
     /**
      * Text was removed from the document.
      */
+    @Override
     public void removeUpdate(DocumentEvent evt) {
       update(evt);
     }
@@ -280,6 +283,7 @@ public class EditorLineNumberView extends JComponent {
      * response to inserts and removals. Since we're already listening for
      * those, this method should be redundant, but YMMV.
      */
+    @Override
     public void changedUpdate(DocumentEvent evt) {
       //      update(evt);
     }
