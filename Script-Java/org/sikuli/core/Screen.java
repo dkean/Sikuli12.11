@@ -46,7 +46,11 @@ public class Screen extends Region implements Observer, IScreen {
 
   //<editor-fold defaultstate="collapsed" desc="Initialization">
   private static void initScreens() {
-    if (genv != null) {
+		initScreens(false);
+	}
+
+  private static void initScreens(boolean reset) {
+    if (genv != null && ! reset) {
       return;
     }
     genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
