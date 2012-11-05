@@ -53,12 +53,32 @@ public class Location extends Point {
   }
 
 	/**
-	 *
+	 * to allow AWT features
 	 * @return
 	 */
 	public Point getPoint() {
 		return new Point(this);
 	}
+
+  /**
+   * the offset of given point as (x,y) relative to this point
+   * @param loc1
+   * @param loc2
+   * @return relative offset
+   */
+  public Location getOffset(Location loc) {
+    return(new Location(loc.x - x, loc.y - y));
+  }
+
+  /**
+   * the offset of second point as (x,y) relative to first point
+   * @param loc1
+   * @param loc2
+   * @return relative offset
+   */
+  public static Location getOffset(Location loc1, Location loc2) {
+    return(new Location(loc2.x - loc1.x, loc2.y - loc1.y));
+  }
 
   /**
    * create a region with this point as center and the given size

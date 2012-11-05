@@ -81,9 +81,18 @@ public class Match extends Region implements Comparable {
     return getCenter();
   }
 
-  void setTargetOffset(Location offset) {
+  public void setTargetOffset(Location offset) {
     target = new Location(getCenter());
     target.translate(offset.x, offset.y);
+  }
+
+  /**
+   * convenience - returns same as for the used Pattern
+   * 
+   * @return the relative offset
+   */
+  public Location getTargetOffset() {
+    return(Location.getOffset(getTarget(), getCenter()));
   }
 
   protected void setImage(String imageFileName) {
