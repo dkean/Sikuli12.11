@@ -72,6 +72,12 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 		} else {
 			pwin.requestFocus();
 		}
+    Rectangle sb = pwin.getGraphicsConfiguration().getDevice().getDefaultConfiguration().getBounds();
+    sb.height -= 100;
+    Rectangle wb = pwin.getBounds();
+    if (! sb.contains(wb)) {
+      Debug.log(2, "Pattern window off");
+    }
 	}
 
 	public PatternWindow getWindow() {
