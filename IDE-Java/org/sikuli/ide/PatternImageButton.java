@@ -76,7 +76,25 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
     sb.height -= 100;
     Rectangle wb = pwin.getBounds();
     if (! sb.contains(wb)) {
-      Debug.log(2, "Pattern window off");
+			if (wb.height > sb.height - 100) {
+				wb.setSize(wb.width, sb.height - 200);
+			}
+			if (!sb.contains(wb.getLocation())) {
+				wb.setLocation(sb.x+100, wb.y);
+			}
+			Point tr = wb.getLocation();
+			tr.translate(wb.width, 0);
+			if (!sb.contains(tr)) {
+				int off = tr.x - sb.x - sb.width;
+				wb.setLocation(wb.x-off, wb.y);
+			}
+			Point bl = wb.getLocation();
+			bl.translate(0, wb.height);
+			if (!sb.contains(bl)) {
+				int off = bl.y - sb.y - sb.height;
+				wb.setLocation(wb.x, wb.y-off);
+			}
+			pwin.setBounds(wb);
     }
 	}
 
