@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -571,6 +572,13 @@ public class PreferencesWin extends JFrame {
 
   private void btnOkActionPerformed(ActionEvent e) {
     savePrefs();
+    String warn = "Until some bugs have been fixed,\n" +
+            "you should restart the IDE now!\n" +
+            "Otherwise you might notice strange behavior ;-)\n" +
+            "--- but only if you have made any changes!\n\n" +
+            "Use CANCEL next time, if nothing was changed!";
+    JOptionPane.showMessageDialog(this, warn,
+            "--- Preferences have been saved ---", JOptionPane.WARNING_MESSAGE);
     this.dispose();
   }
 
