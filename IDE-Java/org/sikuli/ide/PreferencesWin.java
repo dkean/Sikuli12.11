@@ -87,6 +87,7 @@ public class PreferencesWin extends JFrame {
   private JButton _btnOk;
   private JButton _btnApply;
   private JButton _btnCancel;
+	private JButton _btnMore;
   // JFormDesigner - End of variables declaration  //GEN-END:variables
   //</editor-fold>
 
@@ -131,6 +132,7 @@ public class PreferencesWin extends JFrame {
     _btnOk = new JButton();
     _btnApply = new JButton();
     _btnCancel = new JButton();
+		_btnMore = new JButton();
 
     //======== this ========
     Container contentPane = getContentPane();
@@ -358,6 +360,14 @@ public class PreferencesWin extends JFrame {
       paneOkCancel.setLayout(new BoxLayout(paneOkCancel, BoxLayout.X_AXIS));
       paneOkCancel.add(hSpacer1);
 
+      //---- _btnMore ----
+      _btnMore.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          btnMoreActionPerformed(e);
+        }
+      });
+      paneOkCancel.add(_btnMore);
+
       //---- _btnOk ----
       _btnOk.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -366,14 +376,6 @@ public class PreferencesWin extends JFrame {
       });
       paneOkCancel.add(_btnOk);
 
-      //---- _btnCancel ----
-      _btnCancel.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          btnCancelActionPerformed(e);
-        }
-      });
-      paneOkCancel.add(_btnCancel);
-
       //---- _btnApply ----
       _btnApply.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -381,6 +383,14 @@ public class PreferencesWin extends JFrame {
         }
       });
       paneOkCancel.add(_btnApply);
+
+      //---- _btnCancel ----
+      _btnCancel.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          btnCancelActionPerformed(e);
+        }
+      });
+      paneOkCancel.add(_btnCancel);
 
     }
     contentPane.add(paneOkCancel, BorderLayout.SOUTH);
@@ -418,6 +428,7 @@ public class PreferencesWin extends JFrame {
     _lblUpdates.setText(SikuliIDEI18N._I("PreferencesWin.lblUpdates.text"));
     _lblLanguage.setText(SikuliIDEI18N._I("PreferencesWin.lblLanguage.text"));
     _tabPane.setTitleAt(2, SikuliIDEI18N._I("prefTabGeneralSettings"));
+    _btnMore.setText(SikuliIDEI18N._I("more"));
     _btnOk.setText(SikuliIDEI18N._I("ok"));
     _btnApply.setText(SikuliIDEI18N._I("apply"));
     _btnCancel.setText(SikuliIDEI18N._I("cancel"));
@@ -568,6 +579,18 @@ public class PreferencesWin extends JFrame {
         _cmbLang.setSelectedItem(new Locale(curLocale.getLanguage()));
       }
     }
+  }
+
+  private void btnMoreActionPerformed(ActionEvent e) {
+		JFrame mpwin = new JFrame("Preferences: more Options ...");
+    Container mpwinCP = mpwin.getContentPane();
+    mpwinCP.setLayout(new BorderLayout());
+		mpwinCP.add(new PreferencesWindowMore(), BorderLayout.CENTER);
+		mpwin.pack();
+		mpwin.setAlwaysOnTop(true);
+		mpwin.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		mpwin.setLocation(getLocation());
+		mpwin.setVisible(true);
   }
 
   private void btnOkActionPerformed(ActionEvent e) {
