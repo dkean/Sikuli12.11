@@ -546,7 +546,7 @@ public class Screen extends Region implements Observer, IScreen {
 
 	public static void showMonitors() {
     initScreens();
-		for (int i=0; i <= gdevs; i++)
+//		for (int i=0; i <= gdevs; i++)
 	}
 
   @Override
