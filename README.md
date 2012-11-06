@@ -80,15 +80,19 @@ I have made up a new Git Repo (https://github.com/RaiMan/Sikuli-jEdit) and I wil
 Changes/Fixes in current IDE
 - Windows: no more .exe, only .cmd batch files and better support to avoid start-up problems
 - revised the main window
- - as standard: no command bar, vertically split (left code, right messages)
+ - as standard: no command bar, vertically split (left code, right messages) (optional horizontally)
  - eliminated menus/features: export, extensions (might come back later), unit test
 - revised the Preview window (only one at a time, apply button added to do more than one change, ...)
+ - added additional window for more options temporarilly (prefs have to be revised generally)
+ - new options: no HTML creation, do not delete unused images, image path for IDE to store images
+ - possibility to put IDE options in a script at the beginning as special comment
+ - added: warning to restart IDE after having changed prefs
 - revised the dirty-handling (script is edited with changes):
  - aware of changes in Preview 
  - scripts with changes are marked in its tab: *myScript
  - new option: autosave before run and warning
-- new options: no HTML creation, do not delete unused images
-- possibility to put IDE options in a script at the beginning as special comment
+- implement alternative for command list in tools menu (as standard + option)
+- add a help topic QuickStart for newcomers
 
 Script API
 ----------
@@ -97,8 +101,11 @@ Changes/Fixes to the Scripting API
 - totally revised the ImagePath feature and the usage of ImageLocator (including the usage with Jython import)
 - revising the command line usage to make it equal for ide.jar and script.jar running Sikuli scripts
 - each physical monitor has only one Screen object, only one Robot for all and better support for multi monitor
+- feature to show monitor configuration
 - Region: added methods to make it functinally compatible with AWT Rectangle and added more methods to create
 new Regions easily based on existing Regions and Locations
 - click() and similar, click the lastMatch()
+- revise the observe API (Jython callbacks in Java possible with Jython 2.5.3)
+- short version of FindFailed message in Jython
 
 
