@@ -47,10 +47,13 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
     jSeparator2 = new javax.swing.JSeparator();
     jSeparator3 = new javax.swing.JSeparator();
     jSeparator4 = new javax.swing.JSeparator();
-    jPanel2 = new javax.swing.JPanel();
-    prefMoreBtnOk = new javax.swing.JButton();
     prefMoreLblTitle = new javax.swing.JLabel();
     jSeparator5 = new javax.swing.JSeparator();
+    prefMoreBtnOk = new javax.swing.JButton();
+    prefMoreLblLayout = new javax.swing.JLabel();
+    prefMoreMessage = new javax.swing.JCheckBox();
+    prefMoreCommand = new javax.swing.JCheckBox();
+    jSeparator6 = new javax.swing.JSeparator();
 
     jTextField1.setText("jTextField1");
 
@@ -121,6 +124,8 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
       }
     });
 
+    prefMoreLblTitle.setText("Preferences: more options ...");
+
     prefMoreBtnOk.setText("Save");
     prefMoreBtnOk.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,32 +133,21 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
       }
     });
 
-    org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-    jPanel2.setLayout(jPanel2Layout);
-    jPanel2Layout.setHorizontalGroup(
-      jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
-        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        .add(prefMoreBtnOk)
-        .addContainerGap())
-    );
-    jPanel2Layout.setVerticalGroup(
-      jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
-        .add(0, 6, Short.MAX_VALUE)
-        .add(prefMoreBtnOk))
-    );
+    prefMoreLblLayout.setText("IDE Layout");
 
-    prefMoreLblTitle.setText("Preferences: more options ...");
+    prefMoreMessage.setText("message area at bottom");
+    prefMoreMessage.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        prefMoreMessageActionPerformed(evt);
+      }
+    });
+
+    prefMoreCommand.setText("CommandBar (old style)");
 
     org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(layout.createSequentialGroup()
-        .add(192, 192, 192)
-        .add(prefMoreLblTitle)
-        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
       .add(layout.createSequentialGroup()
         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
           .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
@@ -178,7 +172,7 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                       .add(prefMoreClean)
                       .add(prefMoreHighlight)))))
-              .add(prefMoreImagesPath, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)))
+              .add(prefMoreImagesPath)))
           .add(layout.createSequentialGroup()
             .addContainerGap()
             .add(jSeparator2))
@@ -188,10 +182,24 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
             .add(jSeparator4))
           .add(layout.createSequentialGroup()
             .addContainerGap()
-            .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(jSeparator5))
+          .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(prefMoreBtnOk))
+          .add(layout.createSequentialGroup()
+            .add(192, 192, 192)
+            .add(prefMoreLblTitle)
+            .add(0, 0, Short.MAX_VALUE))
+          .add(layout.createSequentialGroup()
+            .add(32, 32, 32)
+            .add(prefMoreLblLayout)
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(prefMoreMessage)
+            .add(47, 47, 47)
+            .add(prefMoreCommand))
           .add(layout.createSequentialGroup()
             .addContainerGap()
-            .add(jSeparator5)))
+            .add(jSeparator6)))
         .addContainerGap())
     );
     layout.setVerticalGroup(
@@ -227,7 +235,15 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
         .add(jSeparator4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+          .add(prefMoreLblLayout)
+          .add(prefMoreMessage)
+          .add(prefMoreCommand))
+        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+        .add(jSeparator6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+        .add(123, 123, 123)
+        .add(prefMoreBtnOk)
+        .addContainerGap())
     );
   }// </editor-fold>//GEN-END:initComponents
 
@@ -259,6 +275,10 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
     // TODO add your handling code here:
   }//GEN-LAST:event_prefMoreImagesStateChanged
 
+  private void prefMoreMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prefMoreMessageActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event_prefMoreMessageActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.ButtonGroup buttonGroup1;
   private javax.swing.ButtonGroup buttonGroup2;
@@ -266,24 +286,27 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
   private javax.swing.JButton jButton2;
   private javax.swing.JCheckBox jCheckBox4;
   private javax.swing.JPanel jPanel1;
-  private javax.swing.JPanel jPanel2;
   private javax.swing.JSeparator jSeparator1;
   private javax.swing.JSeparator jSeparator2;
   private javax.swing.JSeparator jSeparator3;
   private javax.swing.JSeparator jSeparator4;
   private javax.swing.JSeparator jSeparator5;
+  private javax.swing.JSeparator jSeparator6;
   private javax.swing.JTextField jTextField1;
   private javax.swing.JToggleButton jToggleButton1;
   private javax.swing.JButton prefMoreBtnOk;
   private javax.swing.JCheckBox prefMoreClean;
+  private javax.swing.JCheckBox prefMoreCommand;
   private javax.swing.JCheckBox prefMoreHTML;
   private javax.swing.JCheckBox prefMoreHighlight;
   private javax.swing.JCheckBox prefMoreImages;
   private javax.swing.JTextField prefMoreImagesPath;
   private javax.swing.JLabel prefMoreLblImages;
+  private javax.swing.JLabel prefMoreLblLayout;
   private javax.swing.JLabel prefMoreLblRun;
   private javax.swing.JLabel prefMoreLblSave;
   private javax.swing.JLabel prefMoreLblTitle;
+  private javax.swing.JCheckBox prefMoreMessage;
   private javax.swing.JCheckBox prefMoreRunSave;
   // End of variables declaration//GEN-END:variables
 }

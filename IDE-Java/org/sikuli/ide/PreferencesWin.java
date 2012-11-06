@@ -588,6 +588,7 @@ public class PreferencesWin extends JFrame {
 		mpwinCP.add(new PreferencesWindowMore(), BorderLayout.CENTER);
 		mpwin.pack();
 		mpwin.setAlwaysOnTop(true);
+    // mpwin.setUndecorated(true);
 		mpwin.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		mpwin.setLocation(getLocation());
 		mpwin.setVisible(true);
