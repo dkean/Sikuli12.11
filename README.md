@@ -13,6 +13,14 @@ BE AWARE
 
 Nevertheless: Comments are always welcome.
 
+Content
+-------
+- **Docs** --- Sikuli Script Jython scripting and the JavaDocs (Java API)
+- **IDE-Java** --- Java Sources for the IDE (sikuli-ide.jar)
+- **Lib-Jython** --- sources to support Sikuli Jython scripting
+- **Ressources** --- Java and native stuff needed to build and run the jars
+- **Script-Java** --- Java sources for the script run support and Java API (sikuli-script.jar)
+
 Motivation
 ==========
 from Launchpad/sikuli faq https://answers.launchpad.net/sikuli/+faq/2106
