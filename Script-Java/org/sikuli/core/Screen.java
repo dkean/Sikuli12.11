@@ -544,6 +544,11 @@ public class Screen extends Region implements Observer, IScreen {
   }
   //</editor-fold>
 
+	public static void showMonitors() {
+    initScreens();
+		for (int i=0; i <= gdevs; i++)
+	}
+
   @Override
   public String toString() {
     Rectangle r = getBounds();
