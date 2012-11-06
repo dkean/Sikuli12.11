@@ -56,7 +56,7 @@ public class SikuliIDE extends JFrame {
 	private CloseableTabbedPane _mainPane;
   private EditorLineNumberView lineNumberColumn;
 	private JSplitPane _mainSplitPane;
-	private JTabbedPane _auxPane;
+	private JTabbedPane msgPane;
 	private EditorConsolePane _console;
 	private JXCollapsiblePane _cmdList;
 	private SikuliIDEStatusBar _status;
@@ -213,21 +213,22 @@ public class SikuliIDE extends JFrame {
 		final Container c = getContentPane();
 		c.setLayout(new BorderLayout());
 		initTabPane();
-		initAuxPane();
+		initMsgPane();
 // RaiMan not used		initSidePane(); // IDE UnitTest
 
 		JPanel codeAndUnitPane = new JPanel(new BorderLayout(10, 10));
 		codeAndUnitPane.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 0));
 		codeAndUnitPane.add(_mainPane, BorderLayout.CENTER);
 // RaiMan not used		codeAndUnitPane.add(_sidePane, BorderLayout.EAST);
-		_mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeAndUnitPane, _auxPane);
+		_mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, codeAndUnitPane, msgPane);
 		_mainSplitPane.setResizeWeight(1.0);
 		_mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
 		JPanel editPane = new JPanel(new BorderLayout(0, 0));
 
 		JComponent cp = createCommandPane();
-// RaiMan not used		editPane.add(cp, BorderLayout.WEST); // Command List leftside
+// RaiMan not used
+    editPane.add(cp, BorderLayout.WEST); // Command List leftside
 
 		editPane.add(_mainSplitPane, BorderLayout.CENTER);
 		c.add(editPane, BorderLayout.CENTER);
@@ -1765,14 +1766,14 @@ public class SikuliIDE extends JFrame {
 
 	}
 
-	private void initAuxPane() {
-		_auxPane = new JTabbedPane();
+	private void initMsgPane() {
+		msgPane = new JTabbedPane();
 		_console = new EditorConsolePane();
-		_auxPane.addTab(_I("paneMessage"), _console);
+		msgPane.addTab(_I("paneMessage"), _console);
 		if (Settings.isWindows() || Settings.isLinux()) {
-			_auxPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
+			msgPane.setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
 		}
-		_auxPane.setMinimumSize(new Dimension((int) (_windowSize.width * 0.4), 0));
+		msgPane.setMinimumSize(new Dimension((int) (_windowSize.width * 0.4), 0));
 	}
 
 	private SikuliIDEStatusBar initStatusbar() {
@@ -1942,7 +1943,7 @@ public class SikuliIDE extends JFrame {
 	}
 
 	public void addAuxTab(String tabName, JComponent com) {
-		_auxPane.addTab(tabName, com);
+		msgPane.addTab(tabName, com);
 	}
 
 	public void jumpTo(String funcName) throws BadLocationException {
