@@ -38,22 +38,18 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
   private EditorCurrentLineHighlighter _highlighter;
   private String _tabString = "   ";
   private EditorUndoManager _undo = null;
-
   // TODO: move to SikuliDocument
   private PythonIndentation _indentationLogic;
-
   //TODO SikuliToHtmlConverter implement in Java
   final static InputStream SikuliToHtmlConverter =
           SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
   static String pyConverter =
           Utils.convertStreamToString(SikuliToHtmlConverter);
-
   //TODO SikuliBundleCleaner implement in Java
   final static InputStream SikuliBundleCleaner =
           SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
   static String pyBundleCleaner =
           Utils.convertStreamToString(SikuliBundleCleaner);
-
   int _caret_last_x = -1;
   boolean _can_update_caret_last_x = true;
   static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
@@ -572,7 +568,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     if (_editingFile == null) {
       return saveAsFile();
     } else {
-      writeSrcFile(PreferencesUser.getInstance().getAtSaveMakeHTML());
+      writeSrcFile();
       return getCurrentShortFilename();
     }
   }
@@ -670,14 +666,17 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     py.exec(pyBundleCleaner);
   }
 
-  private void writeSrcFile(boolean writeHTML) throws IOException {
+  private void writeSrcFile() throws IOException {
     writeFile(_editingFile.getAbsolutePath());
-    if (writeHTML) {
+    if (PreferencesUser.getInstance().getAtSaveMakeHTML()) {
       convertSrcToHtml(getSrcBundle());
     } else {
       (new File(_editingFile.getAbsolutePath().replaceFirst("py", "html"))).delete();
     }
-    cleanBundle(getSrcBundle());
+    if (PreferencesUser.getInstance().getAtSaveCleanBundle()) {
+      cleanBundle(getSrcBundle());
+    }
+//TODO: delete old .py and .html
     setDirty(false);
   }
 
@@ -691,9 +690,9 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     setSrcBundle(bundlePath);
     _editingFile = createSourceFile(bundlePath, ".py");
     Debug.log(2, "save to bundle: " + getSrcBundle());
-    writeSrcFile(PreferencesUser.getInstance().getAtSaveMakeHTML());
+    writeSrcFile();
     //TODO: update all bundle references in ImageButtons
-    //BUG: if save and rename images, the images will be gone..
+    //TODO: if save and rename images, the images will be gone..
   }
 
   private File createSourceFile(String bundlePath, String ext) {
@@ -731,7 +730,6 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
   }
   //</editor-fold>
-
   //<editor-fold defaultstate="collapsed" desc="currently not used">
   private Class _historyBtnClass;
   private Pattern _lastSearchPattern = null;
@@ -873,8 +871,8 @@ class MyTransferHandler extends TransferHandler {
 
   @Override
   protected void exportDone(JComponent source,
-  Transferable data,
-  int action) {
+          Transferable data,
+          int action) {
     if (action == TransferHandler.MOVE) {
       JTextPane aTextPane = (JTextPane) source;
       int sel_start = aTextPane.getSelectionStart();

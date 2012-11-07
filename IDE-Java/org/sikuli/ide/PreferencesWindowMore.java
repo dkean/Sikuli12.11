@@ -59,8 +59,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
     jCheckBox1 = new javax.swing.JCheckBox();
     jCheckBox2 = new javax.swing.JCheckBox();
     jCheckBox3 = new javax.swing.JCheckBox();
-    jTextField2 = new javax.swing.JTextField();
-    jLabel2 = new javax.swing.JLabel();
 
     jTextField1.setText("jTextField1");
 
@@ -164,10 +162,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
       }
     });
 
-    jTextField2.setText("1");
-
-    jLabel2.setText("DebugLevel");
-
     org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
@@ -231,17 +225,13 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
       .add(layout.createSequentialGroup()
         .add(32, 32, 32)
         .add(jLabel1)
-        .add(18, 18, 18)
-        .add(jCheckBox1)
-        .add(18, 18, 18)
-        .add(jCheckBox2)
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .add(jCheckBox1)
+        .add(50, 50, 50)
+        .add(jCheckBox2)
+        .add(57, 57, 57)
         .add(jCheckBox3)
-        .add(18, 18, 18)
-        .add(jLabel2)
-        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        .add(18, 18, 18))
+        .add(49, 49, 49))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -287,12 +277,10 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
           .add(jLabel1)
           .add(jCheckBox1)
           .add(jCheckBox2)
-          .add(jCheckBox3)
-          .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-          .add(jLabel2))
+          .add(jCheckBox3))
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
         .add(jSeparator7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-        .add(18, 18, 18)
+        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
         .add(prefMoreBtnOk))
     );
   }// </editor-fold>//GEN-END:initComponents
@@ -343,7 +331,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
   private javax.swing.JCheckBox jCheckBox3;
   private javax.swing.JCheckBox jCheckBox4;
   private javax.swing.JLabel jLabel1;
-  private javax.swing.JLabel jLabel2;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JSeparator jSeparator1;
   private javax.swing.JSeparator jSeparator2;
@@ -353,7 +340,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
   private javax.swing.JSeparator jSeparator6;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JTextField jTextField1;
-  private javax.swing.JTextField jTextField2;
   private javax.swing.JToggleButton jToggleButton1;
   private javax.swing.JButton prefMoreBtnOk;
   private javax.swing.JCheckBox prefMoreClean;
