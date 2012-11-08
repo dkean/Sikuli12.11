@@ -8,21 +8,34 @@ package org.sikuli.ide;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.*;
 import org.sikuli.utility.Debug;
 
 public class PreferencesUser {
 
-  final static int yes = 1;
-  final static int no = 0;
-  final static int AUTO_NAMING_TIMESTAMP = 0;
+	final static int yes = 1;
+	final static int no = 0;
+	final static int AUTO_NAMING_TIMESTAMP = 0;
 	final static int AUTO_NAMING_OCR = 1;
 	final static int AUTO_NAMING_OFF = 2;
-  final static int HORIZONTAL = 0;
-  final static int VERTICAL = 1;
-
+	final static int HORIZONTAL = 0;
+	final static int VERTICAL = 1;
+	final static int UNKNOWN = -1;
+	final static int NEWBEE = 0;
+	final static int SCRIPTER = 1;
+	final static int SIKULI_USER = 2;
+	final static String DEFAULT_CONSOLE_CSS =
+					"body   { font-family:serif; font-size: 12px; }"
+					+ ".normal{ color: black; }"
+					+ ".debug { color:#505000; }"
+					+ ".info  { color: blue; }"
+					+ ".log   { color: #09806A; }"
+					+ ".error { color: red; }";
 	static PreferencesUser _instance = null;
 	Preferences pref = Preferences.userNodeForPackage(SikuliIDE.class);
 
@@ -41,8 +54,17 @@ public class PreferencesUser {
 		pref.addPreferenceChangeListener(pcl);
 	}
 
+// ***** user type
+	public void setUserType(int typ) {
+		pref.putInt("USER_TYPE", typ);
+	}
+
+	public int getUserType() {
+		return pref.getInt("USER_TYPE", UNKNOWN);
+	}
+
 // ***** capture hot key
-  public void setCaptureHotkey(int hkey) {
+	public void setCaptureHotkey(int hkey) {
 		pref.putInt("CAPTURE_HOTKEY", hkey);
 	}
 
@@ -51,16 +73,22 @@ public class PreferencesUser {
 	}
 
 	public void setCaptureHotkeyModifiers(int mod) {
+		if (mod < 0) {
+		}
 		pref.putInt("CAPTURE_HOTKEY_MODIFIERS", mod);
 	}
 
 	public int getCaptureHotkeyModifiers() {
+		return pref.getInt("CAPTURE_HOTKEY_MODIFIERS", defaultCaptureHotkeyModifiers());
+	}
+
+	private int defaultCaptureHotkeyModifiers() {
 		String os = System.getProperty("os.name").toLowerCase();
 		int mod = Event.SHIFT_MASK + Event.META_MASK; // mac default
 		if (os.startsWith("windows") || os.startsWith("linux")) {
 			mod = Event.SHIFT_MASK + Event.CTRL_MASK;
 		}
-		return pref.getInt("CAPTURE_HOTKEY_MODIFIERS", mod);
+		return mod;
 	}
 
 	public void setCaptureDelay(double v) {
@@ -80,17 +108,21 @@ public class PreferencesUser {
 		return pref.getInt("STOP_HOTKEY", 67); // default: 'c'
 	}
 
-  public void setStopHotkeyModifiers(int mod) {
+	public void setStopHotkeyModifiers(int mod) {
 		pref.putInt("STOP_HOTKEY_MODIFIERS", mod);
 	}
 
 	public int getStopHotkeyModifiers() {
+		return pref.getInt("GET_HOTKEY_MODIFIERS", defaultStopHotkeyModifiers());
+	}
+
+	private int defaultStopHotkeyModifiers() {
 		String os = System.getProperty("os.name").toLowerCase();
 		int mod = Event.SHIFT_MASK + Event.META_MASK; // mac default
 		if (os.startsWith("windows") || os.startsWith("linux")) {
 			mod = Event.SHIFT_MASK + Event.ALT_MASK;
 		}
-		return pref.getInt("GET_HOTKEY_MODIFIERS", mod);
+		return mod;
 	}
 
 // ***** indentation support
@@ -229,7 +261,7 @@ public class PreferencesUser {
 		return pref.get("LAST_SEEN_UPDATE", "0.0");
 	}
 
-  public void setCheckUpdateTime() {
+	public void setCheckUpdateTime() {
 		pref.putLong("LAST_CHECK_UPDATE", (new Date()).getTime());
 	}
 
@@ -260,8 +292,8 @@ public class PreferencesUser {
 		return new Point(Integer.parseInt(x_y[0]), Integer.parseInt(x_y[1]));
 	}
 
-  // currently: last open filenames
-  public void setIdeSession(String session_str) {
+	// currently: last open filenames
+	public void setIdeSession(String session_str) {
 		pref.put("IDE_SESSION", session_str);
 	}
 
@@ -278,11 +310,11 @@ public class PreferencesUser {
 	}
 
 	public void setPrefMoreImagesPath(String path) {
-		pref.put("PREF_MORE_IMAGES", path);
+		pref.put("PREF_MORE_IMAGES_PATH", path);
 	}
 
 	public String getPrefMoreImagesPath() {
-		return pref.get("PREF_MORE_IMAGES", null);
+		return pref.get("PREF_MORE_IMAGES_PATH", null);
 	}
 
 // ***** message area settings
@@ -294,18 +326,53 @@ public class PreferencesUser {
 		return pref.getInt("PREF_MORE_MESSAGE", HORIZONTAL);
 	}
 
+	public void setPrefMoreLogActions(boolean flag) {
+		pref.putBoolean("PREF_MORE_LOG_ACTIONS", flag);
+	}
+
+	public boolean getPrefMoreLogActions() {
+		return pref.getBoolean("PREF_MORE_LOG_ACTIONS", true);
+	}
+
+	public void setPrefMoreLogInfo(boolean flag) {
+		pref.putBoolean("PREF_MORE_LOG_INFO", flag);
+	}
+
+	public boolean getPrefMoreLogInfo() {
+		return pref.getBoolean("PREF_MORE_LOG_INFO", true);
+	}
+
+	public void setPrefMoreLogDebug(boolean flag) {
+		pref.putBoolean("PREF_MORE_LOG_INFO", flag);
+	}
+
+	public boolean getPrefMoreLogDebug() {
+		return pref.getBoolean("PREF_MORE_LOG_DEBUG", true);
+	}
+
 	public void setConsoleCSS(String css) {
 		pref.put("CONSOLE_CSS", css);
 	}
 
 	public String getConsoleCSS() {
-		return pref.get("CONSOLE_CSS",
-						"body   { font-family:serif; font-size: 12px; }"
-						+ ".normal{ color: black; }"
-						+ ".debug { color:#505000; }"
-						+ ".info  { color: blue; }"
-						+ ".log   { color: #09806A; }"
-						+ ".error { color: red; }");
+		return pref.get("CONSOLE_CSS", DEFAULT_CONSOLE_CSS);
+	}
+
+// ***** text search and OCR
+	public void setPrefMoreTextSearch(boolean flag) {
+		pref.putBoolean("PREF_MORE_TEXT_SEARCH", flag);
+	}
+
+	public boolean getPrefMoreTextSearch() {
+		return pref.getBoolean("PREF_MORE_TEXT_SEARCH", false);
+	}
+
+	public void setPrefMoreTextOCR(boolean flag) {
+		pref.putBoolean("PREF_MORE_TEXT_OCR", flag);
+	}
+
+	public boolean getPrefMoreTextOCR() {
+		return pref.getBoolean("PREF_MORE_TEXT_OCR", false);
 	}
 
 // ***** general setter getter
@@ -315,5 +382,98 @@ public class PreferencesUser {
 
 	public String get(String key, String default_) {
 		return pref.get(key, default_);
+	}
+
+	public void setDefaults(int typ) {
+// ***** capture hot key
+		if (SIKULI_USER != typ) {
+			setCaptureHotkey(50);
+			setCaptureHotkeyModifiers(defaultCaptureHotkeyModifiers());
+			setCaptureDelay(1.0);
+		}
+
+// ***** abort key
+		setStopHotkey(67);
+		setStopHotkeyModifiers(defaultStopHotkeyModifiers());
+
+// ***** indentation support
+		if (SIKULI_USER != typ) {
+			setExpandTab(true);
+			setTabWidth(4);
+		}
+
+// ***** font settings
+		if (SIKULI_USER != typ) {
+			setFontSize(14);
+			setFontName("Monospaced");
+		}
+
+// ***** locale support
+		if (SIKULI_USER != typ) {
+			setLocale(Locale.getDefault());
+		}
+
+// ***** image capture and naming
+		if (SIKULI_USER != typ) {
+			setAutoNamingMethod(AUTO_NAMING_TIMESTAMP);
+		}
+		setDefaultThumbHeight(50);
+
+// ***** command bar
+		if (NEWBEE == typ || SIKULI_USER == typ) {
+			setPrefMoreCommandBar(true);
+		} else {
+			setPrefMoreCommandBar(false);
+		}
+		if (SIKULI_USER != typ) {
+			setAutoCaptureForCmdButtons(true);
+		}
+
+// ***** save options
+		if (NEWBEE == typ || SIKULI_USER == typ) {
+			setAtSaveMakeHTML(true);
+		} else {
+			setAtSaveMakeHTML(false);
+		}
+		setAtSaveCleanBundle(true);
+
+// ***** script run options
+		setPrefMoreRunSave(false);
+		setPrefMoreHighlight(false);
+
+// ***** auto update support
+//TODO: reinvent auto update
+		setCheckUpdate(false);
+		setLastSeenUpdate("0.0");
+		setCheckUpdateTime();
+
+// ***** IDE general support
+		if (SIKULI_USER != typ) {
+			setIdeSize(new Dimension(0, 0));
+			setIdeLocation(new Point(0, 0));
+		}
+
+// currently: last open filenames
+		if (SIKULI_USER != typ) {
+			setIdeSession("");
+		}
+		setPrefMoreImages(false);
+		setPrefMoreImagesPath("");
+
+// ***** message area settings
+		if (NEWBEE == typ || SIKULI_USER == typ) {
+			setPrefMoreMessage(HORIZONTAL);
+		} else {
+			setPrefMoreMessage(VERTICAL);
+		}
+		setPrefMoreLogActions(true);
+		setPrefMoreLogInfo(true);
+		setPrefMoreLogDebug(true);
+
+		setConsoleCSS(DEFAULT_CONSOLE_CSS);
+
+// ***** text search and OCR
+		setPrefMoreTextSearch(false);
+		setPrefMoreTextOCR(false);
 	}
 }

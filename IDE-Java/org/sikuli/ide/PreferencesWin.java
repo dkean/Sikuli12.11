@@ -599,6 +599,7 @@ public class PreferencesWin extends JFrame {
     savePrefs();
     String warn = "Until some bugs have been fixed,\n" +
             "you should restart the IDE now!\n" +
+						"(except for most options in [more options ...])\n" +
             "Otherwise you might notice strange behavior ;-)\n" +
             "--- but only if you have made any changes!\n\n" +
             "Use CANCEL next time, if nothing was changed!";
