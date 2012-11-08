@@ -331,6 +331,7 @@ public class SikuliIDE extends JFrame {
 	private void saveSession() {
 		int nTab = _mainPane.getTabCount();
 		StringBuilder sbuf = new StringBuilder();
+
 		for (int i = 0; i < nTab; i++) {
 			try {
 				JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(i);
@@ -343,6 +344,8 @@ public class SikuliIDE extends JFrame {
 						sbuf.append(";");
 					}
 					sbuf.append(bundlePath);
+				} else {
+					codePane.setDirty(false);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -710,6 +713,13 @@ public class SikuliIDE extends JFrame {
 			} catch (IOException e) {
 				Debug.info("Can't close this tab: " + e.getStackTrace());
 			}
+			codePane = SikuliIDE.getInstance().getCurrentCodePane();
+			if (codePane != null) {
+				codePane.requestFocus();
+			}
+			else if (ae != null) {
+				(new FileAction()).doNew(null);
+			}
 		}
 	}
 
@@ -729,9 +739,15 @@ public class SikuliIDE extends JFrame {
 		return true;
 	}
 
-	protected void quit() {
+	protected boolean quit() {
 		saveSession();
 		(new FileAction()).doQuit(null);
+		if (SikuliIDE.getInstance().getCurrentCodePane() == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	protected boolean checkDirtyPanes() {

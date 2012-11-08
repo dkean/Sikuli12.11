@@ -111,6 +111,7 @@ public class SikuliScript {
   }
 
   public static String run(String cmdline) {
+//TODO: improve run command
     String lines = "";
     try {
       String line;

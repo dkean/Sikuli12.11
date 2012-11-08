@@ -221,7 +221,9 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
               || ans == JOptionPane.CLOSED_OPTION) {
         return false;
       } else if (ans == JOptionPane.YES_OPTION) {
-        saveFile();
+        if (saveFile() == null) {
+					return false;
+				}
       }
       setDirty(false);
     }

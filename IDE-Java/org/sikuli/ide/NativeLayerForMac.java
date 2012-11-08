@@ -7,7 +7,6 @@ package org.sikuli.ide;
 
 import com.apple.eawt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import org.sikuli.utility.Debug;
 
@@ -53,7 +52,8 @@ public class NativeLayerForMac implements NativeLayer, PreferencesHandler, OpenF
 
 	@Override
 	public void handleQuitRequestWith(AppEvent.QuitEvent evt, QuitResponse resp) {
-		SikuliIDE.getInstance().quit();
+		if (! SikuliIDE.getInstance().quit()) resp.cancelQuit();
+		else resp.performQuit();
 	}
 
 	@Override
