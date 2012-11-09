@@ -14,6 +14,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -50,6 +51,9 @@ public class SikuliIDE extends JFrame {
 	final static boolean ENABLE_UNIFIED_TOOLBAR = true;
 	final static Color COLOR_SEARCH_FAILED = Color.red;
 	final static Color COLOR_SEARCH_NORMAL = Color.black;
+	final static int SAVE_CANCEL = 2;
+	final static int SAVE_ALL = 1;
+	final static int DO_NOT_SAVE = 0;
 	static boolean _runningSkl = false;
 	private static NativeLayer _native;
 	private Dimension _windowSize;
@@ -87,6 +91,17 @@ public class SikuliIDE extends JFrame {
 	private static boolean runMe = false;
 	private int restoredScripts = 0;
 	private int alreadyOpenedTab = -1;
+	private int errorLine;
+	private int errorColumn;
+	private String errorType;
+	private String errorText;
+	private int errorClass;
+	private static final int PY_SYNTAX = 0;
+	private static final int PY_RUNTIME = 1;
+	private static final int PY_JAVA = 2;
+	private static final int PY_UNKNOWN = -1;
+
+
 
 	private PreferencesUser prefs;
 
@@ -328,30 +343,40 @@ public class SikuliIDE extends JFrame {
 		}
 	}
 
-	private void saveSession() {
+	private boolean saveSession(int action) {
 		int nTab = _mainPane.getTabCount();
 		StringBuilder sbuf = new StringBuilder();
-
-		for (int i = 0; i < nTab; i++) {
+		for (int tabIndex = 0; tabIndex < nTab; tabIndex++) {
 			try {
-				JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(i);
+				JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(tabIndex);
 				EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
+				if (action == DO_NOT_SAVE) {
+					codePane.setDirty(false);
+					if (codePane.getCurrentFilename() == null) {
+						continue;
+					}
+				}
+				if (codePane.isDirty()) {
+					if (! (new FileAction()).doSaveIntern(tabIndex)) {
+						continue;
+					}
+				}
 				File f = codePane.getCurrentFile();
 				if (f != null) {
 					String bundlePath = codePane.getSrcBundle();
 					Debug.log(5, "save session: " + bundlePath);
-					if (i != 0) {
+					if (tabIndex != 0) {
 						sbuf.append(";");
 					}
 					sbuf.append(bundlePath);
-				} else {
-					codePane.setDirty(false);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				return false;
 			}
 		}
 		PreferencesUser.getInstance().setIdeSession(sbuf.toString());
+		return true;
 	}
 
 	private void restoreSession() {
@@ -387,13 +412,17 @@ public class SikuliIDE extends JFrame {
 	}
 
 	public void setCurrentFileTabTitle(String fname) {
+		int tabIndex = _mainPane.getSelectedIndex();
+		setFileTabTitle(fname, tabIndex);
+	}
+
+	public void setFileTabTitle(String fname, int tabIndex) {
 		if (fname.endsWith("/")) {
 			fname = fname.substring(0, fname.length() - 1);
 		}
-		int i = _mainPane.getSelectedIndex();
 		fname = fname.substring(fname.lastIndexOf("/") + 1);
 		fname = fname.substring(0, fname.lastIndexOf("."));
-		_mainPane.setTitleAt(i, fname);
+		_mainPane.setTitleAt(tabIndex, fname);
 		this.setTitle(fname);
 	}
 
@@ -421,6 +450,12 @@ public class SikuliIDE extends JFrame {
 		}
 	}
 
+	/**
+	 * filename of current script to run
+	 * @return absolute path
+	 * @deprecated (used by IDE Unitest)
+	 */
+	@Deprecated
 	public String getCurrentFilename() {
 		EditorPane pane = getCurrentCodePane();
 		String fname = pane.getCurrentFile().getAbsolutePath();
@@ -469,10 +504,17 @@ public class SikuliIDE extends JFrame {
 	}
 
 	protected boolean doBeforeRun() {
+		int action;
 		if (checkDirtyPanes()) {
-			if (askForSaveAll() < 0) {
-				return false;
+			if (prefs.getPrefMoreRunSave()) {
+				action = SAVE_ALL;
+			} else {
+				action = askForSaveAll("Run");
+				if (action < 0) {
+					return false;
+				}
 			}
+			saveSession(action);
 		}
 		Settings.ActionLogs = prefs.getPrefMoreLogActions();
 		Settings.DebugLogs = prefs.getPrefMoreLogDebug();
@@ -481,13 +523,27 @@ public class SikuliIDE extends JFrame {
 		return true;
 	}
 
-	private int askForSaveAll() {
+	protected boolean doBeforeQuit() {
+		if (checkDirtyPanes()) {
+			int action = askForSaveAll("Quit");
+			if (action < 0) {
+				return false;
+			}
+			return saveSession(action);
+		}
+		return saveSession(DO_NOT_SAVE);
+	}
+
+	private int askForSaveAll(String typ) {
 //TODO: save all at run
 		String warn = "Some scripts are not saved yet!";
 		String title = "Need your attention!";
-		String[] options = {"Run immediatly", "Save all and Run", "Cancel"};
-		int ret = JOptionPane.showOptionDialog(this, title, warn, 0, JOptionPane.WARNING_MESSAGE, null, options, options[2]);
-		if (ret == 2 || ret == JOptionPane.CLOSED_OPTION) {
+		String[] options = new String[3];
+		options[DO_NOT_SAVE] = typ+" immediatly";
+		options[SAVE_ALL] = "Save all and "+typ;
+		options[SAVE_CANCEL] = "Cancel";
+		int ret = JOptionPane.showOptionDialog(this, warn, title, 0, JOptionPane.WARNING_MESSAGE, null, options, options[2]);
+		if (ret == SAVE_CANCEL || ret == JOptionPane.CLOSED_OPTION) {
 			return -1;
 		}
 		return ret;
@@ -683,6 +739,23 @@ public class SikuliIDE extends JFrame {
 			}
 		}
 
+		public boolean doSaveIntern(int tabIndex) {
+			JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(tabIndex);
+			EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
+			try {
+				String fname = codePane.saveFile();
+				if (fname != null) {
+					SikuliIDE.getInstance().setFileTabTitle(fname, tabIndex);
+				} else {
+					return false;
+				}
+			} catch (IOException eio) {
+				eio.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+
 		public void doSaveAs(ActionEvent ae) {
 			try {
 				EditorPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
@@ -740,9 +813,12 @@ public class SikuliIDE extends JFrame {
 	}
 
 	protected boolean quit() {
-		saveSession();
+		SikuliIDE ide = SikuliIDE.getInstance();
+		if (! doBeforeQuit()) {
+			return false;
+		}
 		(new FileAction()).doQuit(null);
-		if (SikuliIDE.getInstance().getCurrentCodePane() == null) {
+		if (ide.getCurrentCodePane() == null) {
 			return true;
 		}
 		else {
@@ -1550,22 +1626,31 @@ public class SikuliIDE extends JFrame {
 							java.util.regex.Pattern p =
 											java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
 							Matcher matcher = p.matcher(e.toString());
+							String msg;
+//TODO error stop I18N
 							if (matcher.find()) {
 								Debug.info(_I("msgExit", matcher.group(1)));
 							} else {
-								Debug.error(_I("msgStopped"));
-								int srcLine = findErrorSource(e,
-												tmpFile.getAbsolutePath());
-								if (srcLine != -1) {
-									Debug.error(_I("msgErrorLine", srcLine));
-									addErrorMark(srcLine);
+								//Debug.error(_I("msgStopped"));
+								msg = "script [ " +
+												_mainPane.getTitleAt(_mainPane.getSelectedIndex());
+								findErrorSource(e, tmpFile.getAbsolutePath());
+								if (errorLine != -1) {
+									//Debug.error(_I("msgErrorLine", srcLine));
+									msg += " ] stopped with error in line " + errorLine +
+													" at column " + errorColumn;
+									addErrorMark(errorLine);
 									try {
-										codePane.jumpTo(srcLine);
+										codePane.jumpTo(errorLine);
 									} catch (BadLocationException be) {
 									}
 									codePane.requestFocus();
+								} else {
+									msg += "] stopped with error at line --unknown--";
 								}
-								Debug.error(_I("msgErrorMsg", e.toString()));
+								Debug.error(msg);
+								Debug.error("Typ: " + errorType + " Details: " + errorText);
+								Debug.error(e.toString());
 							}
 						} finally {
 							SikuliIDE.getInstance().setVisible(true);
@@ -1610,45 +1695,55 @@ public class SikuliIDE extends JFrame {
 			setToolTipText(_I("btnRun", stopHint));
 		}
 
-		private int findErrorSource(Throwable thr, String filename) {
+		private void findErrorSource(Throwable thr, String filename) {
 			String err = thr.toString();
+			errorLine = -1;
+			errorColumn = -1;
+			errorClass = PY_UNKNOWN;
+			errorType = "--UnKnown--";
+			errorText = "--UnKnown--";
+
 			if (err.startsWith("Traceback")) {
 				java.util.regex.Pattern p = java.util.regex.Pattern.compile(
 								", line (\\d+),");
 				java.util.regex.Matcher m = p.matcher(err);
 				if (m.find()) {
-					Debug.log(4, "error line: " + m.group(1));
-					return Integer.parseInt(m.group(1));
+					Debug.log(3, "Runtime error line: " + m.group(1));
+					errorLine = Integer.parseInt(m.group(1));
+					errorClass = PY_RUNTIME;
+					errorType = "SomeRunTime";
 				}
 			} else if (err.startsWith("SyntaxError")) {
 				java.util.regex.Pattern p = java.util.regex.Pattern.compile(
 								", (\\d+), (\\d+),");
 				java.util.regex.Matcher m = p.matcher(err);
 				if (m.find()) {
-					Debug.log(4, "SyntaxError error line: " + m.group(1));
-					return Integer.parseInt(m.group(1));
+					Debug.log(3, "SyntaxError error line: " + m.group(1));
+					errorLine = Integer.parseInt(m.group(1));
+					errorColumn = Integer.parseInt(m.group(2));
+					errorClass = PY_SYNTAX;
+					errorType = "SyntaxError";
 				}
 			}
-			return _findErrorSource(thr, filename);
+			_findErrorSource(thr, filename);
 		}
 
-		private int _findErrorSource(Throwable thr, String filename) {
+		private void _findErrorSource(Throwable thr, String filename) {
 			StackTraceElement[] s;
 			Throwable t = thr;
 			while (t != null) {
 				s = t.getStackTrace();
-				Debug.log(4, "stack trace:");
+				Debug.log(3, "stack trace:");
 				for (int i = s.length - 1; i >= 0; i--) {
 					StackTraceElement si = s[i];
 					Debug.log(4, si.getLineNumber() + " " + si.getFileName());
 					if (si.getLineNumber() >= 0 && filename.equals(si.getFileName())) {
-						return si.getLineNumber();
+						errorLine = si.getLineNumber();
 					}
 				}
 				t = t.getCause();
 				Debug.log(3, "cause: " + t);
 			}
-			return -1;
 		}
 
 		public void addErrorMark(int line) {

@@ -650,6 +650,13 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     return _editingFile;
   }
 
+	public String getCurrentFilename() {
+		if (_editingFile == null) {
+			return null;
+		}
+		return _editingFile.getAbsolutePath();
+	}
+
   private void convertSrcToHtml(String bundle) {
     PythonInterpreter py = ScriptRunner.getPythonInterpreter();
     Debug.log(2, "Convert Sikuli source code " + bundle + " to HTML");
