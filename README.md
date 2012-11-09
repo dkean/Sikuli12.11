@@ -98,9 +98,11 @@ Changes/Fixes in current IDE
 - revised the dirty-handling (script is edited with changes):
  - aware of changes in Preview 
  - scripts with changes are marked in its tab: *myScript
- - new option: autosave before run and warning
+ - new option: autosave before run
+ - warning at run (with no autosave) and quit if unsaved scripts
 - implement alternative for command list in tools menu (as standard + option)
 - add a help topic QuickStart for newcomers
+- better display of errors im message area
 
 Script API
 ----------
