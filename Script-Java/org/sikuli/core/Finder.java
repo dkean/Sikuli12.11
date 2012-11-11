@@ -26,6 +26,7 @@ public class Finder implements Iterator<Match> {
   private FindInput _findInput = new FindInput();
   private FindResults _results = null;
   private int _cur_result_i;
+  private boolean repeating = false;
 
   //TODO Vision.setParameter("GPU", 1);
   static {
@@ -65,6 +66,10 @@ public class Finder implements Iterator<Match> {
     _region = region;
   }
 
+  public void setRepeating() {
+    repeating = true;
+  }
+
   @Override
   protected void finalize() throws Throwable {
     super.finalize();
@@ -74,65 +79,86 @@ public class Finder implements Iterator<Match> {
   public void destroy() {
   }
 
+//TODO: find / findAll imagefile not found early abort
   /**
-   * find given pattern or image within the stored image
+   * find given pattern within the stored image
    *
-   * @param aPtnOrStr Pattern or String (image filename, path, url)
+   * @param aPtn
    */
-  public <PatternString> void find(PatternString aPtnOrStr) {
-    setFindInput(aPtnOrStr);
+  public String find(Pattern aPtn) {
+    if (null == aPtn.checkFile()) {
+      return null;
+    }
+    setFindInput(aPtn);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
+    return aPtn.getFilename();
   }
 
   /**
    *
-   * @param ImageOrText
+   * @param imageOrText
    * @param minSimilarity
-   * @throws IOException
    */
-  public void find(String ImageOrText, double minSimilarity) {
-    setTargetSmartly(_findInput, ImageOrText);
+  public String find(String imageOrText, double minSimilarity) {
+    if (null == setTargetSmartly(_findInput, imageOrText)) {
+      return null;
+    }
     _findInput.setSimilarity(minSimilarity);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
+    return _findInput.getTargetText();
+  }
+
+  public String find(String imageOrText) {
+    return find(imageOrText, Settings.MinSimilarity);
   }
 
   /**
    *
-   * @param PatternString
-   * @param ptn
-   * @throws IOException
+   * @param Pattern
+   * @param aPtn
    */
-  public <PatternString> void findAll(PatternString aPtnOrStr)  {
+  public String findAll(Pattern aPtn)  {
+    if (null == aPtn.checkFile()) {
+      return null;
+    }
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
 
-    setFindInput(aPtnOrStr);
+    setFindInput(aPtn);
     _findInput.setFindAll(true);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
 
     timing.endTiming("Finder.findAll");
+    return aPtn.getFilename();
   }
 
   /**
    *
-   * @param ImageOrText
+   * @param imageOrText
    * @param minSimilarity
-   * @throws IOException
    */
-  public void findAll(String ImageOrText, double minSimilarity) {
+  public String findAll(String imageOrText, double minSimilarity) {
+    if (null == setTargetSmartly(_findInput, imageOrText)) {
+      return null;
+    }
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
 
-    setTargetSmartly(_findInput, ImageOrText);
+    setTargetSmartly(_findInput, imageOrText);
     _findInput.setSimilarity(minSimilarity);
     _findInput.setFindAll(true);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
 
     timing.endTiming("Finder.findAll");
+    return _findInput.getTargetText();
+  }
+
+  public String findAll(String imageOrText) {
+    return findAll(imageOrText, Settings.MinSimilarity);
   }
 
   /**
@@ -191,19 +217,26 @@ public class Finder implements Iterator<Match> {
     }
   }
 
-  private void setTargetSmartly(FindInput fin, String target) {
+  private String setTargetSmartly(FindInput fin, String target) {
     try {
       //assume it's a file first
       String filename = ImageLocator.locate(target);
       fin.setTarget(TARGET_TYPE.IMAGE, filename);
+      return filename;
     } catch (IOException e) {
-      if (Util.isImageFile(target)) {
-        Debug.error(target + " looks like a file, but can't be found on the disk. Assume it's text.");
+      if (Settings.OcrTextSearch && Util.isImageFile(target)) {
+        if (!repeating) {
+          Debug.error(target +
+                " looks like a file, but not on disk. Assume it's text.");
+        }
+        // this will init text recognizer on demand
+        TextRecognizer tr = TextRecognizer.getInstance();
+        //assume it's text
+        fin.setTarget(TARGET_TYPE.TEXT, target);
+      } else {
+        return null;
       }
-      // this will init text recognizer on demand
-      TextRecognizer tr = TextRecognizer.getInstance();
-      //assume it's text
-      fin.setTarget(TARGET_TYPE.TEXT, target);
+      return target;
     }
   }
 }

@@ -31,6 +31,8 @@ public class Settings {
   public static float MoveMouseDelay = 0.5f; // in seconds
   public static String BundlePath = null;
   public static String OcrDataPath = null;
+  public static boolean OcrTextSearch = false;
+  public static boolean OcrTextRead = false;
   public static String libSource = "META-INF/lib/";
   public static String libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
   public static String libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";

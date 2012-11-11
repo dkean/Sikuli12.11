@@ -11,8 +11,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.sikuli.system.App;
 import org.sikuli.text.TextRecognizer;
 import org.sikuli.utility.Debug;
@@ -1432,12 +1430,48 @@ public class Region {
         return lastMatch;
       }
     } catch (Exception ex) {
-      // TODO: This should throw an exception since
-      // it is likely caused by not able to read the input
-      // image.
-      throw ex;
+      throw new FindFailed(ex.getMessage());
     }
     return null;
+  }
+
+//TODO implement findText
+  /**
+   *
+   * @param text
+   * @param timeout
+   * @return
+   */
+  public Match findText(String text, double timeout) {
+    return null;
+  }
+
+  /**
+   *
+   * @param text
+   * @return
+   */
+  public Match findText(String text) {
+    return findText(text, autoWaitTimeout);
+  }
+
+  /**
+   *
+   * @param text
+   * @param timeout
+   * @return
+   */
+  public Match findAllText(String text, double timeout) {
+    return null;
+  }
+
+  /**
+   *
+   * @param text
+   * @return
+   */
+  public Match findAllText(String text) {
+    return findText(text, autoWaitTimeout);
   }
 
   /**
@@ -1489,7 +1523,17 @@ public class Region {
     ScreenImage simg = getScreen().capture(x, y, w, h);
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
-    f.find(ptn);
+    if (ptn instanceof String) {
+      if (null == f.find((String) ptn)) {
+        throw new IOException("ImageFile " + ptn + "not found on disk");
+      }
+    } else {
+      if (null == f.find((Pattern) ptn)) {
+        throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
+                + " not found on disk");
+      }
+    }
+    f.setRepeating();
     if (f.hasNext()) {
       return f.next();
     }
@@ -1511,7 +1555,16 @@ public class Region {
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     Match ret = null;
-    f.find(ptn);
+   if (ptn instanceof String) {
+      if (null == f.find((String) ptn)) {
+        throw new FindFailed("ImageFile not found");
+      }
+    } else {
+      if (null == f.find((Pattern) ptn)) {
+        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+                + " not found on disk");
+      }
+    }
     if (f.hasNext()) {
       ret = f.next();
     }
@@ -1527,7 +1580,16 @@ public class Region {
     ScreenImage simg = getScreen().capture(x, y, w, h);
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
-    f.findAll(ptn);
+   if (ptn instanceof String) {
+      if (null == f.findAll((String) ptn)) {
+        throw new IOException();
+      }
+    } else {
+      if (null == f.findAll((Pattern) ptn)) {
+        throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
+                + " not found on disk");
+      }
+    }
     if (f.hasNext()) {
       return f;
     }
@@ -1547,7 +1609,16 @@ public class Region {
     ScreenImage simg = scr.capture(x, y, w, h);
     scr.setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
-    f.findAll(ptn);
+    if (ptn instanceof String) {
+      if (null == f.findAll((String) ptn)) {
+        throw new FindFailed("ImageFile not found");
+      }
+    } else {
+      if (null == f.findAll((Pattern) ptn)) {
+        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+                + " not found on disk");
+      }
+    }
     if (f.hasNext()) {
       return f;
     }

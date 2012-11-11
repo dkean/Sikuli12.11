@@ -76,11 +76,17 @@ public class EventManager {
       ob.targetVanished(se);
    }
 
-
    protected void checkPatterns(ScreenImage img){
       Finder finder = new Finder(img, _region);
       for(Object ptn : _state.keySet()){
-        finder.find(ptn);
+        if (ptn.getClass().isInstance("")) {
+          if (null == finder.find((String) ptn)) {
+            Debug.error("Observe: ImageFile not found", ptn);
+            continue;
+          }
+        } else {
+          finder.find((Pattern) ptn);
+        }
         Match m = null;
         boolean hasMatch = false;
         if(finder.hasNext()){

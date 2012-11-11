@@ -9,6 +9,8 @@ package org.sikuli.core;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class Pattern {
@@ -72,6 +74,15 @@ public class Pattern {
 
   public String getFilename() {
     return imgURL;
+  }
+
+  public String checkFile() {
+    try {
+      ImageLocator.locate(imgURL);
+      return imgURL;
+    } catch (IOException ex) {
+      return null;
+    }
   }
 
   public BufferedImage getImage() {
