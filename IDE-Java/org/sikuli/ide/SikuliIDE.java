@@ -91,8 +91,9 @@ public class SikuliIDE extends JFrame {
   private static boolean runMe = false;
   private int restoredScripts = 0;
   private int alreadyOpenedTab = -1;
+  private static final String NL = String.format("%n"); 
   private Pattern pFile = Pattern.compile("File..(.*?\\.py).*?" +
-                                  ",.*?line.*?(\\d+),.*?in(.*?)\\n(.*?)\\n");
+                                  ",.*?line.*?(\\d+),.*?in(.*?)" + NL + "(.*?)" + NL);
   private int errorLine;
   private int errorColumn;
   private String errorType;
@@ -474,7 +475,7 @@ public class SikuliIDE extends JFrame {
         EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
         file = codePane.getCurrentFile();
         if (file != null) {
-          filePath = file.getAbsolutePath();
+          filePath = Utils.slashify(file.getAbsolutePath(), false);
           filePath = filePath.substring(0, filePath.lastIndexOf("/"));
           filenames.add(filePath);
         } else {
@@ -1691,7 +1692,7 @@ public class SikuliIDE extends JFrame {
       Matcher mFile = null;
 
       if (err.startsWith("Traceback")) {
-        Pattern pError = Pattern.compile("\\n(.*?):.(.*)$");
+        Pattern pError = Pattern.compile(NL + "(.*?):.(.*)$");
         mFile = pFile.matcher(err);
         if (mFile.find()) {
           Debug.log(2, "Runtime error line: " + mFile.group(2) +
@@ -1707,7 +1708,7 @@ public class SikuliIDE extends JFrame {
             errorText = mError.group(2);
           } else {
 //org.sikuli.core.FindFailed: FindFailed: can not find 1352647716171.png on the screen
-            Pattern pFF = Pattern.compile(": FindFailed: (.*?)\\n");
+            Pattern pFF = Pattern.compile(": FindFailed: (.*?)" + NL);
             Matcher mFF = pFF.matcher(err);
             if (mFF.find()) {
               errorType = "FindFailed";
@@ -1747,7 +1748,8 @@ public class SikuliIDE extends JFrame {
       }
 
       if (errorClass == PY_RUNTIME || errorClass == PY_SYNTAX) {
-        Debug.error(msg + "\n" + errorType + " ( " + errorText + " )");
+        Debug.error(msg);
+        Debug.error(errorType + " ( " + errorText + " )");
         if (errorClass == PY_RUNTIME) {
           errorClass = findErrorSourceWalkTrace(mFile, filename);
           if (errorTrace.length() > 0) {
@@ -1785,7 +1787,7 @@ public class SikuliIDE extends JFrame {
           mod = mModule.group(1);
         }
         telem = m.group(2) + ": " + mod + " ( " +
-                m.group(3) + " ) " + m.group(4) + "\n";
+                m.group(3) + " ) " + m.group(4) + NL;
         //Debug.log(2,telem);
         trace.insert(0, telem);
 //        Debug.log(2,"Rest of Trace ----\n" + etext.substring(mFile.end()));
