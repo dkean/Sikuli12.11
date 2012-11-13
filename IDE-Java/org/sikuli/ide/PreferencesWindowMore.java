@@ -18,12 +18,14 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
 
 	private PreferencesUser prefs;
 	private boolean DEBUG = true;
+	private boolean openingWindow = false;
 
   public PreferencesWindowMore() {
     initComponents();
 		setStatus();
 		boolean debug = DEBUG;
 		DEBUG = false;
+		openingWindow = true;
 		prefs = PreferencesUser.getInstance();
 		prefMoreHTML.setSelected(prefs.getAtSaveMakeHTML());
 		prefMoreClean.setSelected(prefs.getAtSaveCleanBundle());
@@ -48,6 +50,7 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
 		prefMoreTextOCR.setSelected(prefs.getPrefMoreTextOCR());
 		prefMoreScripter.setSelected(prefs.getUserType() == PreferencesUser.SCRIPTER);
 		DEBUG = debug;
+		openingWindow = false;
 	}
 
   /**
@@ -501,14 +504,16 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
 
   private void prefMoreScripterStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_prefMoreScripterStateChanged
     if (isSelected(prefMoreScripter)) {
-			prefMoreMessage.setSelected(false);
-			prefMoreCommand.setSelected(false);
-			prefMoreHTML.setSelected(false);
-			prefMoreRunSave.setSelected(true);
-			prefMoreLogActions.setSelected(false);
-			prefMoreLogDebug.setSelected(false);
-			prefMoreLogInfo.setSelected(false);
-			savePrefs("Switched to new Layout - Restart IDE!");
+			if (! openingWindow) {
+				prefMoreMessage.setSelected(false);
+				prefMoreCommand.setSelected(false);
+				prefMoreHTML.setSelected(false);
+				prefMoreRunSave.setSelected(true);
+				prefMoreLogActions.setSelected(false);
+				prefMoreLogDebug.setSelected(false);
+				prefMoreLogInfo.setSelected(false);
+				savePrefs("Switched to new Layout - Restart IDE!");
+			}
 		}
 		else {
 			prefMoreMessage.setSelected(true);
