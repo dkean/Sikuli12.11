@@ -91,7 +91,7 @@ public class SikuliIDE extends JFrame {
   private static boolean runMe = false;
   private int restoredScripts = 0;
   private int alreadyOpenedTab = -1;
-  private static final String NL = String.format("%n"); 
+  private static final String NL = String.format("%n");
   private Pattern pFile = Pattern.compile("File..(.*?\\.py).*?" +
                                   ",.*?line.*?(\\d+),.*?in(.*?)" + NL + "(.*?)" + NL);
   private int errorLine;
@@ -344,7 +344,7 @@ public class SikuliIDE extends JFrame {
     }
   }
 
-  private boolean saveSession(int action) {
+  private boolean saveSession(int action, boolean quitting) {
     int nTab = _mainPane.getTabCount();
     StringBuilder sbuf = new StringBuilder();
     for (int tabIndex = 0; tabIndex < nTab; tabIndex++) {
@@ -352,13 +352,17 @@ public class SikuliIDE extends JFrame {
         JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(tabIndex);
         EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
         if (action == DO_NOT_SAVE) {
-          codePane.setDirty(false);
+					if (quitting) {
+						codePane.setDirty(false);
+					}
           if (codePane.getCurrentFilename() == null) {
             continue;
           }
-        }
-        if (codePane.isDirty()) {
+        } else if (codePane.isDirty()) {
           if (!(new FileAction()).doSaveIntern(tabIndex)) {
+						if (quitting) {
+							codePane.setDirty(false);
+						}
             continue;
           }
         }
@@ -516,7 +520,7 @@ public class SikuliIDE extends JFrame {
           return false;
         }
       }
-      saveSession(action);
+      saveSession(action, false);
     }
     Settings.ActionLogs = prefs.getPrefMoreLogActions();
     Settings.DebugLogs = prefs.getPrefMoreLogDebug();
@@ -533,9 +537,9 @@ public class SikuliIDE extends JFrame {
       if (action < 0) {
         return false;
       }
-      return saveSession(action);
+      return saveSession(action, true);
     }
-    return saveSession(DO_NOT_SAVE);
+    return saveSession(DO_NOT_SAVE, true);
   }
 
   private int askForSaveAll(String typ) {
