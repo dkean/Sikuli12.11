@@ -24,6 +24,7 @@ public class Region {
 
   final static float DEFAULT_HIGHLIGHT_TIME = Settings.DefaultHighlightTime;
   static final int PADDING = Settings.DefaultPadding;
+  private String scriptingType = "";
   private Screen scr;
   private ScreenHighlighter overlay = null;
   public int x, y;
@@ -50,34 +51,44 @@ public class Region {
   @Override
   public String toString() {
     return String.format("R[%d,%d %dx%d]@%s E:%s, T:%.1f",
-            x, y, w, h, (scr == null ? "Screen???" : scr.toStringShort()),
+            x, y, w, h, (getScreen()== null ? "Screen???" : getScreen().toStringShort()),
             throwException ? "Y" : "N", autoWaitTimeout);
   }
 
   //<editor-fold defaultstate="collapsed" desc="Initialization">
+  private boolean isJythonScreen () {
+    return ("JythonScreen".equals(scriptingType));
+  }
+
+  public void setScriptingType (String type) {
+    scriptingType = type;
+  }
+
   private Region initialize(int X, int Y, int W, int H, Screen parentScreen) {
     x = X;
     y = Y;
     w = vWidth = W;
     h = vHeight = H;
     if (parentScreen != null) {
-      scr = parentScreen;
+      setScreen(parentScreen);
     }
     initScreen();
     return this;
   }
 
   private void initScreen() {
-    if (! (this instanceof Screen)) {
+    if (!(this instanceof Screen) && !isJythonScreen()) {
 			Rectangle roi = new Rectangle(x, y, vWidth, vHeight);
-			scr = Screen.getScreenContaining(new Location(roi.getLocation()));
-			if (scr == null) {
+			setScreen(Screen.getScreenContaining(new Location(roi.getLocation())));
+			if (getScreen()== null) {
 				Debug.error("Region outside any screen - using primary - (x,y) set to (0,0) ---", this);
-				scr = Screen.getPrimaryScreen();
+				setScreen(Screen.getPrimaryScreen());
+        x = 0;
+        y = 0;
 				w = vWidth;
 				h = vHeight;
 			} else {
-				roi = scr.getBounds().intersection(roi);
+				roi = getScreen().getBounds().intersection(roi);
 				if (roi.width < w || roi.height < h) {
 					Debug.log(2, "Region cropped to screen" + toString());
 				}
@@ -85,6 +96,7 @@ public class Region {
 				y = (int) roi.getY();
 				w = (int) roi.getWidth();
 				h = (int) roi.getHeight();
+        int breakpoint = 0;
 			}
 		}
     updateSelf();
@@ -139,6 +151,9 @@ public class Region {
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Quasi-Constructors to be used in Java">
+  /**
+   * internal use only, used for new Screen objects to get the Region behavior
+   */
   protected Region() {
   }
 
@@ -440,7 +455,7 @@ public class Region {
 
 //TODO getColor
   public int getColorAt(Location loc) {
-    return scr.getActionRobot().getColorAt(loc.x, loc.y).getRGB();
+    return getScreen().getActionRobot().getColorAt(loc.x, loc.y).getRGB();
   }
 
   // ************************************************
@@ -707,15 +722,18 @@ public class Region {
     return this;
   }
 
+// ****************************************************
   /**
+   * returns the region being the current ROI of the containing screen
    *
-   * @return the regions rectangle
-   * @deprecated should only be used with Screen objects (see Screen)<br />for
-   * Region objects use getRect() instead
+   * Because of the wanted side effect for the containing screen (Jython level),
+   * this should only be used with screen objects.
+   * For Region objects use getRect() instead.
+   *
+   * @return
    */
-  @Deprecated
   public Region getROI() {
-    return Region.create(getScreen().getROI());
+    return Region.create(getScreen().getCurROI());
   }
 
   /**
@@ -723,21 +741,22 @@ public class Region {
    * containing screen to this modified region <br />this might move the region
    * even to another screen
    *
+   * Because of the wanted side effect for the containing screen (Jython level),
+   * this should only be used with screen objects.
+   * For Region objects use setRect() instead.
+   *
    * @param X
    * @param Y
    * @param W
    * @param H
-   * @deprecated should only be used with Screen objects (see Screen.setROI)<br
-   * />for Region objects use setRect() instead
    */
-  @Deprecated
   public void setROI(int X, int Y, int W, int H) {
     x = X;
     y = Y;
     w = W;
     h = H;
     initScreen();
-    getScreen().setROI(X, Y, W, H);
+    getScreen().setCurROI(new Rectangle(X, Y, W, H));
   }
 
   /**
@@ -745,18 +764,19 @@ public class Region {
    * containing screen to this modified region<br />this might move the region
    * even to another screen
    *
+   * Because of the wanted side effect for the containing screen (Jython level),
+   * this should only be used with screen objects.
+   * For Region objects use setRect() instead.
+   *
    * @param roi
-   * @deprecated should only be used with Screen objects (see Screen.setROI)<br
-   * />for Region objects use setRect() instead
    */
-  @Deprecated
   public void setROI(Rectangle roi) {
     x = (int) roi.getX();
     y = (int) roi.getY();
     w = (int) roi.getWidth();
     h = (int) roi.getHeight();
     initScreen();
-    getScreen().setROI(roi);
+    getScreen().setCurROI(roi);
   }
 
   /**
@@ -764,18 +784,41 @@ public class Region {
    * screen to this modified region<br />this might move the region even to
    * another screen
    *
+   * Because of the wanted side effect for the containing screen (Jython level),
+   * this should only be used with screen objects.
+   * For Region objects use setRect() instead.
+   *
    * @param reg
-   * @deprecated should only be used with Screen objects (see Screen.setROI)<br
-   * />for Region objects use setRect() instead
    */
-  @Deprecated
   public void setROI(Region reg) {
     x = reg.x;
     y = reg.y;
     w = reg.w;
     h = reg.h;
     initScreen();
-    getScreen().setROI(reg);
+    getScreen().setCurROI(reg.getRect());
+  }
+
+  /**
+   * resets the ROI of the containing screen
+   * to the physical bounds of the screen again
+   * the region itself is not touched
+   *
+   * Because of the wanted side effect for the containing screen (Jython level),
+   * this should only be used with screen objects.
+   * For Region objects use setRect() instead.
+   *
+   * @param reg
+   */
+  public void resetROI() {
+    if ((this instanceof Screen) || isJythonScreen()) {
+      Rectangle roi = getScreen().getBounds();
+      x = (int) roi.getX();
+      y = (int) roi.getY();
+      w = (int) roi.getWidth();
+      h = (int) roi.getHeight();
+      getScreen().setCurROI(roi);
+    }
   }
 
 // ****************************************************
@@ -1068,7 +1111,7 @@ public class Region {
    * @return the new region
    */
   public Region left(int width) {
-    Rectangle bounds = scr.getBounds();
+    Rectangle bounds = getScreen().getBounds();
     int _x = x - width < bounds.x ? bounds.x : x - width;
     int _y = y;
     int _w = x - _x;
@@ -1207,7 +1250,7 @@ public class Region {
    * @return the region itself
    */
   public Region highlight() {
-    if (!(scr instanceof Screen)) {
+    if (!(getScreen()instanceof Screen)) {
       Debug.error("highlight only works on the physical desktop screens.");
       return this;
     }
@@ -1222,7 +1265,7 @@ public class Region {
   private void highlight(boolean toEnable) {
     Debug.history("toggle highlight " + toString() + ": " + toEnable);
     if (toEnable) {
-      overlay = new ScreenHighlighter(scr);
+      overlay = new ScreenHighlighter(getScreen());
       overlay.highlight(this);
     } else {
       if (overlay != null) {
@@ -1241,11 +1284,11 @@ public class Region {
    */
   public Region highlight(float secs) {
     Debug.history("highlight " + toString() + " for " + secs + " secs");
-    if (!(scr instanceof Screen)) {
+    if (!(getScreen()instanceof Screen)) {
       Debug.error("highlight only work on the physical desktop screens.");
       return this;
     }
-    ScreenHighlighter _overlay = new ScreenHighlighter(scr);
+    ScreenHighlighter _overlay = new ScreenHighlighter(getScreen());
     _overlay.highlight(this, secs);
     return this;
   }
@@ -1521,7 +1564,7 @@ public class Region {
    */
   private <PSC> Match doFind(PSC ptn) throws IOException {
     ScreenImage simg = getScreen().capture(x, y, w, h);
-    scr.setLastScreenImage(simg);
+    getScreen().setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     if (ptn instanceof String) {
       if (null == f.find((String) ptn)) {
@@ -1550,9 +1593,9 @@ public class Region {
   @Deprecated
   public <PSC> Match findNow(PSC ptn) throws FindFailed {
     Debug.log("capture: " + x + "," + y);
-    ScreenImage simg = scr.capture(x, y, w, h);
+    ScreenImage simg = getScreen().capture(x, y, w, h);
     Debug.log("ScreenImage: " + simg.getROI());
-    scr.setLastScreenImage(simg);
+    getScreen().setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     Match ret = null;
    if (ptn instanceof String) {
@@ -1578,7 +1621,7 @@ public class Region {
    */
   private <PSC> Iterator<Match> doFindAll(PSC ptn) throws IOException {
     ScreenImage simg = getScreen().capture(x, y, w, h);
-    scr.setLastScreenImage(simg);
+    getScreen().setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
    if (ptn instanceof String) {
       if (null == f.findAll((String) ptn)) {
@@ -1606,8 +1649,8 @@ public class Region {
   @Deprecated
   public <PSC> Iterator<Match> findAllNow(PSC ptn)
           throws FindFailed {
-    ScreenImage simg = scr.capture(x, y, w, h);
-    scr.setLastScreenImage(simg);
+    ScreenImage simg = getScreen().capture(x, y, w, h);
+    getScreen().setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     if (ptn instanceof String) {
       if (null == f.findAll((String) ptn)) {
@@ -1725,9 +1768,9 @@ public class Region {
 
 				long after_find = (new Date()).getTime();
         if (after_find - before_find < MaxTimePerScan) {
-          scr.getActionRobot().delay((int) (MaxTimePerScan - (after_find - before_find)));
+          getScreen().getActionRobot().delay((int) (MaxTimePerScan - (after_find - before_find)));
         } else {
-          scr.getActionRobot().delay(10);
+          getScreen().getActionRobot().delay(10);
         }
       } while (begin_t + timeout * 1000 > (new Date()).getTime());
 
@@ -1848,8 +1891,8 @@ public class Region {
     observing = true;
     while (observing && begin_t + secs * 1000 > (new Date()).getTime()) {
       long before_find = (new Date()).getTime();
-      ScreenImage simg = scr.capture(x, y, w, h);
-      scr.setLastScreenImage(simg);
+      ScreenImage simg = getScreen().capture(x, y, w, h);
+      getScreen().setLastScreenImage(simg);
       evtMgr.update(simg);
       long after_find = (new Date()).getTime();
       try {
@@ -2055,8 +2098,8 @@ public class Region {
       return 0;
     }
     Debug.history(getClickMsg(loc, buttons, modifiers, dblClick));
-    scr.showTarget(loc);
-    DesktopRobot r = scr.getActionRobot();
+    getScreen().showTarget(loc);
+    DesktopRobot r = getScreen().getActionRobot();
     r.pressModifiers(modifiers);
     r.smoothMove(loc);
     r.mouseDown(buttons);
@@ -2121,12 +2164,12 @@ public class Region {
     Location loc1 = getLocationFromPSRML(t1);
     Location loc2 = getLocationFromPSRML(t2);
     if (loc1 != null && loc2 != null) {
-      scr.showTarget(loc1);
-      DesktopRobot r = scr.getActionRobot();
+      getScreen().showTarget(loc1);
+      DesktopRobot r = getScreen().getActionRobot();
       r.smoothMove(loc1);
       r.mouseDown(InputEvent.BUTTON1_MASK);
       r.delay((int) (Settings.DelayAfterDrag * 1000));
-      scr.showTarget(loc2);
+      getScreen().showTarget(loc2);
       r.smoothMove(loc2);
       r.delay((int) (Settings.DelayBeforeDrop * 1000));
       r.mouseUp(InputEvent.BUTTON1_MASK);
@@ -2147,8 +2190,8 @@ public class Region {
           throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
-      DesktopRobot r = scr.getActionRobot();
-      scr.showTarget(loc);
+      DesktopRobot r = getScreen().getActionRobot();
+      getScreen().showTarget(loc);
       r.smoothMove(loc);
       r.mouseDown(InputEvent.BUTTON1_MASK);
       r.delay((int) (Settings.DelayAfterDrag * 1000));
@@ -2170,8 +2213,8 @@ public class Region {
           throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
-      scr.showTarget(loc);
-      DesktopRobot r = scr.getActionRobot();
+      getScreen().showTarget(loc);
+      DesktopRobot r = getScreen().getActionRobot();
       r.smoothMove(loc);
       r.delay((int) (Settings.DelayBeforeDrop * 1000));
       r.mouseUp(InputEvent.BUTTON1_MASK);
@@ -2191,7 +2234,7 @@ public class Region {
    * @param buttons
    */
   public void mouseDown(int buttons) {
-    scr.getActionRobot().mouseDown(buttons);
+    getScreen().getActionRobot().mouseDown(buttons);
   }
 
   /**
@@ -2208,7 +2251,7 @@ public class Region {
    * @param buttons
    */
   public void mouseUp(int buttons) {
-    scr.getActionRobot().mouseUp(buttons);
+    getScreen().getActionRobot().mouseUp(buttons);
   }
 
   /**
@@ -2243,8 +2286,8 @@ public class Region {
           throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
-      scr.showTarget(loc);
-      DesktopRobot r = scr.getActionRobot();
+      getScreen().showTarget(loc);
+      DesktopRobot r = getScreen().getActionRobot();
       r.smoothMove(loc);
       r.waitForIdle();
       return 1;
@@ -2262,7 +2305,7 @@ public class Region {
    */
   public int wheel(int direction, int steps) {
     for (int i = 0; i < steps; i++) {
-      DesktopRobot r = scr.getActionRobot();
+      DesktopRobot r = getScreen().getActionRobot();
       r.mouseWheel(direction);
       r.delay(50);
     }
@@ -2307,7 +2350,7 @@ public class Region {
    * @param keycode
    */
   public void keyDown(int keycode) {
-    scr.getActionRobot().keyDown(keycode);
+    getScreen().getActionRobot().keyDown(keycode);
   }
 
   /**
@@ -2319,7 +2362,7 @@ public class Region {
    * @param keys
    */
   public void keyDown(String keys) {
-    scr.getActionRobot().keyDown(keys);
+    getScreen().getActionRobot().keyDown(keys);
   }
 
   /**
@@ -2335,7 +2378,7 @@ public class Region {
    * @param keycode
    */
   public void keyUp(int keycode) {
-    scr.getActionRobot().keyUp(keycode);
+    getScreen().getActionRobot().keyUp(keycode);
   }
 
   /**
@@ -2344,7 +2387,7 @@ public class Region {
    * @param keys
    */
   public void keyUp(String keys) {
-    scr.getActionRobot().keyUp(keys);
+    getScreen().getActionRobot().keyUp(keys);
   }
 
   /**
@@ -2463,7 +2506,7 @@ public class Region {
       Debug.history(
               (modifiers != 0 ? KeyEvent.getKeyModifiersText(modifiers) + "+" : "")
               + "TYPE \"" + text + "\"");
-      DesktopRobot r = scr.getActionRobot();
+      DesktopRobot r = getScreen().getActionRobot();
       for (int i = 0; i < text.length(); i++) {
         r.pressModifiers(modifiers);
         r.typeChar(text.charAt(i), IRobot.KeyMode.PRESS_RELEASE);
@@ -2507,7 +2550,7 @@ public class Region {
     if (text != null) {
       App.setClipboard(text);
       int mod = Key.getHotkeyModifier();
-      DesktopRobot r = scr.getActionRobot();
+      DesktopRobot r = getScreen().getActionRobot();
       r.keyDown(mod);
       r.keyDown(KeyEvent.VK_V);
       r.keyUp(KeyEvent.VK_V);
@@ -2521,7 +2564,7 @@ public class Region {
   //<editor-fold defaultstate="collapsed" desc="TODO OCR">
   public String text() {
     ScreenImage simg = getScreen().capture(x, y, w, h);
-    scr.setLastScreenImage(simg);
+    getScreen().setLastScreenImage(simg);
     return TextRecognizer.getInstance().recognize(simg);
   }
 

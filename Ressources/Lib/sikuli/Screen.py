@@ -23,6 +23,7 @@ class Screen(Region):
       (x, y, w, h) = (int(r.getX()), int(r.getY()), \
                       int(r.getWidth()), int(r.getHeight()))
       Region.__init__(self, x, y, w, h)
+      self.setScriptingType("JythonScreen")
       if DEBUG: print "**OUT** Jython INIT Screen"
 
    @classmethod

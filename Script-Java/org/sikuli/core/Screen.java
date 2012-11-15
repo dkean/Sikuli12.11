@@ -39,7 +39,7 @@ public class Screen extends Region implements Observer, IScreen {
   protected static DesktopRobot actionRobot;
   private int curID = 0;
   private GraphicsDevice curGD;
-  private Region curROI;
+  private Rectangle curROI;
   protected boolean waitPrompt;
   protected CapturePrompt prompt;
   protected ScreenImage lastScreenImage;
@@ -126,21 +126,39 @@ public class Screen extends Region implements Observer, IScreen {
     if (screens[curID] == null) {
       x = 0;
       y = 0;
-      w = -1;
-      h = -1;
-      curROI = Region.create(x, y, w, h);
-      Debug.error("Screen cannot be used. No Robot");
-      toStringShort();
+      w = vWidth = -1;
+      h = vHeight = -1;
+      curROI = new Rectangle(x, y, w, h);
+      Debug.error("Screen cannot be used. No Robot: " + toStringShort());
     } else {
       Rectangle bounds = getBounds();
       x = (int) bounds.getX();
       y = (int) bounds.getY();
-      w = (int) bounds.getWidth();
-      h = (int) bounds.getHeight();
-      curROI = Region.create(bounds);
+      w = vWidth = (int) bounds.getWidth();
+      h = vHeight = (int) bounds.getHeight();
+      curROI = new Rectangle(x, y, w, h);
     }
 		setScreen(curID);
   }
+
+  protected Rectangle getCurROI() {
+    return curROI;
+  }
+
+  protected void setCurROI(Rectangle roi) {
+    curROI = new Rectangle(roi.x, roi.y, roi.width, roi.height);
+  }
+
+  @Override
+  public Screen getScreen() {
+    return this;
+  }
+
+  @Override
+  protected void setScreen(Screen s) {
+    // to block the Region method
+  }
+
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="getters setters">
@@ -311,42 +329,6 @@ public class Screen extends Region implements Observer, IScreen {
 			return (new Location(loc)).copyTo(this);
   }
 
-  @Override
-  public Region getROI() {
-    return curROI;
-  }
-
-  @Override
-  public void setROI(int x, int y, int w, int h) {
-    setROI(new Rectangle(x, y, w, h));
-  }
-
-  @Override
-  public void setROI(Rectangle r) {
-    if (!getRect().contains(r.getLocation())) {
-      r.x += getBounds().x;
-      r.y += getBounds().y;
-    }
-    r = getBounds().intersection(r);
-    x = (int) r.getX();
-    y = (int) r.getY();
-    w = (int) r.getWidth();
-    h = (int) r.getHeight();
-    curROI = Region.create(r);
-  }
-
-  @Override
-  public void setROI(Region roi) {
-    setROI(roi.getRect());
-  }
-
-  /**
-	 * resets the screens ROI to the physical bounds of the screen
-	 */
-	public void resetROI() {
-    initScreen();
-  }
-
   /**
 	 * store the last fullscreen image taken on this "physical" screen
 	 * @param simg
@@ -402,7 +384,7 @@ public class Screen extends Region implements Observer, IScreen {
 	 */
 	@Override
   public ScreenImage capture() {
-    return capture(getBounds());
+    return capture(getCurROI());
   }
 
   /**
@@ -552,7 +534,7 @@ public class Screen extends Region implements Observer, IScreen {
   @Override
   public String toString() {
     Rectangle r = getBounds();
-    if (curROI.getRect().equals(r)) {
+    if (curROI.equals(r)) {
       return String.format("S(%d)[%d,%d %dx%d] E:%s, T:%.1f",
               curID, (int) r.getX(), (int) r.getY(),
               (int) r.getWidth(), (int) r.getHeight(),
@@ -563,7 +545,7 @@ public class Screen extends Region implements Observer, IScreen {
       return String.format("S(%d)[%d,%d %dx%d] ROI[%d,%d, %dx%d] E:%s, T:%.1f",
               curID, rx, ry,
               (int) r.getWidth(), (int) r.getHeight(),
-              curROI.x - rx, curROI.y - ry, curROI.w, curROI.h,
+              curROI.x - rx, curROI.y - ry, curROI.width, curROI.height,
               throwException ? "Y" : "N", autoWaitTimeout);
     }
   }

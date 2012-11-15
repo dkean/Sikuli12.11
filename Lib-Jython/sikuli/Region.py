@@ -28,7 +28,7 @@ class Region(JRegion):
          JRegion.__init__(self, args[0])
       else:
          raise Exception("Wrong number of parameters of Region's contructor")
-      self.isJythonRegion = True
+      self.setScriptingType("JythonRegion")
       self._global_funcs = None
       if DEBUG: print "**OUT** Jython INIT Region"
 
