@@ -13,10 +13,6 @@ import java.util.Arrays;
 import javax.swing.*;
 import org.apache.commons.cli.CommandLine;
 import org.python.util.jython;
-import org.sikuli.core.Settings;
-import org.sikuli.core.App;
-import org.sikuli.utility.CommandArgs;
-import org.sikuli.utility.Debug;
 
 public class SikuliScript {
 
@@ -35,7 +31,7 @@ public class SikuliScript {
 
     //TODO downward compatibel
     if (args.length > 0 && !args[0].startsWith("-")) {
-      ScriptRunner runner = new ScriptRunner(CommandArgs.getPyArgs(cmdLine));
+      SikuliScriptRunner runner = new SikuliScriptRunner(CommandArgs.getPyArgs(cmdLine));
       exitCode = runner.runPython(null);
       Debug.info("You are using deprecated command line argument syntax!");
       cmdArgs.printHelp();
@@ -49,7 +45,7 @@ public class SikuliScript {
       }
 
       if (cmdLine.hasOption("run")) {
-        ScriptRunner runner = new ScriptRunner(CommandArgs.getPyArgs(cmdLine), "SCRIPT");
+        SikuliScriptRunner runner = new SikuliScriptRunner(CommandArgs.getPyArgs(cmdLine), "SCRIPT");
         System.exit(runner.runPython(null));
       }
     } else {

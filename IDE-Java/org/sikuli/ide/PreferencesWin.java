@@ -34,7 +34,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.jdesktop.layout.*;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 /*
  * Created by JFormDesigner on Mon Nov 16 10:13:52 EST 2009

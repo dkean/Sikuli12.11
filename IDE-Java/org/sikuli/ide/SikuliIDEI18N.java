@@ -8,7 +8,7 @@ package org.sikuli.ide;
 import java.util.*;
 import java.text.MessageFormat;
 
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class SikuliIDEI18N {
    static ResourceBundle i18nRB, i18nRB_en;

@@ -9,9 +9,9 @@ package org.sikuli.system;
 import java.awt.Rectangle;
 import java.awt.Window;
 import javax.swing.JOptionPane;
-import org.sikuli.core.Region;
-import org.sikuli.utility.Debug;
-import org.sikuli.core.FileManager;
+import org.sikuli.script.Region;
+import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 
 public class MacUtil implements OSUtil {
 

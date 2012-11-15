@@ -9,15 +9,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import javax.swing.*;
-import org.sikuli.core.CapturePrompt;
-import org.sikuli.core.IScreen;
-import org.sikuli.core.Region;
-import org.sikuli.core.ScreenImage;
-import org.sikuli.core.Subject;
-import org.sikuli.utility.Debug;
-import org.sikuli.core.Observer;
+import org.sikuli.script.OverlayCapturePrompt;
+import org.sikuli.script.ScreenIF;
+import org.sikuli.script.Region;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.EventSubject;
+import org.sikuli.script.Debug;
+import org.sikuli.script.EventObserver;
 
-class ButtonRegion extends JButton implements ActionListener, Observer {
+class ButtonRegion extends JButton implements ActionListener, EventObserver {
 
   EditorPane _pane;
   int _x, _y, _w, _h;
@@ -39,14 +39,14 @@ class ButtonRegion extends JButton implements ActionListener, Observer {
     SikuliIDE ide = SikuliIDE.getInstance();
     EditorPane codePane = ide.getCurrentCodePane();
     ide.setVisible(false);
-    CapturePrompt prompt = new CapturePrompt(null, this);
+    OverlayCapturePrompt prompt = new OverlayCapturePrompt(null, this);
     prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
   }
 
   @Override
-  public void update(Subject s) {
-    if (s instanceof CapturePrompt) {
-      CapturePrompt cp = (CapturePrompt) s;
+  public void update(EventSubject s) {
+    if (s instanceof OverlayCapturePrompt) {
+      OverlayCapturePrompt cp = (OverlayCapturePrompt) s;
       ScreenImage r = cp.getSelection();
       cp.close();
       if (r != null) {
@@ -69,7 +69,7 @@ class ButtonRegion extends JButton implements ActionListener, Observer {
 
   private BufferedImage getRegionImage(int x, int y, int w, int h) {
     Region region = Region.create(x, y, w, h);
-    IScreen _screen = region.getScreen();
+    ScreenIF _screen = region.getScreen();
     ScreenImage simg = _screen.capture();
     int scr_w = simg.w, scr_h = simg.h;
     int max_h = 80; // FIXME: put max_h in UserPreferences

@@ -8,7 +8,7 @@ package org.sikuli.ide;
 import java.awt.*;
 import java.util.*;
 import javax.swing.text.*;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class EditorDocument extends DefaultStyledDocument{
    private String word = "";

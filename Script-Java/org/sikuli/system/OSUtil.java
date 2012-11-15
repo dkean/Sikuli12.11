@@ -7,7 +7,7 @@
 package org.sikuli.system;
 
 import java.awt.Window;
-import org.sikuli.core.Region;
+import org.sikuli.script.Region;
 
 // TODO move to class App
 public interface OSUtil {

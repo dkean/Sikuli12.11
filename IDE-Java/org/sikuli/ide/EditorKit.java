@@ -14,7 +14,7 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.sikuli.ide.indentation.PythonIndentation;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class EditorKit extends StyledEditorKit {
 

@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import org.sikuli.core.Settings;
+import org.sikuli.script.Settings;
 
 
 public class SikuliIDEFileChooser {

@@ -12,12 +12,12 @@ import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import org.sikuli.core.Location;
-import org.sikuli.core.Region;
-import org.sikuli.core.ScreenImage;
-import org.sikuli.core.UnionScreen;
+import org.sikuli.script.Location;
+import org.sikuli.script.Region;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.ScreenUnion;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class PatternWindow extends JFrame {
 
@@ -110,7 +110,7 @@ public class PatternWindow extends JFrame {
 			Thread.sleep(500);
 		} catch (Exception e) {
 		}
-		Region match_region = new UnionScreen();
+		Region match_region = new ScreenUnion();
 		_simg = match_region.getScreen().capture();
 		ide.setVisible(true);
 	}

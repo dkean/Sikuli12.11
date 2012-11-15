@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.json.simple.JSONValue;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 
 public class ExtensionManagerFrame extends JFrame {
@@ -97,14 +97,14 @@ public class ExtensionManagerFrame extends JFrame {
          public void actionPerformed(ActionEvent arg0) {
             dispose();
          }
-         
+
       });
-      
-      
+
+
       closeBtn.setFocusable(false);
       bottomBar.add(closeBtn, BorderLayout.LINE_END);
       pane.add(bottomBar);
-      
+
    }
 
    ArrayList<ExtensionItem> retrieveExtensions() throws IOException{
@@ -112,7 +112,7 @@ public class ExtensionManagerFrame extends JFrame {
       ArrayList<ExtensionItem> extensions = new ArrayList<ExtensionItem>();
 
       Debug.log(2, "Retrieving from " + EXTENSION_LIST_URL);
-      
+
       String json = ExtensionManagerFrame.html2txt(EXTENSION_LIST_URL);
 
       Object obj=JSONValue.parse(json);
@@ -150,13 +150,13 @@ public class ExtensionManagerFrame extends JFrame {
       while ((inputLine = in.readLine()) != null) {
          txt = txt + inputLine;
       }
-      in.close();   
+      in.close();
 
       return txt;
 
    }
 
-   int selected_idx = 0; 
+   int selected_idx = 0;
    void select(ExtensionItem ext){
       int idx = _extensions.indexOf(ext);
       select(idx);
@@ -210,7 +210,7 @@ public class ExtensionManagerFrame extends JFrame {
 
    public static void main(String[] args) throws IOException{
 
-      ExtensionManagerFrame f = ExtensionManagerFrame.getInstance();      
+      ExtensionManagerFrame f = ExtensionManagerFrame.getInstance();
       f.setVisible(true);
    }
 

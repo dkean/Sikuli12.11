@@ -7,8 +7,8 @@
 package org.sikuli.system;
 
 import java.awt.Window;
-import org.sikuli.utility.Debug;
-import org.sikuli.core.Region;
+import org.sikuli.script.Debug;
+import org.sikuli.script.Region;
 
 public class DummyOSUtil implements OSUtil {
 

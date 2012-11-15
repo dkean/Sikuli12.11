@@ -8,7 +8,7 @@ import java.io.File;
 import javax.swing.text.BadLocationException;
 import org.sikuli.ide.SikuliIDE;
 import org.sikuli.ide.EditorPane;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 /**
  *

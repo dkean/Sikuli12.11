@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.*;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class PreferencesUser {
 

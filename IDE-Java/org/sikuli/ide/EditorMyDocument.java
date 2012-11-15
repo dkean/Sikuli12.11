@@ -8,7 +8,7 @@ package org.sikuli.ide;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 class EditorMyDocument extends DefaultStyledDocument {
    @Override

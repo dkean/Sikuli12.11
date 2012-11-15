@@ -24,8 +24,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 import org.python.util.PythonInterpreter;
-import org.sikuli.script.ScriptRunner;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.SikuliScriptRunner;
+import org.sikuli.script.Debug;
 
 
 public class EditorConsolePane extends JPanel implements Runnable {
@@ -65,7 +65,7 @@ public class EditorConsolePane extends JPanel implements Runnable {
 			Debug.log(2, "Redirect stdout/stderr to console.");
 
 //TODO move to ScriptRunner
-			PythonInterpreter py = ScriptRunner.getPythonInterpreter();
+			PythonInterpreter py = SikuliScriptRunner.getPythonInterpreter();
 			try {
 				PipedOutputStream pout = new PipedOutputStream(this.pin[0]);
 				PrintStream ps = new PrintStream(pout, true);

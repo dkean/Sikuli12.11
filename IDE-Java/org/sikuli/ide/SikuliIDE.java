@@ -27,23 +27,23 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
-import org.sikuli.core.CapturePrompt;
-import org.sikuli.core.HotkeyEvent;
-import org.sikuli.core.HotkeyListener;
-import org.sikuli.core.HotkeyManager;
-import org.sikuli.core.Observer;
-import org.sikuli.core.ScreenImage;
-import org.sikuli.core.Settings;
-import org.sikuli.core.Subject;
+import org.sikuli.script.OverlayCapturePrompt;
+import org.sikuli.script.HotkeyEvent;
+import org.sikuli.script.HotkeyListener;
+import org.sikuli.script.HotkeyManager;
+import org.sikuli.script.EventObserver;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.Settings;
+import org.sikuli.script.EventSubject;
 import org.sikuli.ide.EditorKit;
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
 import org.sikuli.ide.util.AutoUpdater;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.script.ScriptRunner;
+import org.sikuli.script.SikuliScriptRunner;
 import org.sikuli.script.SikuliScript;
-import org.sikuli.utility.CommandArgs;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.CommandArgs;
+import org.sikuli.script.Debug;
 
 public class SikuliIDE extends JFrame {
 
@@ -1539,7 +1539,7 @@ public class SikuliIDE extends JFrame {
     }
   }
 
-  class ButtonSubregion extends ButtonOnToolbar implements ActionListener, Observer {
+  class ButtonSubregion extends ButtonOnToolbar implements ActionListener, EventObserver {
 
     public ButtonSubregion() {
       super();
@@ -1556,14 +1556,14 @@ public class SikuliIDE extends JFrame {
       SikuliIDE ide = SikuliIDE.getInstance();
       EditorPane codePane = ide.getCurrentCodePane();
       ide.setVisible(false);
-      CapturePrompt prompt = new CapturePrompt(null, this);
+      OverlayCapturePrompt prompt = new OverlayCapturePrompt(null, this);
       prompt.prompt(SikuliIDE._I("msgCapturePrompt"), 500);
     }
 
     @Override
-    public void update(Subject s) {
-      if (s instanceof CapturePrompt) {
-        CapturePrompt cp = (CapturePrompt) s;
+    public void update(EventSubject s) {
+      if (s instanceof OverlayCapturePrompt) {
+        OverlayCapturePrompt cp = (OverlayCapturePrompt) s;
         ScreenImage r = cp.getSelection();
         cp.close();
         if (r != null) {
@@ -1654,7 +1654,7 @@ public class SikuliIDE extends JFrame {
 
     protected void runPython(File f) throws Exception {
       String path = SikuliIDE.getInstance().getCurrentBundlePath();
-      ScriptRunner srunner = new ScriptRunner(SikuliIDESettings.getArgs(), "IDE");
+      SikuliScriptRunner srunner = new SikuliScriptRunner(SikuliIDESettings.getArgs(), "IDE");
       addPythonCode(srunner);
       try {
         srunner.runPython(path, f);
@@ -1665,7 +1665,7 @@ public class SikuliIDE extends JFrame {
       }
     }
 
-    protected void addPythonCode(ScriptRunner srunner) {
+    protected void addPythonCode(SikuliScriptRunner srunner) {
     }
 
     public void stopRunning() {
@@ -1853,7 +1853,7 @@ public class SikuliIDE extends JFrame {
     }
 
     @Override
-    protected void addPythonCode(ScriptRunner srunner) {
+    protected void addPythonCode(SikuliScriptRunner srunner) {
       srunner.runSlowMotion();
     }
   }

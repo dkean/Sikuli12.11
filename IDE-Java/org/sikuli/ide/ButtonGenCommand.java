@@ -11,7 +11,7 @@ import javax.swing.text.*;
 import javax.swing.border.*;
 import java.net.URL;
 
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class ButtonGenCommand extends JButton implements ActionListener,
                                                          MouseListener {

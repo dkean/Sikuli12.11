@@ -10,14 +10,14 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.text.*;
-import org.sikuli.core.CapturePrompt;
-import org.sikuli.core.Observer;
-import org.sikuli.core.ScreenImage;
-import org.sikuli.core.Subject;
+import org.sikuli.script.OverlayCapturePrompt;
+import org.sikuli.script.EventObserver;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.EventSubject;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
-class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable, Observer {
+class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable, EventObserver {
 
 	protected Element _line;
 	protected EditorPane _codePane;
@@ -81,7 +81,7 @@ class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable
 					Thread.sleep(delay);
 				} catch (Exception e) {
 				}
-				CapturePrompt p = new CapturePrompt(null, ButtonCapture.this);
+				OverlayCapturePrompt p = new OverlayCapturePrompt(null, ButtonCapture.this);
 				p.prompt("Select an image");
 				try {
 					Thread.sleep(500);
@@ -114,9 +114,9 @@ class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable
 	//</editor-fold>
 
 	@Override
-	public void update(Subject s) {
-		if (s instanceof CapturePrompt) {
-			CapturePrompt cp = (CapturePrompt) s;
+	public void update(EventSubject s) {
+		if (s instanceof OverlayCapturePrompt) {
+			OverlayCapturePrompt cp = (OverlayCapturePrompt) s;
 			ScreenImage simg = cp.getSelection();
 			String filename = null;
 			EditorPane pane = SikuliIDE.getInstance().getCurrentCodePane();
@@ -161,7 +161,7 @@ class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable
 						hint);
 	}
 
-	public void captureCompleted(String imgFullPath, CapturePrompt prompt) {
+	public void captureCompleted(String imgFullPath, OverlayCapturePrompt prompt) {
 		prompt.close();
 
 		if (imgFullPath != null) {

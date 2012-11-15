@@ -14,7 +14,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import org.sikuli.ide.SikuliIDESettings;
 import org.sikuli.ide.SikuliIDE;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 public class AutoUpdater {
    static String ServerList[] = {

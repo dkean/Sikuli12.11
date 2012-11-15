@@ -8,9 +8,9 @@ package org.sikuli.ide.extmanager;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import org.sikuli.core.FileManager;
-import org.sikuli.core.Settings;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.FileManager;
+import org.sikuli.script.Settings;
+import org.sikuli.script.Debug;
 
 class Extension implements Serializable{
    public String name;

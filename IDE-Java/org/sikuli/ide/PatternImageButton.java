@@ -13,9 +13,9 @@ import java.io.*;
 import java.util.Locale;
 import javax.imageio.*;
 import javax.swing.*;
-import org.sikuli.core.Location;
+import org.sikuli.script.Location;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 class PatternImageButton extends JButton implements ActionListener, Serializable /*, MouseListener*/ {
 

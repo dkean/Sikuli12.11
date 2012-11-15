@@ -32,15 +32,15 @@ import junit.runner.TestRunListener;
 import junit.runner.StandardTestSuiteLoader;
 import junit.runner.TestSuiteLoader;
 
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 import java.io.PrintStream;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.python.util.PythonInterpreter; 
-import org.python.core.*; 
+import org.python.util.PythonInterpreter;
+import org.python.core.*;
 
 public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
    private static final int GAP= 4;
@@ -93,7 +93,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       );
       return run;
    }
-   
+
    protected CounterPanel createCounterPanel() {
       return new CounterPanel();
    }
@@ -127,9 +127,9 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
    private void initComponents(){
       toolbar = initToolbar();
       /*
-      if (inMac()) 
-         fProgressIndicator= new MacProgressBar(fStatusLine); 
-      else                                                            
+      if (inMac())
+         fProgressIndicator= new MacProgressBar(fStatusLine);
+      else
       */
       fProgressIndicator= new ProgressBar();
       fCounterPanel= createCounterPanel();
@@ -152,7 +152,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       minFrame.setVisible(true);
       */
    }
-   
+
    private static final String FAILUREDETAILVIEW_KEY= "FailureViewClass";
    protected FailureDetailView createFailureDetailView() {
       String className= BaseTestRunner.getPreference(FAILUREDETAILVIEW_KEY);
@@ -202,7 +202,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       addGrid(pane, fProgressIndicator, 	0, 3, 2, GridBagConstraints.HORIZONTAL, 	1.0, GridBagConstraints.WEST);
    }
 
-   private void addGrid(JPanel p, Component co, int x, int y, int w, 
+   private void addGrid(JPanel p, Component co, int x, int y, int w,
                         int fill, double wx, int anchor) {
       GridBagConstraints c= new GridBagConstraints();
       c.gridx= x; c.gridy= y;
@@ -212,7 +212,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       c.fill= fill;
       if(fill == GridBagConstraints.BOTH || fill == GridBagConstraints.VERTICAL)
          c.weighty= 1.0;
-      c.insets= new Insets(y == 0 ? 10 : 0,  GAP, GAP, GAP); 
+      c.insets= new Insets(y == 0 ? 10 : 0,  GAP, GAP, GAP);
       p.add(co, c);
    }
 
@@ -477,7 +477,7 @@ public class UnitTestRunner extends BaseTestRunner implements TestRunContext{
       String className = genTestClassName(filename);
       TestSuite ret = new TestSuite(className);
       PythonInterpreter interp = new PythonInterpreter();
-      String testCode = 
+      String testCode =
          "# coding=utf-8\n"+
          "from __future__ import with_statement\n"+
          "import junit\n"+

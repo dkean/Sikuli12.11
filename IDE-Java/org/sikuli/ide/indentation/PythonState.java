@@ -9,7 +9,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 /**
  * This class is used to determine the state at any given position in a python
@@ -160,7 +160,7 @@ public class PythonState {
    /**
     * Sets the number of whitespace columns that equals a single tab. This is
     * used to calculate the indentation of lines.
-    * 
+    *
     * @param tabsize
     *           the number of whitespace columns that equals a single tab
     */
@@ -171,7 +171,7 @@ public class PythonState {
    /**
     * Returns the number of whitespace columns equalling a single tab that is
     * used to calculate the indentation of lines.
-    * 
+    *
     * @return the number of whitespace columns that equals a single tab
     */
    public int getTabSize(){
@@ -217,7 +217,7 @@ public class PythonState {
     * Feeds a chunk of text to this object. The text will be (virtually)
     * appended to any text that was fed to this object earlier since the last
     * reset.
-    * 
+    *
     * @param newChunk
     *           a new chunk of text
     */
@@ -499,7 +499,7 @@ public class PythonState {
 
    /**
     * Returns the state of the python document seen so far.
-    * 
+    *
     * @return the current state
     */
    public State getState(){
@@ -509,7 +509,7 @@ public class PythonState {
    /**
     * Returns true if the state of the document seen by this object is not
     * inside any parenthesis, string or comment.
-    * 
+    *
     * @return true if the current state is the default state
     */
    public boolean inDefaultState(){
@@ -519,7 +519,7 @@ public class PythonState {
    /**
     * Returns true if the state of the document seen by this object is inside a
     * parenthesis (including square brackets and curly braces).
-    * 
+    *
     * @return true if the current state is inside a parenthesis
     */
    public boolean inParenthesis(){
@@ -529,7 +529,7 @@ public class PythonState {
    /**
     * Returns true if the state of the document seen by this object is inside a
     * string (short string or long string).
-    * 
+    *
     * @return true if the current state is inside a string
     */
    public boolean inString(){
@@ -546,7 +546,7 @@ public class PythonState {
    /**
     * Returns true if the state of the document seen by this object is inside a
     * long string.
-    * 
+    *
     * @return true if the current state is inside a long string
     */
    public boolean inLongString(){
@@ -557,7 +557,7 @@ public class PythonState {
    /**
     * Returns true if the state of the document seen by this object is inside a
     * comment.
-    * 
+    *
     * @return true if the current state is inside a comment
     */
    public boolean inComment(){
@@ -572,7 +572,7 @@ public class PythonState {
     * Note that parentheses can be nested at any depth, but only one level of
     * string can be nested inside the innermost parentheses because anything
     * inside a string is not interpreted.
-    * 
+    *
     * @return the nesting level of parentheses and strings of the current state
     */
    public int getDepth(){
@@ -613,7 +613,7 @@ public class PythonState {
     * <td>{@code if x: pass #}</td>
     * </tr>
     * </table>
-    * 
+    *
     * @return
     */
    public String getLastLogicalLineStructure(){
@@ -624,7 +624,7 @@ public class PythonState {
     * Returns the last physical line seen by this object, including the
     * terminating end-of-line sequence. If the last line seen by this object is
     * not a complete physical line, the return value is undefined.
-    * 
+    *
     * @return the last complete physical line seen by this object
     */
    public String getLastPhysicalLine(){
@@ -638,7 +638,7 @@ public class PythonState {
     * include all complete physical lines seen of which the logical line is
     * comprised. If explicit line joining has occurred, any escaped end-of-line
     * sequence is not included in the logical line.
-    * 
+    *
     * @return the last complete logical line seen seen by this instance
     */
    public String getLastLogicalLine(){
@@ -648,7 +648,7 @@ public class PythonState {
    /**
     * Returns the physical line number of the last physical line seen by this
     * object.
-    * 
+    *
     * @return the physical line number of the line returned by
     *         {@link #getLastPhysicalLine()} (0-based)
     */
@@ -659,7 +659,7 @@ public class PythonState {
    /**
     * Returns the logical line number of the last logical line seen by this
     * object.
-    * 
+    *
     * @return the logical line number of the line returned by
     *         {@link #getLastLogicalLine()} (0-based)
     */
@@ -670,7 +670,7 @@ public class PythonState {
    /**
     * Returns the physical line number of the first physical line in the last
     * logical line seen by this object.
-    * 
+    *
     * @return the physical line number of the first physical line in the logical
     *         line returned by {@link #getLastLogicalLine()} (0-based)
     */
@@ -681,7 +681,7 @@ public class PythonState {
    /**
     * Returns whether the last physical line seen by this object is complete. A
     * physical line is complete if it is terminated by an end-of-line sequence.
-    * 
+    *
     * @return true if the line returned by {@link #getLastPhysicalLine()} is
     *         complete
     */
@@ -701,7 +701,7 @@ public class PythonState {
     * <li>it does not contain any open parenthesis or string delimiter without
     * the matching closing parenthesis or string delimiter
     * </ul>
-    * 
+    *
     * @return true if the line returned by {@link #getLastLogicalLine()} is
     *         complete
     */
@@ -714,7 +714,7 @@ public class PythonState {
     * joined with the following line, i.e. whether its end-of-line sequence is
     * escaped with a backslash and the backslash is not inside a comment. If the
     * last physical line seen is not complete, the return value is undefined.
-    * 
+    *
     * @return true if the last complete physical line is explicitly joined with
     *         the following line
     */
@@ -743,7 +743,7 @@ public class PythonState {
     * <p>
     * Any tab characters in the leading whitespace of the line are counted as
     * the equivalent number of blank characters.
-    * 
+    *
     * @return the indentation of the last complete physical line
     * @throws IllegalStateException
     *            if the last physical line is not complete
@@ -762,7 +762,7 @@ public class PythonState {
     * <p>
     * Any tab characters in the leading whitespace of the line are counted as
     * the equivalent number of blank characters.
-    * 
+    *
     * @return the indentation of the last logical line
     * @throws IllegalStateException
     *            if the first physical line in the last logical line is not
@@ -777,7 +777,7 @@ public class PythonState {
 
    /**
     * Returns the indentation of the previous physical line.
-    * 
+    *
     * @return the indentation of the previous physical line
     * @throws IllegalStateException
     *            if no complete physical line or only one complete physical line
@@ -792,7 +792,7 @@ public class PythonState {
 
    /**
     * Returns the indentation of the previous logical line.
-    * 
+    *
     * @return the indentation of the previous logical line
     * @throws IllegalStateException
     *            if no logical line or only one logical line has been seen by

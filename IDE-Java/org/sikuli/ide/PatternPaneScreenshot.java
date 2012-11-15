@@ -13,15 +13,15 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import org.sikuli.core.Finder;
-import org.sikuli.core.Match;
-import org.sikuli.core.Pattern;
-import org.sikuli.core.Region;
-import org.sikuli.core.ScreenImage;
-import org.sikuli.core.UnionScreen;
+import org.sikuli.script.Finder;
+import org.sikuli.script.Match;
+import org.sikuli.script.Pattern;
+import org.sikuli.script.Region;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.ScreenUnion;
 import org.sikuli.ide.util.LoadingSpinner;
 import org.sikuli.script.natives.Vision;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.Debug;
 
 class PatternPaneScreenshot extends JPanel implements ChangeListener, ComponentListener {
 
@@ -54,7 +54,7 @@ class PatternPaneScreenshot extends JPanel implements ChangeListener, ComponentL
 	}
 
 	private void init(ScreenImage simg) {
-		_match_region = new UnionScreen();
+		_match_region = new ScreenUnion();
 		int w = _match_region.w, h = _match_region.h;
 		_ratio = (double) w / h;
 		_height = DEFAULT_H;

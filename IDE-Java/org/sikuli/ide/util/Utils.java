@@ -11,8 +11,8 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 import javax.imageio.*;
-import org.sikuli.core.FileManager;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.FileManager;
+import org.sikuli.script.Debug;
 
 public class Utils {
 

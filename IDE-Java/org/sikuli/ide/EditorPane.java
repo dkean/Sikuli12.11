@@ -23,12 +23,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import org.python.util.PythonInterpreter;
-import org.sikuli.core.ImageLocator;
-import org.sikuli.core.Settings;
+import org.sikuli.script.ImageLocator;
+import org.sikuli.script.Settings;
 import org.sikuli.ide.indentation.PythonIndentation;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.script.ScriptRunner;
-import org.sikuli.utility.Debug;
+import org.sikuli.script.SikuliScriptRunner;
+import org.sikuli.script.Debug;
 
 public class EditorPane extends JTextPane implements KeyListener, CaretListener {
 
@@ -658,7 +658,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 	}
 
   private void convertSrcToHtml(String bundle) {
-    PythonInterpreter py = ScriptRunner.getPythonInterpreter();
+    PythonInterpreter py = SikuliScriptRunner.getPythonInterpreter();
     Debug.log(2, "Convert Sikuli source code " + bundle + " to HTML");
     py.set("local_convert", true);
     py.set("sikuli_src", bundle);
@@ -669,7 +669,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     if (!PreferencesUser.getInstance().getAtSaveCleanBundle()) {
       return;
     }
-    PythonInterpreter py = ScriptRunner.getPythonInterpreter();
+    PythonInterpreter py = SikuliScriptRunner.getPythonInterpreter();
     Debug.log(2, "Clear source bundle " + bundle);
     py.set("bundle_path", bundle);
     py.exec(pyBundleCleaner);
