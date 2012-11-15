@@ -12,6 +12,11 @@ import org.sikuli.system.OSUtil;
 import org.sikuli.utility.Debug;
 
 public class Settings {
+	public static final int ISWINDOWS = 0;
+	public static final int ISLINUX = 2;
+	public static final int ISNOTSUPPORTED = 3;
+	public static final float FOREVER = Float.POSITIVE_INFINITY;
+	public static final int ISMAC = 1;
 
   static {
   }
@@ -79,28 +84,28 @@ public class Settings {
   }
 
   public static int getOS() {
-    int osRet = Constants.ISNOTSUPPORTED;
+    int osRet = ISNOTSUPPORTED;
     String os = System.getProperty("os.name").toLowerCase();
     if (os.startsWith("mac")) {
-      osRet = Constants.ISMAC;
+      osRet = ISMAC;
     } else if (os.startsWith("windows")) {
-      osRet = Constants.ISWINDOWS;
+      osRet = ISWINDOWS;
     } else if (os.startsWith("linux")) {
-      osRet = Constants.ISLINUX;
+      osRet = ISLINUX;
     }
     return osRet;
   }
 
   public static boolean isWindows() {
-    return getOS() == Constants.ISWINDOWS;
+    return getOS() == ISWINDOWS;
   }
 
   public static boolean isLinux() {
-    return getOS() == Constants.ISLINUX;
+    return getOS() == ISLINUX;
   }
 
   public static boolean isMac() {
-    return getOS() == Constants.ISMAC;
+    return getOS() == ISMAC;
   }
 
   public static String getOSVersion() {
@@ -110,11 +115,11 @@ public class Settings {
   static String getOSUtilClass() {
     String pkg = "org.sikuli.system.";
     switch (getOS()) {
-      case Constants.ISMAC:
+      case ISMAC:
         return pkg + "MacUtil";
-      case Constants.ISWINDOWS:
+      case ISWINDOWS:
         return pkg + "Win32Util";
-      case Constants.ISLINUX:
+      case ISLINUX:
         return pkg + "LinuxUtil";
       default:
         Debug.error("Warning: Sikuli doesn't fully support your OS.");

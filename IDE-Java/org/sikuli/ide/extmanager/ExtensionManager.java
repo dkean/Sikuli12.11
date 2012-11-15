@@ -3,12 +3,14 @@
  * Released under the MIT License.
  *
  */
-package org.sikuli.utility;
+package org.sikuli.ide.extmanager;
 
-import org.sikuli.core.Env;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import org.sikuli.core.FileManager;
+import org.sikuli.core.Settings;
+import org.sikuli.utility.Debug;
 
 class Extension implements Serializable{
    public String name;
@@ -128,7 +130,7 @@ public class ExtensionManager {
       String tmpdir = System.getProperty("java.io.tmpdir");
       try{
          URL url = new URL(url_);
-         File localFile = new File(Util.downloadURL(url, tmpdir));
+         File localFile = new File(FileManager.downloadURL(url, tmpdir));
          String extName = getExtName(localFile.getName());
          File targetFile = new File(extPath, extName);
          if(targetFile.exists())
@@ -151,7 +153,7 @@ public class ExtensionManager {
     *  returns the absolute path to the user's extension path
     */
    public String getUserExtPath(){
-      String ret = Env.getSikuliDataPath() + File.separator + "extensions";
+      String ret = Settings.getSikuliDataPath() + File.separator + "extensions";
       File f = new File(ret);
       if(!f.exists())
         f.mkdirs();

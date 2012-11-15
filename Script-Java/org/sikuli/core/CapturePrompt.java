@@ -6,13 +6,10 @@
  */
 package org.sikuli.core;
 
-import org.sikuli.utility.Debug;
-import org.sikuli.utility.Observer;
-import org.sikuli.utility.Subject;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import org.sikuli.system.OS;
+import org.sikuli.utility.Debug;
 
 public class CapturePrompt extends TransparentWindow implements Subject {
 

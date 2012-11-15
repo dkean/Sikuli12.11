@@ -13,9 +13,9 @@ import org.sikuli.core.CapturePrompt;
 import org.sikuli.core.IScreen;
 import org.sikuli.core.Region;
 import org.sikuli.core.ScreenImage;
+import org.sikuli.core.Subject;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Observer;
-import org.sikuli.utility.Subject;
+import org.sikuli.core.Observer;
 
 class ButtonRegion extends JButton implements ActionListener, Observer {
 

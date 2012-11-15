@@ -4,7 +4,9 @@
  *
  * modified RaiMan 2012
  */
-package org.sikuli.utility;
+package org.sikuli.core;
+
+import org.sikuli.core.Subject;
 
 public interface Observer {
 

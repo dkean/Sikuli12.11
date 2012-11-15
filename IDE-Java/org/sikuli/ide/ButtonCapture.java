@@ -5,17 +5,17 @@
  */
 package org.sikuli.ide;
 
-import org.sikuli.ide.util.Utils;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import org.sikuli.core.CapturePrompt;
+import org.sikuli.core.Observer;
 import org.sikuli.core.ScreenImage;
+import org.sikuli.core.Subject;
+import org.sikuli.ide.util.Utils;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Observer;
-import org.sikuli.utility.Subject;
 
 class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable, Observer {
 

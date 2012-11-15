@@ -11,8 +11,8 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 import javax.imageio.*;
+import org.sikuli.core.FileManager;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Util;
 
 public class Utils {
 
@@ -98,7 +98,7 @@ public class Utils {
 	}
 
 	public static String slashify(String path, boolean isDirectory) {
-		return Util.slashify(path, isDirectory);
+		return FileManager.slashify(path, isDirectory);
 	}
 
 	public static String saveTmpImage(BufferedImage img) {

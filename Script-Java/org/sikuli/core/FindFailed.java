@@ -5,8 +5,6 @@
  */
 package org.sikuli.core;
 
-import org.sikuli.utility.SikuliException;
-
 public class FindFailed extends SikuliException {
    public FindFailed(String msg){
       super(msg);

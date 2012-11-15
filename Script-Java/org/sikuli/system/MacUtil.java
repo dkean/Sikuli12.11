@@ -11,14 +11,14 @@ import java.awt.Window;
 import javax.swing.JOptionPane;
 import org.sikuli.core.Region;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.LibLoader;
+import org.sikuli.core.FileManager;
 
 public class MacUtil implements OSUtil {
 
   private static boolean _askedToEnableAX = false;
 
   static {
-    LibLoader.loadLibrary("MacUtil");
+    FileManager.loadLibrary("MacUtil");
   }
 
 	@Override

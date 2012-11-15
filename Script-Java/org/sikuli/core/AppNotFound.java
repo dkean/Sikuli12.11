@@ -4,9 +4,9 @@
  *
  * modified RaiMan 2012
  */
-package org.sikuli.system;
+package org.sikuli.core;
 
-import org.sikuli.utility.SikuliException;
+import org.sikuli.core.SikuliException;
 
 public class AppNotFound extends SikuliException {
 

@@ -8,16 +8,14 @@ package org.sikuli.script;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import javax.swing.*;
 import org.python.util.PythonInterpreter;
+import org.sikuli.core.FileManager;
 import org.sikuli.core.ImageLocator;
 import org.sikuli.core.ScreenHighlighter;
 import org.sikuli.utility.CommandArgs;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Util;
 
 public class ScriptRunner {
 
@@ -124,17 +122,17 @@ public class ScriptRunner {
 
 		// where the java command is run
 		addTempHeader("addModPath(\""
-						+ Util.slashify(System.getProperty("user.dir"), true) + "\")");
+						+ FileManager.slashify(System.getProperty("user.dir"), true) + "\")");
 
 		// the script directory ..../foobar.sikuli
 		addTempHeader("addModPath(\""
-						+ Util.slashify(bundlePath, true) + "\")");
+						+ FileManager.slashify(bundlePath, true) + "\")");
 
 		// the directory whre the .sikuli is located
-		String parent = Util.getParentPath(bundlePath);
+		String parent =  (new File(bundlePath)).getParent();
 		if (parent != null) {
 			addTempHeader("addModPath(\""
-							+ Util.slashify(parent, true) + "\")");
+							+ FileManager.slashify(parent, true) + "\")");
 		}
 
 		addTempHeader("sys.argv = ['' for i in range(" + sysargv.size() + ")]");

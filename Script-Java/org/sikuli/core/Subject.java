@@ -4,7 +4,7 @@
  *
  * modified RaiMan 2012
  */
-package org.sikuli.utility;
+package org.sikuli.core;
 
 public interface Subject {
 

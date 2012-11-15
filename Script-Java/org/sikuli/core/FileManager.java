@@ -1,27 +1,30 @@
-package org.sikuli.utility;
+package org.sikuli.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.sikuli.core.Settings;
+import org.sikuli.utility.Debug;
 
-public class LibLoader {
+public class FileManager {
 
   private static File jniDir = null;
   private static String libSource;
   private static String[] libPathsSettings;
   private static ArrayList<String> libPaths;
   private static StringBuffer alreadyLoaded = new StringBuffer("");
+	static final int DOWNLOAD_BUFFER_SIZE = 153600;
 
   static {
     libSource = Settings.libSource;
     libPathsSettings = new String[]{
-      Util.slashify(System.getenv("SIKULI_HOME"), true) + "libs",
+      slashify(System.getenv("SIKULI_HOME"), true) + "libs",
       System.getenv("SIKULI_HOME"),
 			Settings.libPathMac, Settings.libPathWin};
     libPaths = new ArrayList<String>(Arrays.asList(libPathsSettings));
@@ -49,13 +52,13 @@ public class LibLoader {
       Debug.log(2, "Native library found: " + libname);
       libFound = true;
     } catch (IOException ex) {
-      Debug.error(LibLoader.class.getName() + ".loadLibrary: Native library could not be extracted nor found: " + libname);
+      Debug.error(FileManager.class.getName() + ".loadLibrary: Native library could not be extracted nor found: " + libname);
       System.exit(1);
     }
     try {
       System.load(lib.getAbsolutePath());
     } catch (Error e) {
-      Debug.error(LibLoader.class.getName() + ".loadLibrary: Native library could not be loaded: " + libname);
+      Debug.error(FileManager.class.getName() + ".loadLibrary: Native library could not be loaded: " + libname);
       if (libFound) {
         Debug.error("Since native library was found, it might be a problems with needed dependent libraries");
 				e.printStackTrace();
@@ -181,7 +184,52 @@ public class LibLoader {
     return extractJniResource(resourcename, new File(outputname));
   }
 
-  /**
+	/**
+	 * Assume the list of resources can be found at path/filelist.txt
+	 * @return the local path to the extracted resources
+	 */
+	public static String extract(String path) throws IOException {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		InputStream in = cl.getResourceAsStream(path + "/filelist.txt");
+		String localPath = System.getProperty("java.io.tmpdir") + "/sikuli/" + path;
+		new File(localPath).mkdirs();
+		Debug.log(4, "extract resources " + path + " to " + localPath);
+		writeFileList(in, path, localPath);
+		return localPath + "/";
+	}
+
+	private static void writeFileList(InputStream ins, String fromPath, String outPath) throws IOException {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		BufferedReader r = new BufferedReader(new InputStreamReader(ins));
+		String line;
+		while ((line = r.readLine()) != null) {
+			Debug.log(7, "write " + line);
+			if (line.startsWith("./")) {
+				line = line.substring(1);
+			}
+			String fullpath = outPath + line;
+			File outf = new File(fullpath);
+			outf.getParentFile().mkdirs();
+			InputStream in = cl.getResourceAsStream(fromPath + line);
+			if (in != null) {
+				OutputStream out = null;
+				try {
+					out = new FileOutputStream(outf);
+					copy(in, out);
+				} catch (IOException e) {
+					Debug.log("Can't extract " + fromPath + line + ": " + e.getMessage());
+				} finally {
+					if (out != null) {
+						out.close();
+					}
+				}
+			} else {
+				Debug.log("Resource not found: " + fromPath + line);
+			}
+		}
+	}
+
+	/**
    * copy an InputStream to an OutputStream.
    *
    * @param in InputStream to copy from
@@ -199,4 +247,37 @@ public class LibLoader {
       out.write(tmp, 0, len);
     }
   }
+
+	public static String downloadURL(URL url, String localPath) throws IOException {
+		InputStream reader = url.openStream();
+		String[] path = url.getPath().split("/");
+		String filename = path[path.length - 1];
+		File fullpath = new File(localPath, filename);
+		FileOutputStream writer = new FileOutputStream(fullpath);
+		byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+		int totalBytesRead = 0;
+		int bytesRead = 0;
+		while ((bytesRead = reader.read(buffer)) > 0) {
+			writer.write(buffer, 0, bytesRead);
+			totalBytesRead += bytesRead;
+		}
+		reader.close();
+		writer.close();
+		return fullpath.getAbsolutePath();
+	}
+
+	public static String slashify(String path, boolean isDirectory) {
+		if (path == null) {
+			path = "";
+		}
+		String p = path;
+		if (File.separatorChar != '/') {
+			p = p.replace(File.separatorChar, '/');
+		}
+		if (!p.endsWith("/") && isDirectory) {
+			p = p + "/";
+		}
+		return p;
+	}
+
 }

@@ -14,7 +14,7 @@ import javax.swing.*;
 import org.apache.commons.cli.CommandLine;
 import org.python.util.jython;
 import org.sikuli.core.Settings;
-import org.sikuli.system.App;
+import org.sikuli.core.App;
 import org.sikuli.utility.CommandArgs;
 import org.sikuli.utility.Debug;
 

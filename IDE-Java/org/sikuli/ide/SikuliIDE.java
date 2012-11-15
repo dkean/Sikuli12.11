@@ -31,8 +31,10 @@ import org.sikuli.core.CapturePrompt;
 import org.sikuli.core.HotkeyEvent;
 import org.sikuli.core.HotkeyListener;
 import org.sikuli.core.HotkeyManager;
+import org.sikuli.core.Observer;
 import org.sikuli.core.ScreenImage;
 import org.sikuli.core.Settings;
+import org.sikuli.core.Subject;
 import org.sikuli.ide.EditorKit;
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
@@ -42,8 +44,6 @@ import org.sikuli.script.ScriptRunner;
 import org.sikuli.script.SikuliScript;
 import org.sikuli.utility.CommandArgs;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Observer;
-import org.sikuli.utility.Subject;
 
 public class SikuliIDE extends JFrame {
 

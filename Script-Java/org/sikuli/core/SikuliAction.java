@@ -3,7 +3,7 @@
  * Released under the MIT License.
  *
  */
-package org.sikuli.utility;
+package org.sikuli.core;
 
 import org.sikuli.core.Match;
 import org.sikuli.core.Region;

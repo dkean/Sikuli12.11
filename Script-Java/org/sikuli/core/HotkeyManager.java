@@ -7,12 +7,7 @@ package org.sikuli.core;
 
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
-import org.sikuli.core.Constants;
 import org.sikuli.utility.Debug;
-import org.sikuli.core.HotkeyListener;
-import org.sikuli.core.Key;
-import org.sikuli.core.Settings;
-import org.sikuli.system.OS;
 
 public abstract class HotkeyManager {
 
@@ -22,11 +17,11 @@ public abstract class HotkeyManager {
       String pkg = "org.sikuli.hotkey.";
       int theOS = Settings.getOS();
       switch (theOS) {
-         case Constants.ISMAC:
+         case Settings.ISMAC:
             return pkg + "MacHotkeyManager";
-         case Constants.ISWINDOWS:
+         case Settings.ISWINDOWS:
             return pkg + "WindowsHotkeyManager";
-         case Constants.ISLINUX:
+         case Settings.ISLINUX:
             return pkg + "LinuxHotkeyManager";
          default:
             Debug.error("Error: Hotkey registration is not supported on your OS.");
@@ -40,7 +35,7 @@ public abstract class HotkeyManager {
 
    protected String getKeyModifierText(int modifiers) {
       String txtMod = KeyEvent.getKeyModifiersText(modifiers).toUpperCase();
-      if (Env.isMac()) {
+      if (Settings.isMac()) {
          txtMod = txtMod.replace("META", "CMD");
          txtMod = txtMod.replace("WINDOWS", "CMD");
       } else {

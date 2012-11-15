@@ -20,8 +20,7 @@ import org.sikuli.script.natives.OCRWord;
 import org.sikuli.script.natives.OCRWords;
 import org.sikuli.script.natives.Vision;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.LibLoader;
-import org.sikuli.utility.ResourceExtractor;
+import org.sikuli.core.FileManager;
 
 // Singleton
 public class TextRecognizer {
@@ -29,7 +28,7 @@ public class TextRecognizer {
   protected static TextRecognizer _instance = null;
 
   static {
-    LibLoader.loadLibrary("VisionProxy");
+    FileManager.loadLibrary("VisionProxy");
 //TODO         TextRecognizer tr = TextRecognizer.getInstance();
   }
 
@@ -41,7 +40,7 @@ public class TextRecognizer {
   public void init() {
     Debug.info("Text Recognizer inited.");
     try {
-      String path = ResourceExtractor.extract("tessdata");
+      String path = FileManager.extract("tessdata");
       // TESSDATA_PREFIX doesn't contain tessdata/
       if (path.endsWith("tessdata/")) {
         path = path.substring(0, path.length() - 9);

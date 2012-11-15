@@ -7,20 +7,10 @@
 package org.sikuli.core;
 
 import java.awt.*;
-import java.awt.event.*;
-import org.sikuli.core.Key;
-import org.sikuli.core.Location;
-import org.sikuli.core.Region;
-import org.sikuli.core.Settings;
-import org.sikuli.core.HotkeyListener;
-import org.sikuli.core.HotkeyManager;
-import org.sikuli.system.App;
-import org.sikuli.system.OS;
-import org.sikuli.utility.Clipboard;
 
 /**
  * features moved to other classes, details below with the methods
- * @author rhocke
+ * @author RaiMan
  * @deprecated
  */
 @Deprecated
@@ -76,18 +66,9 @@ public class Env {
    * @deprecated use the Settings features
    */
   @Deprecated
-  public static OS getOS() {
-    OS osRet = OS.NOT_SUPPORTED;
-    String os = System.getProperty("os.name").toLowerCase();
-    if (os.startsWith("mac os x")) {
-      osRet = OS.MAC;
-    } else if (os.startsWith("windows")) {
-      osRet = OS.WINDOWS;
-    } else if (os.startsWith("linux")) {
-      osRet = OS.LINUX;
-    }
-    return osRet;
-  }
+  public static int getOS() {
+		return Settings.getOS();
+	}
 
   /**
    * @return true/false
@@ -143,9 +124,8 @@ public class Env {
    */
   @Deprecated
   public static void setClipboard(String text) {
-    Clipboard.putText(Clipboard.PLAIN, Clipboard.UTF8,
-            Clipboard.BYTE_BUFFER, text);
-  }
+		App.setClipboard(text);
+	}
 
   /**
    * get the lock state of the given key

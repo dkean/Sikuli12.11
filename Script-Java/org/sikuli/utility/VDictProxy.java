@@ -6,6 +6,7 @@
  */
 package org.sikuli.utility;
 
+import org.sikuli.core.FileManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class VDictProxy<T> {
    private Map<Integer, T> _i2obj = new HashMap<Integer, T>();
 
    static {
-         LibLoader.loadLibrary("VDictProxy");
+         FileManager.loadLibrary("VDictProxy");
    }
 
    public VDictProxy(){

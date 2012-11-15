@@ -10,12 +10,12 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import org.sikuli.core.Region;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.LibLoader;
+import org.sikuli.core.FileManager;
 
 public class Win32Util implements OSUtil {
 
   static {
-    LibLoader.loadLibrary("Win32Util");
+    FileManager.loadLibrary("Win32Util");
   }
 
   // compatible to the old switchApp

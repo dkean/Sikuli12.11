@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.Util;
 
 public class ImageLocator {
 
@@ -310,7 +309,7 @@ public class ImageLocator {
 				Debug.log(2, "ImageLocator.getFileFromURL: " + uri + " taken from cache");
 				return _cache.get(uri);
 			}
-			String localFile = Util.downloadURL(url, _cache_dir_global.getPath());
+			String localFile = FileManager.downloadURL(url, _cache_dir_global.getPath());
 			Debug.log(2, "ImageLocator.getFileFromURL: download " + uri + " to local: " + localFile);
 			_cache.put(uri, localFile);
 			return localFile;

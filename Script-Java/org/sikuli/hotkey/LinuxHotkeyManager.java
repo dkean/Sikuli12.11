@@ -12,11 +12,11 @@ import jxgrabkey.JXGrabKey;
 import org.sikuli.utility.Debug;
 import org.sikuli.core.HotkeyEvent;
 import org.sikuli.core.HotkeyListener;
-import org.sikuli.utility.LibLoader;
+import org.sikuli.core.FileManager;
 
 public class LinuxHotkeyManager extends HotkeyManager {
    static{
-         LibLoader.loadLibrary("JXGrabKey");
+         FileManager.loadLibrary("JXGrabKey");
    }
 
    class HotkeyData {

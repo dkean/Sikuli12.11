@@ -16,8 +16,6 @@ import org.sikuli.script.natives.TARGET_TYPE;
 import org.sikuli.script.natives.Vision;
 import org.sikuli.text.TextRecognizer;
 import org.sikuli.utility.Debug;
-import org.sikuli.utility.LibLoader;
-import org.sikuli.utility.Util;
 
 public class Finder implements Iterator<Match> {
 
@@ -30,7 +28,7 @@ public class Finder implements Iterator<Match> {
 
   //TODO Vision.setParameter("GPU", 1);
   static {
-    LibLoader.loadLibrary("VisionProxy");
+    FileManager.loadLibrary("VisionProxy");
   }
 
   /**
@@ -224,7 +222,7 @@ public class Finder implements Iterator<Match> {
       fin.setTarget(TARGET_TYPE.IMAGE, filename);
       return filename;
     } catch (IOException e) {
-      if (Settings.OcrTextSearch && Util.isImageFile(target)) {
+      if (Settings.OcrTextSearch && isImageFile(target)) {
         if (!repeating) {
           Debug.error(target +
                 " looks like a file, but not on disk. Assume it's text.");
@@ -239,4 +237,17 @@ public class Finder implements Iterator<Match> {
       return target;
     }
   }
+
+	public static boolean isImageFile(String fname) {
+		int dot = fname.lastIndexOf('.');
+		if (dot < 0) {
+			return false;
+		}
+		String suffix = fname.substring(dot + 1).toLowerCase();
+		if (suffix.equals("png") || suffix.equals("jpg")) {
+			return true;
+		}
+		return false;
+	}
+
 }

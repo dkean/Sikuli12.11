@@ -8,12 +8,12 @@
 
 package org.sikuli.script.natives;
 
-   import org.sikuli.utility.LibLoader;
+   import org.sikuli.core.FileManager;
 
 public class VisionProxyJNI {
 
    static {
-      LibLoader.loadLibrary("VisionProxy");
+      FileManager.loadLibrary("VisionProxy");
    }
 
   public final static native long new_FindResults__SWIG_0();

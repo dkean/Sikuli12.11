@@ -10,7 +10,7 @@ import org.sikuli.core.HotkeyManager;
 import org.sikuli.core.HotkeyListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import org.sikuli.utility.LibLoader;
+import org.sikuli.core.FileManager;
 
 // http://lists.apple.com/archives/mac-games-dev/2001/Sep/msg00113.html
 // full key table: http://www.mactech.com/articles/mactech/Vol.04/04.12/Macinkeys/
@@ -23,7 +23,7 @@ public class MacHotkeyManager extends HotkeyManager {
   static final int CARBON_MASK_CTRL = 0x1000;
 
   static {
-    LibLoader.loadLibrary("MacHotkeyManager");
+    FileManager.loadLibrary("MacHotkeyManager");
   }
 
   @Override
