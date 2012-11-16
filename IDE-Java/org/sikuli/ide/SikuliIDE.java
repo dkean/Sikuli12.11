@@ -1692,6 +1692,7 @@ public class SikuliIDE extends JFrame {
       errorClass = PY_UNKNOWN;
       errorType = "--UnKnown--";
       errorText = "--UnKnown--";
+
       String msg;
       Matcher mFile = null;
 
@@ -1780,6 +1781,7 @@ public class SikuliIDE extends JFrame {
       Pattern pModule = Pattern.compile(".*/(.*?).py");
       //Matcher mFile = pFile.matcher(etext);
       String mod;
+			String modIgnore = "SikuliImporter,";
       StringBuilder trace = new StringBuilder();
       String telem;
       while (m.find()) {
@@ -1789,6 +1791,9 @@ public class SikuliIDE extends JFrame {
           Matcher mModule = pModule.matcher(m.group(1));
           mModule.find();
           mod = mModule.group(1);
+					if (modIgnore.contains(mod+",")) {
+						continue;
+					}
         }
         telem = m.group(2) + ": " + mod + " ( " +
                 m.group(3) + " ) " + m.group(4) + NL;
@@ -1990,10 +1995,14 @@ public class SikuliIDE extends JFrame {
                 try {
                   JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(i);
                   EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
+									int count = _mainPane.getComponentCount();
                   Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                   boolean ret = codePane.close();
                   Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
                   //checkDirtyPanes(); //RaiMan no longer needed - no global dirty
+									if (_mainPane.getTabCount() < 2) {
+										(new FileAction()).doNew(null);
+									}
                   return ret;
                 } catch (Exception e) {
                   Debug.info("Can't close this tab: " + e.getStackTrace());

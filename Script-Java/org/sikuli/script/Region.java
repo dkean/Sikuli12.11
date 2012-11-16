@@ -33,7 +33,7 @@ public class Region {
 	 * width/height given at time of creation
 	 */
 	public int vWidth, vHeight;
-  protected SExFindFailedResponse findFailedResponse =
+  protected FindFailedResponse findFailedResponse =
           Settings.defaultFindFailedResponse;
   /**
 	 *
@@ -369,9 +369,9 @@ public class Region {
   public void setThrowException(boolean flag) {
     throwException = flag;
     if (throwException) {
-      findFailedResponse = SExFindFailedResponse.ABORT;
+      findFailedResponse = FindFailedResponse.ABORT;
     } else {
-      findFailedResponse = SExFindFailedResponse.SKIP;
+      findFailedResponse = FindFailedResponse.SKIP;
     }
   }
 
@@ -412,7 +412,7 @@ public class Region {
    *
    * @param response FindFailedResponse.XXX
    */
-  public void setFindFailedResponse(SExFindFailedResponse response) {
+  public void setFindFailedResponse(FindFailedResponse response) {
     findFailedResponse = response;
   }
 
@@ -420,7 +420,7 @@ public class Region {
    *
    * @return the current setting (see setFindFailedResponse)
    */
-  public SExFindFailedResponse getFindFailedResponse() {
+  public FindFailedResponse getFindFailedResponse() {
     return findFailedResponse;
   }
   //</editor-fold>
@@ -1318,11 +1318,11 @@ public class Region {
   /**
    * return false to skip return true to try again throw FindFailed to abort
    */
-  private <PSC> boolean handleFindFailed(PSC target) throws SExFindFailed {
+  private <PSC> boolean handleFindFailed(PSC target) throws FindFailed {
 
-    SExFindFailedResponse response;
-    if (findFailedResponse == SExFindFailedResponse.PROMPT) {
-      SExFindFailedDialog fd = new SExFindFailedDialog(target);
+    FindFailedResponse response;
+    if (findFailedResponse == FindFailedResponse.PROMPT) {
+      FindFailedDialog fd = new FindFailedDialog(target);
       fd.setVisible(true);
       response = fd.getResponse();
 
@@ -1331,12 +1331,12 @@ public class Region {
     }
 
 
-    if (response == SExFindFailedResponse.SKIP) {
+    if (response == FindFailedResponse.SKIP) {
       return false;
-    } else if (response == SExFindFailedResponse.RETRY) {
+    } else if (response == FindFailedResponse.RETRY) {
       return true;
-    } else if (response == SExFindFailedResponse.ABORT) {
-      throw new SExFindFailed("can not find " + target + " on the screen.");
+    } else if (response == FindFailedResponse.ABORT) {
+      throw new FindFailed("can not find " + target + " on the screen.");
     }
 
     return false;
@@ -1351,7 +1351,7 @@ public class Region {
    * @return If found, the element. null otherwise
    * @throws FindFailed if the Find operation failed
    */
-  public <PatternOrString> Match find(final PatternOrString target) throws SExFindFailed {
+  public <PatternOrString> Match find(final PatternOrString target) throws FindFailed {
     if (autoWaitTimeout > 0) {
       return wait(target, autoWaitTimeout);
     }
@@ -1359,7 +1359,7 @@ public class Region {
       try {
         lastMatch = doFind(target);
       } catch (Exception e) {
-        throw new SExFindFailed(e.getMessage());
+        throw new FindFailed(e.getMessage());
       }
       if (lastMatch != null) {
         lastMatch.setImage(getImageFilename(target));
@@ -1380,7 +1380,7 @@ public class Region {
    * @return All elements matching
    * @throws FindFailed if the Find operation failed
    */
-  public <PatternOrString> Iterator<Match> findAll(PatternOrString target) throws SExFindFailed {
+  public <PatternOrString> Iterator<Match> findAll(PatternOrString target) throws FindFailed {
     while (true) {
       try {
         if (autoWaitTimeout > 0) {
@@ -1391,7 +1391,7 @@ public class Region {
           lastMatches = doFindAll(target);
         }
       } catch (Exception e) {
-        throw new SExFindFailed(e.getMessage());
+        throw new FindFailed(e.getMessage());
       }
       if (lastMatches != null) {
         return lastMatches;
@@ -1402,7 +1402,7 @@ public class Region {
     }
   }
 
-  public <PatternOrString> Match wait(PatternOrString target) throws SExFindFailed {
+  public <PatternOrString> Match wait(PatternOrString target) throws FindFailed {
     return wait(target, autoWaitTimeout);
   }
 
@@ -1415,7 +1415,7 @@ public class Region {
    * @return All elements matching
    * @throws FindFailed if the Find operation failed
    */
-  public <PatternOrString> Match wait(PatternOrString target, double timeout) throws SExFindFailed {
+  public <PatternOrString> Match wait(PatternOrString target, double timeout) throws FindFailed {
 
     while (true) {
       try {
@@ -1425,7 +1425,7 @@ public class Region {
         lastMatch = rf.getMatch();
 
       } catch (Exception e) {
-        throw new SExFindFailed(e.getMessage());
+        throw new FindFailed(e.getMessage());
       }
 
       if (lastMatch != null) {
@@ -1470,7 +1470,7 @@ public class Region {
         return lastMatch;
       }
     } catch (Exception ex) {
-      throw new SExFindFailed(ex.getMessage());
+      throw new FindFailed(ex.getMessage());
     }
     return null;
   }
@@ -1565,7 +1565,7 @@ public class Region {
     Finder f = new Finder(simg, this);
     if (ptn instanceof String) {
       if (null == f.find((String) ptn)) {
-        throw new IOException("ImageFile " + ptn + "not found on disk");
+        throw new IOException("ImageFile " + ptn + " not found on disk");
       }
     } else {
       if (null == f.find((Pattern) ptn)) {
@@ -1588,7 +1588,7 @@ public class Region {
    * @deprecated should not be used anymore - use find() instead
    */
   @Deprecated
-  public <PSC> Match findNow(PSC ptn) throws SExFindFailed {
+  public <PSC> Match findNow(PSC ptn) throws FindFailed {
     Debug.log("capture: " + x + "," + y);
     ScreenImage simg = getScreen().capture(x, y, w, h);
     Debug.log("ScreenImage: " + simg.getROI());
@@ -1597,11 +1597,11 @@ public class Region {
     Match ret = null;
    if (ptn instanceof String) {
       if (null == f.find((String) ptn)) {
-        throw new SExFindFailed("ImageFile not found");
+        throw new FindFailed("ImageFile not found");
       }
     } else {
       if (null == f.find((Pattern) ptn)) {
-        throw new SExFindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
                 + " not found on disk");
       }
     }
@@ -1645,17 +1645,17 @@ public class Region {
    */
   @Deprecated
   public <PSC> Iterator<Match> findAllNow(PSC ptn)
-          throws SExFindFailed {
+          throws FindFailed {
     ScreenImage simg = getScreen().capture(x, y, w, h);
     getScreen().setLastScreenImage(simg);
     Finder f = new Finder(simg, this);
     if (ptn instanceof String) {
       if (null == f.findAll((String) ptn)) {
-        throw new SExFindFailed("ImageFile not found");
+        throw new FindFailed("ImageFile not found");
       }
     } else {
       if (null == f.findAll((Pattern) ptn)) {
-        throw new SExFindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
                 + " not found on disk");
       }
     }
@@ -1676,7 +1676,7 @@ public class Region {
    */
   @Deprecated
   public <PSC> Iterator<Match> waitAll(PSC target, double timeout)
-          throws SExFindFailed {
+          throws FindFailed {
 
     while (true) {
       try {
@@ -1686,7 +1686,7 @@ public class Region {
         lastMatches = rf.getMatches();
 
       } catch (Exception e) {
-        throw new SExFindFailed(e.getMessage());
+        throw new FindFailed(e.getMessage());
       }
 
       if (lastMatches != null) {
@@ -1703,7 +1703,7 @@ public class Region {
 
 //TODO getRegionFromPSRM, getLocationFromPSRML
   private <PSRM> Region getRegionFromPSRM(PSRM target)
-          throws SExFindFailed {
+          throws FindFailed {
     if (target instanceof Pattern || target instanceof String) {
       Match m = find(target);
       if (m != null) {
@@ -1718,7 +1718,7 @@ public class Region {
   }
 
   private <PSRML> Location getLocationFromPSRML(PSRML target)
-          throws SExFindFailed {
+          throws FindFailed {
     if (target instanceof Pattern || target instanceof String) {
       Match m = find(target);
       if (m != null) {
@@ -1922,7 +1922,7 @@ public class Region {
   public int hover() {
     try { // needed to cut throw chain for FindFailed
       return hover(checkMatch());
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
     }
     return 0;
   }
@@ -1938,7 +1938,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int hover(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     return mouseMove(target);
   }
 
@@ -1951,7 +1951,7 @@ public class Region {
   public int click() {
     try { // needed to cut throw chain for FindFailed
       return click(checkMatch(), 0);
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
     }
     return 0;
   }
@@ -1967,7 +1967,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int click(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     return click(target, 0);
   }
 
@@ -1983,7 +1983,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int click(PatternFilenameRegionMatchLocation target, int modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
 
@@ -2000,7 +2000,7 @@ public class Region {
   public int doubleClick() {
     try { // needed to cut throw chain for FindFailed
       return doubleClick(checkMatch(), 0);
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
     }
     return 0;
   }
@@ -2016,7 +2016,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int doubleClick(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     return doubleClick(target, 0);
   }
 
@@ -2032,7 +2032,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int doubleClick(PatternFilenameRegionMatchLocation target, int modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
 
@@ -2049,7 +2049,7 @@ public class Region {
   public int rightClick() {
     try { // needed to cut throw chain for FindFailed
       return rightClick(checkMatch(), 0);
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
     }
     return 0;
   }
@@ -2065,7 +2065,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int rightClick(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     return rightClick(target, 0);
   }
 
@@ -2081,7 +2081,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int rightClick(PatternFilenameRegionMatchLocation target, int modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     int ret = _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
 
@@ -2142,7 +2142,7 @@ public class Region {
    * @throws FindFailed if the Find operation failed
    */
   public <PatternFilenameRegionMatchLocation> int dragDrop(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     return dragDrop(lastMatch, target);
   }
 
@@ -2157,7 +2157,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int dragDrop(PatternFilenameRegionMatchLocation t1,
           PatternFilenameRegionMatchLocation t2)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc1 = getLocationFromPSRML(t1);
     Location loc2 = getLocationFromPSRML(t2);
     if (loc1 != null && loc2 != null) {
@@ -2184,7 +2184,7 @@ public class Region {
    * @throws FindFailed
    */
   public <PatternFilenameRegionMatchLocation> int drag(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
       RobotDesktop r = getScreen().getActionRobot();
@@ -2207,7 +2207,7 @@ public class Region {
    * @throws FindFailed
    */
   public <PatternFilenameRegionMatchLocation> int dropAt(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
       getScreen().showTarget(loc);
@@ -2261,7 +2261,7 @@ public class Region {
     if (lastMatch != null) {
       try {
         return mouseMove(lastMatch);
-      } catch (SExFindFailed ex) {
+      } catch (FindFailed ex) {
         return 0;
       }
     } else {
@@ -2280,7 +2280,7 @@ public class Region {
    * @throws FindFailed for Pattern or Filename
    */
   public <PatternFilenameRegionMatchLocation> int mouseMove(PatternFilenameRegionMatchLocation target)
-          throws SExFindFailed {
+          throws FindFailed {
     Location loc = getLocationFromPSRML(target);
     if (loc != null) {
       getScreen().showTarget(loc);
@@ -2321,7 +2321,7 @@ public class Region {
    * @throws FindFailed if the Find operation failed
    */
   public <PatternFilenameRegionMatchLocation> int wheel(PatternFilenameRegionMatchLocation target, int direction, int steps)
-          throws SExFindFailed {
+          throws FindFailed {
     if (target == null || mouseMove(target) != 0) {
       return wheel(direction, steps);
     }
@@ -2399,7 +2399,7 @@ public class Region {
   public int type(String text) {
     try {
       return keyin(null, text, 0);
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
       return 0;
     }
   }
@@ -2418,7 +2418,7 @@ public class Region {
   public int type(String text, int modifiers) {
     try {
       return keyin(null, text, modifiers);
-    } catch (SExFindFailed findFailed) {
+    } catch (FindFailed findFailed) {
       return 0;
     }
   }
@@ -2438,7 +2438,7 @@ public class Region {
     int modifiersNew = Key.convertModifiers(modifiers);
     try {
       return keyin(null, text, modifiersNew);
-    } catch (SExFindFailed findFailed) {
+    } catch (FindFailed findFailed) {
       return 0;
     }
   }
@@ -2455,7 +2455,7 @@ public class Region {
    * @throws FindFailed
    */
   public <PatternFilenameRegionMatchLocation> int type(PatternFilenameRegionMatchLocation target, String text)
-          throws SExFindFailed {
+          throws FindFailed {
     return keyin(target, text, 0);
   }
 
@@ -2472,7 +2472,7 @@ public class Region {
    * @return 1 if possible, 0 otherwise
    */
   public <PatternFilenameRegionMatchLocation> int type(PatternFilenameRegionMatchLocation target, String text, int modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     return keyin(target, text, modifiers);
   }
 
@@ -2489,13 +2489,13 @@ public class Region {
    * @return 1 if possible, 0 otherwise
    */
   public <PatternFilenameRegionMatchLocation> int type(PatternFilenameRegionMatchLocation target, String text, String modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     int modifiersNew = Key.convertModifiers(modifiers);
     return keyin(target, text, modifiersNew);
   }
 
   private <PatternFilenameRegionMatchLocation> int keyin(PatternFilenameRegionMatchLocation target, String text, int modifiers)
-          throws SExFindFailed {
+          throws FindFailed {
     if (0 == click(target, 0)) {
       return 0;
     }
@@ -2526,7 +2526,7 @@ public class Region {
   public int paste(String text) {
     try {
       return paste(null, text);
-    } catch (SExFindFailed ex) {
+    } catch (FindFailed ex) {
       return 1;
     }
   }
@@ -2542,7 +2542,7 @@ public class Region {
    * @throws FindFailed
    */
   public <PatternFilenameRegionMatchLocation> int paste(PatternFilenameRegionMatchLocation target, String text)
-          throws SExFindFailed {
+          throws FindFailed {
     click(target, 0);
     if (text != null) {
       App.setClipboard(text);

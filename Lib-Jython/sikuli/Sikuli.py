@@ -13,26 +13,26 @@ import types
 import sys
 import os
 
-from org.sikuli.core import Region as JRegion
+from org.sikuli.script import Region as JRegion
 from Region import *
-from org.sikuli.core import Screen as JScreen
+from org.sikuli.script import Screen as JScreen
 from Screen import *
-from org.sikuli.core import Match
-from org.sikuli.core import Pattern
-from org.sikuli.core import FindFailed
-from org.sikuli.core import SikuliEvent
-from org.sikuli.core import UnionScreen
-from org.sikuli.core import Finder
-from org.sikuli.core import Location
-from org.sikuli.core import Settings
-from org.sikuli.system import OS
-from org.sikuli.system import App
-from org.sikuli.core import ScreenHighlighter
-from org.sikuli.core import ImageLocator
-from org.sikuli.core import Key
-from org.sikuli.core import KeyModifier
-from org.sikuli.core.KeyModifier import KEY_CTRL, KEY_SHIFT, KEY_META, KEY_CMD, KEY_WIN, KEY_ALT
-from org.sikuli.core import Button
+from org.sikuli.script import Match
+from org.sikuli.script import Pattern
+from org.sikuli.script import FindFailed
+from org.sikuli.script import SikuliEvent
+from org.sikuli.script import ScreenUnion
+from org.sikuli.script import Finder
+from org.sikuli.script import Location
+from org.sikuli.script import Settings
+from org.sikuli.script import OS
+from org.sikuli.script import App
+from org.sikuli.script import ScreenHighlighter
+from org.sikuli.script import ImageLocator
+from org.sikuli.script import Key
+from org.sikuli.script import KeyModifier
+from org.sikuli.script.KeyModifier import KEY_CTRL, KEY_SHIFT, KEY_META, KEY_CMD, KEY_WIN, KEY_ALT
+from org.sikuli.script import Button
 from java.awt import Rectangle
 # RaiMan not used from VDict import *
 from Helper import *
@@ -48,7 +48,6 @@ _si = SikuliScript()
 #  2. bundle path
 #
 def load(jar):
-   from org.sikuli.utility import ExtensionManager
    def _load(abspath):
       if os.path.exists(abspath):
          if not abspath in sys.path:
@@ -63,7 +62,7 @@ def load(jar):
       jarInBundle = os.path.join(path, jar)
       if _load(jarInBundle):
          return True
-   path = ExtensionManager.getInstance().getUserExtPath()
+   path = Settings.getUserExtPath()
    jarInExtPath = os.path.join(path, jar)
    if _load(jarInExtPath):
       return True
@@ -116,7 +115,7 @@ def input(msg="", default=""):
    return SikuliScript.input(msg, default)
 
 def capture(*args):
-   scr = UnionScreen()
+   scr = ScreenUnion()
    if len(args) == 0:
       simg = scr.userCapture()
       if simg:
@@ -140,9 +139,9 @@ def capture(*args):
 
 def selectRegion(msg=None):
    if msg:
-      r = UnionScreen().selectRegion(msg)
+      r = ScreenUnion().selectRegion(msg)
    else:
-      r = UnionScreen().selectRegion()
+      r = ScreenUnion().selectRegion()
    if r:
       return Region(r)
    else:

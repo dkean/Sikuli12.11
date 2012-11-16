@@ -28,14 +28,14 @@ import javax.swing.JPanel;
 //- (done) disable resizing
 //- ensure the dialog disappears before find is reattempted so that it won't find the
 //target image in the dialog box.
-class SExFindFailedDialog extends JDialog implements ActionListener {
+class FindFailedDialog extends JDialog implements ActionListener {
 
 	JButton retryButton;
 	JButton skipButton;
 	JButton abortButton;
-	SExFindFailedResponse _response;
+	FindFailedResponse _response;
 
-	public <PatternString> SExFindFailedDialog(PatternString target) {
+	public <PatternString> FindFailedDialog(PatternString target) {
 		setModal(true);
 		//super(new Frame(),true);
 
@@ -69,7 +69,7 @@ class SExFindFailedDialog extends JDialog implements ActionListener {
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				_response = SExFindFailedResponse.ABORT;
+				_response = FindFailedResponse.ABORT;
 				//dispose();
 			}
 		});
@@ -82,16 +82,16 @@ class SExFindFailedDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (retryButton == e.getSource()) {
-			_response = SExFindFailedResponse.RETRY;
+			_response = FindFailedResponse.RETRY;
 		} else if (abortButton == e.getSource()) {
-			_response = SExFindFailedResponse.ABORT;
+			_response = FindFailedResponse.ABORT;
 		} else if (skipButton == e.getSource()) {
-			_response = SExFindFailedResponse.SKIP;
+			_response = FindFailedResponse.SKIP;
 		}
 		dispose();
 	}
 
-	public SExFindFailedResponse getResponse() {
+	public FindFailedResponse getResponse() {
 		return _response;
 	}
 

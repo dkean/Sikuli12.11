@@ -5,9 +5,9 @@ import sys
 import os
 import java.lang.System
 import imp
-from org.sikuli.core import Settings
-from org.sikuli.core import ImageLocator
-from org.sikuli.utility import Debug
+from org.sikuli.script import Settings
+from org.sikuli.script import ImageLocator
+from org.sikuli.script import Debug
 import Sikuli
 
 def _stripPackagePrefix(module_name):
@@ -27,7 +27,9 @@ class SikuliImporter:
          try:
             return imp.load_module(fullname, file, pathname, desc)
          except Exception,e:
-            raise ImportError( "Errors in loading sikuli module: %s\n%s\n  - HOW TO FIX? Try adding \"from sikuli import *\" in the module.\n" %(fullname, e) )
+            etype, evalue, etb = sys.exc_info()
+            evalue = etype("%s !!WHILE IMPORTING!! " % evalue)
+            raise etype, evalue, etb
          finally:
             if file:
                file.close()

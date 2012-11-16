@@ -1,7 +1,7 @@
 # Copyright 2010-2011, Sikuli.org
 # Released under the MIT License.
 # modified RaiMan 2012
-from org.sikuli.core import Screen as JScreen
+from org.sikuli.script import Screen as JScreen
 import inspect
 #import __main__
 #import __builtin__

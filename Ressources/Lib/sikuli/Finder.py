@@ -4,7 +4,7 @@ Created on 29.10.2012
 @author: rhocke
 '''
 
-from org.sikuli.core import Finder as JFinder
+from org.sikuli.script import Finder as JFinder
 
 class Finder(JFinder):
 

@@ -5,7 +5,7 @@
  */
 package org.sikuli.script;
 
-public enum SExFindFailedResponse{
+public enum FindFailedResponse{
    ABORT,
    PROMPT,
    SKIP,

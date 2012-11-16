@@ -2,11 +2,11 @@
 # Released under the MIT License.
 # modified RaiMan 2012
 
-from org.sikuli.core import Region as JRegion
-from org.sikuli.core import Location
-from org.sikuli.core import Settings
-from org.sikuli.core import SikuliEventAdapter
-from org.sikuli.core import SikuliEventObserver
+from org.sikuli.script import Region as JRegion
+from org.sikuli.script import Location
+from org.sikuli.script import Settings
+from org.sikuli.script import SikuliEventAdapter
+from org.sikuli.script import SikuliEventObserver
 from Constants import *
 import sys
 import inspect

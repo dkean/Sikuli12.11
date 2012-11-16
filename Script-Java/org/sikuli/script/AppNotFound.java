@@ -6,9 +6,9 @@
  */
 package org.sikuli.script;
 
-public class SExAppNotFound extends SException {
+public class AppNotFound extends SikuliException {
 
-  public SExAppNotFound(String msg) {
+  public AppNotFound(String msg) {
     super(msg);
     _name = "AppNotFound";
   }

@@ -6,11 +6,11 @@
  */
 package org.sikuli.script;
 
-public class SException extends Exception {
+public class SikuliException extends Exception {
 
   protected String _name = "SikuliException";
 
-  public SException(String msg) {
+  public SikuliException(String msg) {
     super(msg);
   }
 

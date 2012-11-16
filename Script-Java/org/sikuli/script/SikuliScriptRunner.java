@@ -69,6 +69,7 @@ public class SikuliScriptRunner {
 			"#for e in sys.path: print e",
 			"from __future__ import with_statement",
 			"from sikuli import *",
+			"resetROI()",
 			"setThrowException(True)",
 			"setShowActions(False)"
 		};
