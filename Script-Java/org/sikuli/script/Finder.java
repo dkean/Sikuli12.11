@@ -58,10 +58,17 @@ public class Finder implements Iterator<Match> {
    * <br />(finding in memory image within the given region).
    */
   public Finder(ScreenImage img, Region region) {
-    Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
-    _findInput.setSource(target);
-    _region = region;
+		initScreenFinder(img, region);
   }
+
+	private void initScreenFinder(ScreenImage img, Region region) {
+		setScreenImage(img);
+    _region = region;
+	}
+
+	public void setScreenImage(ScreenImage img) {
+    _findInput.setSource(OpenCV.convertBufferedImageToMat(img.getImage()));
+	}
 
   public void setRepeating() {
     repeating = true;
@@ -76,7 +83,11 @@ public class Finder implements Iterator<Match> {
   public void destroy() {
   }
 
-//TODO: find / findAll imagefile not found early abort
+	public void findRepeat() {
+		_results = Vision.find(_findInput);
+		_cur_result_i = 0;
+	}
+
   /**
    * find given pattern within the stored image
    *
@@ -111,7 +122,15 @@ public class Finder implements Iterator<Match> {
     return find(imageOrText, Settings.MinSimilarity);
   }
 
-  /**
+  public void findAllRepeat() {
+    Debug timing = new Debug();
+    timing.startTiming("Finder.findAll");
+    _results = Vision.find(_findInput);
+    _cur_result_i = 0;
+    timing.endTiming("Finder.findAll");
+	}
+
+	/**
    *
    * @param Pattern
    * @param aPtn

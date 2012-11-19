@@ -8,6 +8,7 @@ package org.sikuli.script;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -1280,6 +1281,9 @@ public class Region {
    * @return the region itself
    */
   public Region highlight(float secs) {
+		if (secs < 0.1) {
+			highlight((int) secs);
+		}
     Debug.history("highlight " + toString() + " for " + secs + " secs");
     if (!(getScreen()instanceof Screen)) {
       Debug.error("highlight only work on the physical desktop screens.");
@@ -1289,6 +1293,31 @@ public class Region {
     _overlay.highlight(this, secs);
     return this;
   }
+
+	/**
+	 * hack to implement the getLastMatch() convenience
+	 * 0 means same as highlight()
+	 * &lt.0 same as highlight(secs)
+	 * if available the last match is highlighted
+	 *
+	 * @param secs
+	 * @return
+	 */
+	public Region highlight(int secs) {
+		if (secs > 1) {
+			return highlight((float) secs);
+		} else {
+			if (lastMatch != null) {
+				if (secs < 0) {
+					return lastMatch.highlight((float) -secs);
+				} else {
+					return lastMatch.highlight();
+				}
+			} else {
+				return this;
+			}
+		}
+	}
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="find public methods">
@@ -1357,7 +1386,7 @@ public class Region {
     }
     while (true) {
       try {
-        lastMatch = doFind(target);
+        lastMatch = doFind(target, null);
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
       }
@@ -1388,7 +1417,7 @@ public class Region {
           rf.repeat(autoWaitTimeout);
           lastMatches = rf.getMatches();
         } else {
-          lastMatches = doFindAll(target);
+          lastMatches = doFindAll(target, null);
         }
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
@@ -1559,21 +1588,31 @@ public class Region {
    * Match findNow( Pattern/String/PatternClass ) finds the given pattern on the
    * screen and returns the best match without waiting.
    */
-  private <PSC> Match doFind(PSC ptn) throws IOException {
+  private <PatternOrString> Match doFind(PatternOrString ptn, RepeatableFind repeating) throws IOException {
+		Finder f;
     ScreenImage simg = getScreen().capture(x, y, w, h);
     getScreen().setLastScreenImage(simg);
-    Finder f = new Finder(simg, this);
-    if (ptn instanceof String) {
-      if (null == f.find((String) ptn)) {
-        throw new IOException("ImageFile " + ptn + " not found on disk");
-      }
-    } else {
-      if (null == f.find((Pattern) ptn)) {
-        throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
-                + " not found on disk");
-      }
-    }
-    f.setRepeating();
+		if (repeating != null && repeating._finder != null) {
+			f = repeating._finder;
+			f.setScreenImage(simg);
+			f.setRepeating();
+			f.findRepeat();
+		} else {
+			f = new Finder(simg, this);
+			if (ptn instanceof String) {
+				if (null == f.find((String) ptn)) {
+					throw new IOException("ImageFile " + ptn + " not found on disk");
+				}
+			} else {
+				if (null == f.find((Pattern) ptn)) {
+					throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
+									+ " not found on disk");
+				}
+			}
+			if (repeating != null) {
+				repeating._finder = f;
+			}
+		}
     if (f.hasNext()) {
       return f.next();
     }
@@ -1616,25 +1655,33 @@ public class Region {
    * Match findAllNow( Pattern/String/PatternClass ) finds the given pattern on
    * the screen and returns the best match without waiting.
    */
-  private <PSC> Iterator<Match> doFindAll(PSC ptn) throws IOException {
-    ScreenImage simg = getScreen().capture(x, y, w, h);
-    getScreen().setLastScreenImage(simg);
-    Finder f = new Finder(simg, this);
-   if (ptn instanceof String) {
-      if (null == f.findAll((String) ptn)) {
-        throw new IOException();
-      }
-    } else {
-      if (null == f.findAll((Pattern) ptn)) {
-        throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
-                + " not found on disk");
-      }
-    }
-    if (f.hasNext()) {
-      return f;
-    }
-    return null;
-  }
+	private <PatternOrString> Iterator<Match> doFindAll(PatternOrString ptn, RepeatableFindAll repeating) throws IOException {
+		Finder f;
+		ScreenImage simg = getScreen().capture(x, y, w, h);
+		getScreen().setLastScreenImage(simg);
+		if (repeating != null && repeating._finder != null) {
+			f = repeating._finder;
+			f.setScreenImage(simg);
+			f.setRepeating();
+			f.findAllRepeat();
+		} else {
+			f = new Finder(simg, this);
+			if (ptn instanceof String) {
+				if (null == f.findAll((String) ptn)) {
+					throw new IOException();
+				}
+			} else {
+				if (null == f.findAll((Pattern) ptn)) {
+					throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
+									+ " not found on disk");
+				}
+			}
+		}
+		if (f.hasNext()) {
+			return f;
+		}
+		return null;
+	}
 
   /**
    *
@@ -1751,6 +1798,7 @@ public class Region {
     boolean repeat(double timeout) throws Exception {
 
       int MaxTimePerScan = (int) (1000.0 / Settings.WaitScanRate);
+			int MaxTimePerScanSecs = MaxTimePerScan/1000;
       long begin_t = (new Date()).getTime();
       do {
         long before_find = (new Date()).getTime();
@@ -1758,7 +1806,7 @@ public class Region {
         run();
         if (ifSuccessful()) {
           return true;
-        } else if (timeout < MaxTimePerScan) {
+        } else if (timeout < MaxTimePerScanSecs) {
 					// instant return on first search failed if timeout very small or 0
           return false;
         }
@@ -1779,6 +1827,7 @@ public class Region {
 
     Object _target;
     Match _match = null;
+		Finder _finder = null;
 
     public <PSC> RepeatableFind(PSC target) {
       _target = target;
@@ -1790,7 +1839,7 @@ public class Region {
 
     @Override
     public void run() throws IOException {
-      _match = doFind(_target);
+      _match = doFind(_target, this);
     }
 
     @Override
@@ -1815,6 +1864,7 @@ public class Region {
 
     Object _target;
     Iterator<Match> _matches = null;
+		Finder _finder = null;
 
     public <PSC> RepeatableFindAll(PSC target) {
       _target = target;
@@ -1826,7 +1876,7 @@ public class Region {
 
     @Override
     public void run() throws IOException {
-      _matches = doFindAll(_target);
+      _matches = doFindAll(_target, this);
     }
 
     @Override
