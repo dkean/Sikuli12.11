@@ -51,10 +51,10 @@ class SikuliImporter:
       return None
 
    def find_module(self, module_name, package_path):
-      print "SikuliImporter.find_module", module_name, package_path
+      #print "SikuliImporter.find_module", module_name, package_path
       module_name = _stripPackagePrefix(module_name)
-      #if module_name[0:1] == "*": 
-      #  return None
+      if module_name[0:1] == "*": 
+        return None
       if package_path:
          paths = package_path
       else:
@@ -64,7 +64,7 @@ class SikuliImporter:
          if mod:
             return mod
       if Sikuli.load(module_name +".jar"):
-         Debug.info(module_name + ".jar loaded")
+         Debug.log(2,module_name + ".jar loaded")
          return None
       return None
 
