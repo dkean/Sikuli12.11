@@ -102,7 +102,8 @@ Changes/Fixes in current IDE
  - warning at run (with no autosave) and quit if unsaved scripts
 - implement alternative for command list in tools menu (as standard + option)
 - add a help topic QuickStart for newcomers
-- better display of errors im message area
+- better display of errors in message area
+- revised the extension feature and made it functional again
 
 Script API
 ----------
