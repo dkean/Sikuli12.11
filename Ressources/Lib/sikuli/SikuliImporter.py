@@ -43,8 +43,6 @@ class SikuliImporter:
          Sikuli.addModPath(p)
          return self._load_module(module_name)
 
-
-
    def _find_module(self, module_name, fullpath):
       fullpath = fullpath + "/" + module_name + ".sikuli"
       if os.path.exists(fullpath):
@@ -53,8 +51,10 @@ class SikuliImporter:
       return None
 
    def find_module(self, module_name, package_path):
-      #print "SikuliImporter.find_module", module_name, package_path
+      print "SikuliImporter.find_module", module_name, package_path
       module_name = _stripPackagePrefix(module_name)
+      #if module_name[0:1] == "*": 
+      #  return None
       if package_path:
          paths = package_path
       else:
@@ -66,9 +66,7 @@ class SikuliImporter:
       if Sikuli.load(module_name +".jar"):
          Debug.info(module_name + ".jar loaded")
          return None
-
       return None
-
 
 sys.meta_path.append(SikuliImporter())
 del SikuliImporter

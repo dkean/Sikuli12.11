@@ -51,9 +51,9 @@ public class SikuliIDE extends JFrame {
   final static boolean ENABLE_UNIFIED_TOOLBAR = true;
   final static Color COLOR_SEARCH_FAILED = Color.red;
   final static Color COLOR_SEARCH_NORMAL = Color.black;
-  final static int SAVE_CANCEL = 2;
-  final static int SAVE_ALL = 1;
-  final static int DO_NOT_SAVE = 0;
+  final static int WARNING_CANCEL = 2;
+  final static int WARNING_ACCEPTED = 1;
+  final static int WARNING_DO_NOTHING = 0;
   static boolean _runningSkl = false;
   private static NativeLayer _native;
   private Dimension _windowSize;
@@ -92,8 +92,8 @@ public class SikuliIDE extends JFrame {
   private int restoredScripts = 0;
   private int alreadyOpenedTab = -1;
   private static final String NL = String.format("%n");
-  private Pattern pFile = Pattern.compile("File..(.*?\\.py).*?" +
-                                  ",.*?line.*?(\\d+),.*?in(.*?)" + NL + "(.*?)" + NL);
+  private Pattern pFile = Pattern.compile("File..(.*?\\.py).*?"
+          + ",.*?line.*?(\\d+),.*?in(.*?)" + NL + "(.*?)" + NL);
   private int errorLine;
   private int errorColumn;
   private String errorType;
@@ -351,18 +351,18 @@ public class SikuliIDE extends JFrame {
       try {
         JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(tabIndex);
         EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
-        if (action == DO_NOT_SAVE) {
-					if (quitting) {
-						codePane.setDirty(false);
-					}
+        if (action == WARNING_DO_NOTHING) {
+          if (quitting) {
+            codePane.setDirty(false);
+          }
           if (codePane.getCurrentFilename() == null) {
             continue;
           }
         } else if (codePane.isDirty()) {
           if (!(new FileAction()).doSaveIntern(tabIndex)) {
-						if (quitting) {
-							codePane.setDirty(false);
-						}
+            if (quitting) {
+              codePane.setDirty(false);
+            }
             continue;
           }
         }
@@ -513,7 +513,7 @@ public class SikuliIDE extends JFrame {
     int action;
     if (checkDirtyPanes()) {
       if (prefs.getPrefMoreRunSave()) {
-        action = SAVE_ALL;
+        action = WARNING_ACCEPTED;
       } else {
         action = askForSaveAll("Run");
         if (action < 0) {
@@ -539,7 +539,7 @@ public class SikuliIDE extends JFrame {
       }
       return saveSession(action, true);
     }
-    return saveSession(DO_NOT_SAVE, true);
+    return saveSession(WARNING_DO_NOTHING, true);
   }
 
   private int askForSaveAll(String typ) {
@@ -547,11 +547,11 @@ public class SikuliIDE extends JFrame {
     String warn = "Some scripts are not saved yet!";
     String title = "Need your attention!";
     String[] options = new String[3];
-    options[DO_NOT_SAVE] = typ + " immediatly";
-    options[SAVE_ALL] = "Save all and " + typ;
-    options[SAVE_CANCEL] = "Cancel";
+    options[WARNING_DO_NOTHING] = typ + " immediatly";
+    options[WARNING_ACCEPTED] = "Save all and " + typ;
+    options[WARNING_CANCEL] = "Cancel";
     int ret = JOptionPane.showOptionDialog(this, warn, title, 0, JOptionPane.WARNING_MESSAGE, null, options, options[2]);
-    if (ret == SAVE_CANCEL || ret == JOptionPane.CLOSED_OPTION) {
+    if (ret == WARNING_CANCEL || ret == JOptionPane.CLOSED_OPTION) {
       return -1;
     }
     return ret;
@@ -1133,7 +1133,7 @@ public class SikuliIDE extends JFrame {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="Init View Menu --- RaiMan Not used">
+  //<editor-fold defaultstate="collapsed" desc="Init View Menu">
   private void initViewMenu() throws NoSuchMethodException {
     int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     _viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
@@ -1142,12 +1142,12 @@ public class SikuliIDE extends JFrame {
      _viewMenu.add(createMenuItem(_chkShowUnitTest,
      KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, scMask),
      new ViewAction(ViewAction.UNIT_TEST)));
-
-     JMenuItem chkShowCmdList = new JCheckBoxMenuItem(_I("menuViewCommandList"), true);
-     _viewMenu.add(createMenuItem(chkShowCmdList,
-     KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
-     new ViewAction(ViewAction.CMD_LIST)));
      * RaiMan not used */
+
+    JMenuItem chkShowCmdList = new JCheckBoxMenuItem(_I("menuViewCommandList"), true);
+    _viewMenu.add(createMenuItem(chkShowCmdList,
+            KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
+            new ViewAction(ViewAction.CMD_LIST)));
 //TODO Message Area show/hide
 //TODO Message Area clear
 //TODO Message Area bottom/right
@@ -1178,6 +1178,56 @@ public class SikuliIDE extends JFrame {
         _sidePane.setCollapsed(true);
       }
     }
+  }
+  //</editor-fold>
+
+  //<editor-fold defaultstate="collapsed" desc="Init ToolMenu">
+  private void initToolMenu() throws NoSuchMethodException {
+    int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
+
+    _toolMenu.add(createMenuItem(_I("menuToolExtensions"),
+            null,
+            new ToolAction(ToolAction.EXTENSIONS)));
+  }
+
+  class ToolAction extends MenuAction {
+
+    static final String EXTENSIONS = "extensions";
+
+    public ToolAction() {
+      super();
+    }
+
+    public ToolAction(String item) throws NoSuchMethodException {
+      super(item);
+    }
+
+    public void extensions(ActionEvent ae) {
+      showExtensionsFrame();
+    }
+  }
+
+  public void showExtensionsFrame() {
+    String warn = "You might proceed, if you\n" +
+            "- have some programming skills\n" +
+            "- read the docs about extensions\n" +
+            "- know what you are doing\n\n" +
+            "Otherwise you should press Cancel!";
+    String title = "Need your attention!";
+    String[] options = new String[3];
+    options[WARNING_DO_NOTHING] = "OK";
+    options[WARNING_ACCEPTED] = "Be quiet!";
+    options[WARNING_CANCEL] = "Cancel";
+    int ret = JOptionPane.showOptionDialog(this, warn, title, 0, JOptionPane.WARNING_MESSAGE, null, options, options[2]);
+    if (ret == WARNING_CANCEL || ret == JOptionPane.CLOSED_OPTION) {
+      return;
+    }
+    if (ret == WARNING_ACCEPTED) {
+      //TODO set prefs to be quiet on extensions warning
+    };
+    ExtensionManagerFrame extmg = ExtensionManagerFrame.getInstance();
+    extmg.setVisible(true);
   }
   //</editor-fold>
 
@@ -1309,46 +1359,13 @@ public class SikuliIDE extends JFrame {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="Init ToolMenu --- RaiMan not used">
-  private void initToolMenu() throws NoSuchMethodException {
-    int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-    _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
-    _toolMenu.add(createMenuItem(_I("menuToolExtensions"),
-            null,
-            new ToolAction(ToolAction.EXTENSIONS)));
-
-  }
-
-  class ToolAction extends MenuAction {
-
-    static final String EXTENSIONS = "extensions";
-
-    public ToolAction() {
-      super();
-    }
-
-    public ToolAction(String item) throws NoSuchMethodException {
-      super(item);
-    }
-
-    public void extensions(ActionEvent ae) {
-      showExtensionsFrame();
-    }
-  }
-
-  public void showExtensionsFrame() {
-    ExtensionManagerFrame extmg = ExtensionManagerFrame.getInstance();
-    extmg.setVisible(true);
-  }
-  //</editor-fold>
-
   private void initMenuBars(JFrame frame) {
     try {
       initFileMenu();
       initEditMenu();
       initRunMenu();
-//RaiMan not used			initViewMenu();
-//RaiMan not used			initToolMenu();
+      initViewMenu();
+      initToolMenu();
       initHelpMenu();
     } catch (NoSuchMethodException e) {
       e.printStackTrace();
@@ -1411,11 +1428,11 @@ public class SikuliIDE extends JFrame {
       {"paste"}, {"PATTERN", "_text", "[modifiers]"},
       {_I("cmdPaste2")},
       {"----"}, {}, {},
-      {"onAppear"}, {"PATTERN", "_handler"},
+      {"onAppear"}, {"PATTERN", "_hnd"},
       {_I("cmdOnAppear")},
-      {"onVanish"}, {"PATTERN", "_handler"},
+      {"onVanish"}, {"PATTERN", "_hnd"},
       {_I("cmdOnVanish")},
-      {"onChange"}, {"_handler"},
+      {"onChange"}, {"_hnd"},
       {_I("cmdOnChange")},
       {"observe"}, {"[time]", "[background]"},
       {_I("cmdObserve")},};
@@ -1440,30 +1457,42 @@ public class SikuliIDE extends JFrame {
     JXTaskPane setPane = new JXTaskPane();
     setPane.setTitle(_I("cmdListSettings"));
     setPane.add(chkAutoCapture);
+    setPane.setCollapsed(true);
+    con.add(setPane);
     int cat = 0;
     JXTaskPane taskPane = new JXTaskPane();
     taskPane.setTitle(getCommandCategories()[cat++]);
     con.add(taskPane);
     String[][] CommandsOnToolbar = getCommandsOnToolbar();
+    boolean collapsed;
     for (int i = 0; i < CommandsOnToolbar.length; i++) {
       String cmd = CommandsOnToolbar[i++][0];
       String[] params = CommandsOnToolbar[i++];
       String[] desc = CommandsOnToolbar[i];
+//TODO: more elegeant way, to handle special cases
       if (cmd.equals("----")) {
-//TODO: more elegeant way, to block observe commands for NewBees
-        if (prefs.getUserType() == PreferencesUser.NEWBEE && cat == 3) {
-          break;
+        if (cat == 2) {
+          collapsed = true;
+        } else {
+          collapsed = false;
+        }
+        if (cat == 3) {
+          if (prefs.getUserType() == PreferencesUser.NEWBEE) {
+            break;
+          } else {
+            collapsed = true;
+          }
         }
         taskPane = new JXTaskPane();
         taskPane.setTitle(getCommandCategories()[cat++]);
         con.add(taskPane);
+        taskPane.setCollapsed(collapsed);
       } else {
         taskPane.add(new ButtonGenCommand(cmd, desc[0], params));
       }
     }
-    con.add(setPane);
     Dimension conDim = con.getSize();
-    con.setPreferredSize(new Dimension(250, 850));
+    con.setPreferredSize(new Dimension(250, 1000));
     _cmdList = new JXCollapsiblePane(JXCollapsiblePane.Direction.LEFT);
     _cmdList.setMinimumSize(new Dimension(0, 0));
     _cmdList.add(new JScrollPane(con));
@@ -1700,15 +1729,15 @@ public class SikuliIDE extends JFrame {
         Pattern pError = Pattern.compile(NL + "(.*?):.(.*)$");
         mFile = pFile.matcher(err);
         if (mFile.find()) {
-          Debug.log(2, "Runtime error line: " + mFile.group(2) +
-                  "\n in function: " + mFile.group(3) +
-                  "\n statement: "  + mFile.group(4));
+          Debug.log(2, "Runtime error line: " + mFile.group(2)
+                  + "\n in function: " + mFile.group(3)
+                  + "\n statement: " + mFile.group(4));
           errorLine = Integer.parseInt(mFile.group(2));
           errorClass = PY_RUNTIME;
           Matcher mError = pError.matcher(err);
           if (mError.find()) {
-            Debug.log(2,"Error:"+mError.group(1));
-            Debug.log(2,"Error:"+mError.group(2));
+            Debug.log(2, "Error:" + mError.group(1));
+            Debug.log(2, "Error:" + mError.group(2));
             errorType = mError.group(1);
             errorText = mError.group(2);
           } else {
@@ -1758,12 +1787,11 @@ public class SikuliIDE extends JFrame {
         if (errorClass == PY_RUNTIME) {
           errorClass = findErrorSourceWalkTrace(mFile, filename);
           if (errorTrace.length() > 0) {
-            Debug.error("--- Traceback --- error source first\n" +
-                    "line: module ( function ) statement \n" + errorTrace);
+            Debug.error("--- Traceback --- error source first\n"
+                    + "line: module ( function ) statement \n" + errorTrace);
           }
         }
       } else if (errorClass == PY_JAVA) {
-
       } else {
         Debug.error(msg);
         Debug.error("Could not evaluate error source nor reason. Analyze StackTrace!");
@@ -1781,7 +1809,7 @@ public class SikuliIDE extends JFrame {
       Pattern pModule = Pattern.compile(".*/(.*?).py");
       //Matcher mFile = pFile.matcher(etext);
       String mod;
-			String modIgnore = "SikuliImporter,";
+      String modIgnore = "SikuliImporter,";
       StringBuilder trace = new StringBuilder();
       String telem;
       while (m.find()) {
@@ -1791,17 +1819,17 @@ public class SikuliIDE extends JFrame {
           Matcher mModule = pModule.matcher(m.group(1));
           mModule.find();
           mod = mModule.group(1);
-					if (modIgnore.contains(mod+",")) {
-						continue;
-					}
+          if (modIgnore.contains(mod + ",")) {
+            continue;
+          }
         }
-        telem = m.group(2) + ": " + mod + " ( " +
-                m.group(3) + " ) " + m.group(4) + NL;
+        telem = m.group(2) + ": " + mod + " ( "
+                + m.group(3) + " ) " + m.group(4) + NL;
         //Debug.log(2,telem);
         trace.insert(0, telem);
 //        Debug.log(2,"Rest of Trace ----\n" + etext.substring(mFile.end()));
       }
-      Debug.log(2,"------------- Traceback -------------\n" + trace);
+      Debug.log(2, "------------- Traceback -------------\n" + trace);
       errorTrace = trace.toString();
       return errorClass;
     }
@@ -1995,14 +2023,14 @@ public class SikuliIDE extends JFrame {
                 try {
                   JScrollPane scrPane = (JScrollPane) _mainPane.getComponentAt(i);
                   EditorPane codePane = (EditorPane) scrPane.getViewport().getView();
-									int count = _mainPane.getComponentCount();
+                  int count = _mainPane.getComponentCount();
                   Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                   boolean ret = codePane.close();
                   Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
                   //checkDirtyPanes(); //RaiMan no longer needed - no global dirty
-									if (_mainPane.getTabCount() < 2) {
-										(new FileAction()).doNew(null);
-									}
+                  if (_mainPane.getTabCount() < 2) {
+                    (new FileAction()).doNew(null);
+                  }
                   return ret;
                 } catch (Exception e) {
                   Debug.info("Can't close this tab: " + e.getStackTrace());

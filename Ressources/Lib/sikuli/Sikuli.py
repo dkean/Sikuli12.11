@@ -33,6 +33,7 @@ from org.sikuli.script import Key
 from org.sikuli.script import KeyModifier
 from org.sikuli.script.KeyModifier import KEY_CTRL, KEY_SHIFT, KEY_META, KEY_CMD, KEY_WIN, KEY_ALT
 from org.sikuli.script import Button
+from org.sikuli.script import ExtensionManager
 from java.awt import Rectangle
 # RaiMan not used from VDict import *
 from Helper import *
@@ -62,9 +63,8 @@ def load(jar):
       jarInBundle = os.path.join(path, jar)
       if _load(jarInBundle):
          return True
-   path = Settings.getUserExtPath()
-   jarInExtPath = os.path.join(path, jar)
-   if _load(jarInExtPath):
+   path = ExtensionManager.getInstance().getLoadPath(jar)
+   if path and _load(path):
       return True
    return False
 

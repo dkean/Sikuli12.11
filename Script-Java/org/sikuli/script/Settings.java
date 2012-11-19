@@ -38,6 +38,7 @@ public class Settings {
 	public static String libSource = "META-INF/lib/";
 	public static String libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
 	public static String libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
+  public static String SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
 	public static boolean ShowActions = false;
 	public static boolean Highlight = false;
 	public static boolean ActionLogs = true;
