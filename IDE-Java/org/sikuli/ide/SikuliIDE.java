@@ -436,10 +436,12 @@ public class SikuliIDE extends JFrame {
     String title = _mainPane.getTitleAt(i);
     if (!isDirty && title.startsWith("*")) {
       title = title.substring(1);
-    } else {
-      title = "*" + title;
+	    _mainPane.setTitleAt(i, title);
     }
-    _mainPane.setTitleAt(i, title);
+		else if (isDirty && ! title.startsWith("*")) {
+      title = "*" + title;
+      _mainPane.setTitleAt(i, title);
+	  }
   }
 
   public boolean loadFile(String file) {
