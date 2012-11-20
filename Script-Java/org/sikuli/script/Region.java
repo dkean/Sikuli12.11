@@ -1479,7 +1479,7 @@ public class Region {
    * @param target A search criteria
    * @return The element matching
    */
-  public <PatternOrString> Match exists(PatternOrString target) throws Exception {
+  public <PatternOrString> Match exists(PatternOrString target)  {
     return exists(target, autoWaitTimeout);
   }
 
@@ -1490,7 +1490,7 @@ public class Region {
    * @param timeout Timeout in second
    * @return The element matching
    */
-  public <PatternOrString> Match exists(PatternOrString target, double timeout) throws Exception {
+  public <PatternOrString> Match exists(PatternOrString target, double timeout) {
     try {
       RepeatableFind rf = new RepeatableFind(target);
       if (rf.repeat(timeout)) {
@@ -1499,7 +1499,7 @@ public class Region {
         return lastMatch;
       }
     } catch (Exception ex) {
-      throw new FindFailed(ex.getMessage());
+      Debug.error("Region.exists: seems that imagefile could not be found on disk", target);
     }
     return null;
   }
