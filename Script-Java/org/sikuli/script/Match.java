@@ -14,7 +14,6 @@ public class Match extends Region implements Comparable {
   private double simScore;
   private String ocrText = null;
   private Location target = null;
-//TODO set the matches image
   private String image = null;
 
   public Match(Match m) {

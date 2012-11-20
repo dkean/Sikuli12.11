@@ -143,11 +143,6 @@ public class Settings {
 				Constructor constr = c.getConstructor();
 				osUtil = (OSUtil) constr.newInstance();
 			} catch (Exception e) {
-// TODO Java 7
-//              ClassNotFoundException | NoSuchMethodException |
-//              SecurityException | InstantiationException |
-//              IllegalAccessException | IllegalArgumentException |
-//              InvocationTargetException e) {
 				Debug.error("Can't create OS Util: " + e.getMessage());
 			}
 		}

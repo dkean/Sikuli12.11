@@ -9,7 +9,6 @@ package org.sikuli.system;
 import java.awt.Window;
 import org.sikuli.script.Region;
 
-// TODO move to class App
 public interface OSUtil {
   // Windows: returns PID, 0 if fails
   // Others: return 0 if succeeds, -1 if fails

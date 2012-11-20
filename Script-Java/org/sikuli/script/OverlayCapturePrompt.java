@@ -109,7 +109,6 @@ public class OverlayCapturePrompt extends OverlayTransparentWindow implements Ev
 
 	@Override
 	public void close() {
-//TODO free all resources
 		Debug.log(2, "CapturePrompt.close: freeing resources");
 		dispose();
 		_scr_img = null;

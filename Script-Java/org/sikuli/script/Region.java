@@ -451,8 +451,15 @@ public class Region {
     scr = Screen.getScreen(id);
   }
 
-//TODO getColor
-  public int getColorAt(Location loc) {
+  /**
+	 * Get the color at the given Point
+	 * for details: see java.awt.Robot and ...Color
+	 *
+	 * @param loc
+	 * @return a 32-Bit value
+	 * (Bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue)
+	 */
+	public int getColorAt(Location loc) {
     return getScreen().getActionRobot().getColorAt(loc.x, loc.y).getRGB();
   }
 
@@ -1476,8 +1483,8 @@ public class Region {
   /**
    * Check if target exists (with the default autoWaitTimeout)
    *
-   * @param target A search criteria
-   * @return The element matching
+   * @param target Pattern or String
+   * @return the match (null if not found or image file missing)
    */
   public <PatternOrString> Match exists(PatternOrString target)  {
     return exists(target, autoWaitTimeout);
@@ -1486,9 +1493,9 @@ public class Region {
   /**
    * Check if target exists with a specified timeout
    *
-   * @param target A search criteria
-   * @param timeout Timeout in second
-   * @return The element matching
+   * @param target Pattern or String
+   * @param timeout Timeout in seconds
+   * @return the match (null if not found or image file missing)
    */
   public <PatternOrString> Match exists(PatternOrString target, double timeout) {
     try {
@@ -1557,7 +1564,7 @@ public class Region {
    * boolean waitVanish(Pattern/String/PatternClass target, timeout-sec) waits
    * until target vanishes or timeout (in second) is passed
    *
-   * @return true if the target vanishes, otherwise returns false.
+   * @return true if target vanishes, false otherwise and if imagefile is missing.
    */
   public <PatternOrString> boolean waitVanish(PatternOrString target, double timeout) {
     try {
@@ -1574,11 +1581,8 @@ public class Region {
       }
 
     } catch (Exception e) {
-      // TODO: This should throw an error (IOException caused by target
-      // image not readable).
-      Debug.error(e.getMessage());
+      Debug.error("Region.waitVanish: seems that imagefile could not be found on disk", target);
     }
-
     return false;
   }
   //</editor-fold>
@@ -1620,38 +1624,6 @@ public class Region {
   }
 
   /**
-   *
-   * @param ptn
-   * @return the match if successful
-   * @throws FindFailed
-   * @deprecated should not be used anymore - use find() instead
-   */
-  @Deprecated
-  public <PSC> Match findNow(PSC ptn) throws FindFailed {
-    Debug.log("capture: " + x + "," + y);
-    ScreenImage simg = getScreen().capture(x, y, w, h);
-    Debug.log("ScreenImage: " + simg.getROI());
-    getScreen().setLastScreenImage(simg);
-    Finder f = new Finder(simg, this);
-    Match ret = null;
-   if (ptn instanceof String) {
-      if (null == f.find((String) ptn)) {
-        throw new FindFailed("ImageFile not found");
-      }
-    } else {
-      if (null == f.find((Pattern) ptn)) {
-        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
-                + " not found on disk");
-      }
-    }
-    if (f.hasNext()) {
-      ret = f.next();
-    }
-    f.destroy();
-    return ret;
-  }
-
-  /**
    * Match findAllNow( Pattern/String/PatternClass ) finds the given pattern on
    * the screen and returns the best match without waiting.
    */
@@ -1682,108 +1654,6 @@ public class Region {
 		}
 		return null;
 	}
-
-  /**
-   *
-   * @param ptn
-   * @return the itreator of matches if successful
-   * @throws FindFailed
-   * @deprecated should not be used anymore - use findAll() instead
-   */
-  @Deprecated
-  public <PSC> Iterator<Match> findAllNow(PSC ptn)
-          throws FindFailed {
-    ScreenImage simg = getScreen().capture(x, y, w, h);
-    getScreen().setLastScreenImage(simg);
-    Finder f = new Finder(simg, this);
-    if (ptn instanceof String) {
-      if (null == f.findAll((String) ptn)) {
-        throw new FindFailed("ImageFile not found");
-      }
-    } else {
-      if (null == f.findAll((Pattern) ptn)) {
-        throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
-                + " not found on disk");
-      }
-    }
-    if (f.hasNext()) {
-      return f;
-    }
-    f.destroy();
-    return null;
-  }
-
-  /**
-   *
-   * @param target
-   * @param timeout
-   * @return the itreator of matches if successful
-   * @throws FindFailed
-   * @deprecated does not really make sense - use findAll() instead
-   */
-  @Deprecated
-  public <PSC> Iterator<Match> waitAll(PSC target, double timeout)
-          throws FindFailed {
-
-    while (true) {
-      try {
-
-        RepeatableFindAll rf = new RepeatableFindAll(target);
-        rf.repeat(timeout);
-        lastMatches = rf.getMatches();
-
-      } catch (Exception e) {
-        throw new FindFailed(e.getMessage());
-      }
-
-      if (lastMatches != null) {
-        break;
-      }
-
-      if (!handleFindFailed(target)) {
-        return null;
-      }
-    }
-
-    return lastMatches;
-  }
-
-//TODO getRegionFromPSRM, getLocationFromPSRML
-  private <PSRM> Region getRegionFromPSRM(PSRM target)
-          throws FindFailed {
-    if (target instanceof Pattern || target instanceof String) {
-      Match m = find(target);
-      if (m != null) {
-        return m;
-      }
-      return null;
-    }
-    if (target instanceof Region) {
-      return (Region) target;
-    }
-    return null;
-  }
-
-  private <PSRML> Location getLocationFromPSRML(PSRML target)
-          throws FindFailed {
-    if (target instanceof Pattern || target instanceof String) {
-      Match m = find(target);
-      if (m != null) {
-        return m.getTarget();
-      }
-      return null;
-    }
-    if (target instanceof Match) {
-      return ((Match) target).getTarget();
-    }
-    if (target instanceof Region) {
-      return ((Region) target).getCenter();
-    }
-    if (target instanceof Location) {
-      return (Location) target;
-    }
-    return null;
-  }
 
   // Repeatable Find ////////////////////////////////
   private abstract class Repeatable {
@@ -1886,7 +1756,144 @@ public class Region {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="Observer">
+	//<editor-fold defaultstate="collapsed" desc="Find internal -- obsolete??">
+	/**
+	 *
+	 * @param ptn
+	 * @return the match if successful
+	 * @throws FindFailed
+	 * @deprecated should not be used anymore - use find() instead
+	 */
+	@Deprecated
+	public <PSC> Match findNow(PSC ptn) throws FindFailed {
+		Debug.log("capture: " + x + "," + y);
+		ScreenImage simg = getScreen().capture(x, y, w, h);
+		Debug.log("ScreenImage: " + simg.getROI());
+		getScreen().setLastScreenImage(simg);
+		Finder f = new Finder(simg, this);
+		Match ret = null;
+		if (ptn instanceof String) {
+			if (null == f.find((String) ptn)) {
+				throw new FindFailed("ImageFile not found");
+			}
+		} else {
+			if (null == f.find((Pattern) ptn)) {
+				throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+								+ " not found on disk");
+			}
+		}
+		if (f.hasNext()) {
+			ret = f.next();
+		}
+		f.destroy();
+		return ret;
+	}
+
+	/**
+	 *
+	 * @param ptn
+	 * @return the itreator of matches if successful
+	 * @throws FindFailed
+	 * @deprecated should not be used anymore - use findAll() instead
+	 */
+	@Deprecated
+	public <PSC> Iterator<Match> findAllNow(PSC ptn)
+					throws FindFailed {
+		ScreenImage simg = getScreen().capture(x, y, w, h);
+		getScreen().setLastScreenImage(simg);
+		Finder f = new Finder(simg, this);
+		if (ptn instanceof String) {
+			if (null == f.findAll((String) ptn)) {
+				throw new FindFailed("ImageFile not found");
+			}
+		} else {
+			if (null == f.findAll((Pattern) ptn)) {
+				throw new FindFailed("ImageFile " + ((Pattern) ptn).getFilename()
+								+ " not found on disk");
+			}
+		}
+		if (f.hasNext()) {
+			return f;
+		}
+		f.destroy();
+		return null;
+	}
+
+	/**
+	 *
+	 * @param target
+	 * @param timeout
+	 * @return the itreator of matches if successful
+	 * @throws FindFailed
+	 * @deprecated does not really make sense - use findAll() instead
+	 */
+	@Deprecated
+	public <PSC> Iterator<Match> waitAll(PSC target, double timeout)
+					throws FindFailed {
+
+		while (true) {
+			try {
+
+				RepeatableFindAll rf = new RepeatableFindAll(target);
+				rf.repeat(timeout);
+				lastMatches = rf.getMatches();
+
+			} catch (Exception e) {
+				throw new FindFailed(e.getMessage());
+			}
+
+			if (lastMatches != null) {
+				break;
+			}
+
+			if (!handleFindFailed(target)) {
+				return null;
+			}
+		}
+
+		return lastMatches;
+	}
+
+	private <PatternStringRegionMatch> Region
+					getRegionFromTarget(PatternStringRegionMatch target)
+					throws FindFailed {
+		if (target instanceof Pattern || target instanceof String) {
+			Match m = find(target);
+			if (m != null) {
+				return m;
+			}
+			return null;
+		}
+		if (target instanceof Region) {
+			return (Region) target;
+		}
+		return null;
+	}
+
+	private <PatternStringRegionMatchLocation> Location
+					getLocationFromTarget(PatternStringRegionMatchLocation target)
+					throws FindFailed {
+		if (target instanceof Pattern || target instanceof String) {
+			Match m = find(target);
+			if (m != null) {
+				return m.getTarget();
+			}
+			return null;
+		}
+		if (target instanceof Match) {
+			return ((Match) target).getTarget();
+		}
+		if (target instanceof Region) {
+			return ((Region) target).getCenter();
+		}
+		if (target instanceof Location) {
+			return (Location) target;
+		}
+		return null;
+	}
+	//</editor-fold>
+
+	//<editor-fold defaultstate="collapsed" desc="Observer">
   private EventManager getEventManager() {
     if (evtMgr == null) {
       evtMgr = new EventManager(this);
@@ -2034,7 +2041,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int click(PatternFilenameRegionMatchLocation target, int modifiers)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, false);
 
     //TODO      SikuliActionManager.getInstance().clickTarget(this, target, _lastScreenImage, _lastMatch);
@@ -2083,7 +2090,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int doubleClick(PatternFilenameRegionMatchLocation target, int modifiers)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     int ret = _click(loc, InputEvent.BUTTON1_MASK, modifiers, true);
 
     //TODO      SikuliActionManager.getInstance().doubleClickTarget(this, target, _lastScreenImage, _lastMatch);
@@ -2132,7 +2139,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int rightClick(PatternFilenameRegionMatchLocation target, int modifiers)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     int ret = _click(loc, InputEvent.BUTTON3_MASK, modifiers, false);
 
     //TODO      SikuliActionManager.getInstance().rightClickTarget(this, target, _lastScreenImage, _lastMatch);
@@ -2208,8 +2215,8 @@ public class Region {
   public <PatternFilenameRegionMatchLocation> int dragDrop(PatternFilenameRegionMatchLocation t1,
           PatternFilenameRegionMatchLocation t2)
           throws FindFailed {
-    Location loc1 = getLocationFromPSRML(t1);
-    Location loc2 = getLocationFromPSRML(t2);
+    Location loc1 = getLocationFromTarget(t1);
+    Location loc2 = getLocationFromTarget(t2);
     if (loc1 != null && loc2 != null) {
       getScreen().showTarget(loc1);
       RobotDesktop r = getScreen().getActionRobot();
@@ -2235,7 +2242,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int drag(PatternFilenameRegionMatchLocation target)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     if (loc != null) {
       RobotDesktop r = getScreen().getActionRobot();
       getScreen().showTarget(loc);
@@ -2258,7 +2265,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int dropAt(PatternFilenameRegionMatchLocation target)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     if (loc != null) {
       getScreen().showTarget(loc);
       RobotDesktop r = getScreen().getActionRobot();
@@ -2331,7 +2338,7 @@ public class Region {
    */
   public <PatternFilenameRegionMatchLocation> int mouseMove(PatternFilenameRegionMatchLocation target)
           throws FindFailed {
-    Location loc = getLocationFromPSRML(target);
+    Location loc = getLocationFromTarget(target);
     if (loc != null) {
       getScreen().showTarget(loc);
       RobotDesktop r = getScreen().getActionRobot();
