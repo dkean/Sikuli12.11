@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Pattern {
 
   private String imgURL = null;
+	private BufferedImage imgBuf = null;
   private float similarity = 0.7f;
   private Location offset = new Location(0, 0);
 
@@ -29,11 +30,29 @@ public class Pattern {
     imgURL = imgURL_;
   }
 
-  public Pattern(BufferedImage bimg) {
-    //TODO implement buffered image constructor
-  }
+  /**
+	 * A Pattern from a BufferedImage
+	 * ** not tested yet totally **
+	 *
+	 * @param bimg
+	 */
+	public Pattern(BufferedImage bimg) {
+		imgBuf = bimg;
+		imgURL = "-- BufferedImage --";
+	}
 
-  public Pattern similar(float sim) {
+  /**
+	 * A Pattern from a ScreenImage
+	 * ** not tested yet totally **
+	 *
+	 * @param simg
+	 */
+ public Pattern(ScreenImage simg) {
+		imgBuf = simg.getImage();
+		imgURL = "-- BufferedImage --";
+	}
+
+	public Pattern similar(float sim) {
     similarity = sim;
     return this;
   }
@@ -73,6 +92,9 @@ public class Pattern {
   }
 
   public String checkFile() {
+		if (imgBuf != null) {
+			return imgURL;
+		}
     try {
       ImageLocator.locate(imgURL);
       return imgURL;
@@ -82,6 +104,9 @@ public class Pattern {
   }
 
   public BufferedImage getImage() {
+		if (imgBuf != null) {
+			return imgBuf;
+		}
     return ImageLocator.getImage(getFilename());
   }
 
