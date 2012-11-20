@@ -545,7 +545,6 @@ public class SikuliIDE extends JFrame {
   }
 
   private int askForSaveAll(String typ) {
-//TODO: save all at run
     String warn = "Some scripts are not saved yet!";
     String title = "Need your attention!";
     String[] options = new String[3];

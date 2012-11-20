@@ -29,7 +29,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
 		prefs = PreferencesUser.getInstance();
 		prefMoreHTML.setSelected(prefs.getAtSaveMakeHTML());
 		prefMoreClean.setSelected(prefs.getAtSaveCleanBundle());
-//TODO: implement prefMoreRunSave
 		prefMoreRunSave.setSelected(prefs.getPrefMoreRunSave());
 //TODO: implement prefMoreHighlight
 		prefMoreHighlight.setSelected(prefs.getPrefMoreHighlight());
@@ -45,7 +44,6 @@ public class PreferencesWindowMore extends javax.swing.JPanel {
 		prefMoreLogActions.setSelected(prefs.getPrefMoreLogActions());
 		prefMoreLogDebug.setSelected(prefs.getPrefMoreLogDebug());
 		prefMoreLogInfo.setSelected(prefs.getPrefMoreLogInfo());
-//TODO: implement switch off text/OCR
 		prefMoreTextSearch.setSelected(prefs.getPrefMoreTextSearch());
 		prefMoreTextOCR.setSelected(prefs.getPrefMoreTextOCR());
 		prefMoreScripter.setSelected(prefs.getUserType() == PreferencesUser.SCRIPTER);

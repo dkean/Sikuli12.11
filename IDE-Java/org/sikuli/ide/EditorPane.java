@@ -82,7 +82,6 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     pref.addPreferenceChangeListener(new PreferenceChangeListener() {
       @Override
       public void preferenceChange(PreferenceChangeEvent event) {
-        // TODO: define constants for preference keys in UserPreferences
         if (event.getKey().equals("TAB_WIDTH")) {
           _indentationLogic.setTabWidth(Integer.parseInt(event.getNewValue()));
         }
@@ -701,7 +700,6 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     Debug.log(2, "save to bundle: " + getSrcBundle());
     writeSrcFile();
     //TODO: update all bundle references in ImageButtons
-    //TODO: if save and rename images, the images will be gone..
   }
 
   private File createSourceFile(String bundlePath, String ext) {
