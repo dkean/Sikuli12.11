@@ -5,17 +5,18 @@
  */
 package org.sikuli.ide;
 
-
 public class SikuliIDESettings {
-   public static String SikuliVersion = "X-1.0-RaiMan2012-1";
 
-	 private static String[] args = new String[0];
+	//TODO synchronize version information
+	public static String SikuliVersion = "X-1.0-RaiMan2012-1";
 
-	 protected static String[] getArgs() {
-		 return args;
-	 }
+	private static String[] args = new String[0];
 
-	 protected static void setArgs(String[] args) {
-		 SikuliIDESettings.args = args;
-	 }
+	protected static String[] getArgs() {
+		return args;
+	}
+
+	protected static void setArgs(String[] args) {
+		SikuliIDESettings.args = args;
+	}
 }
