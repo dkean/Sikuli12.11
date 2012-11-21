@@ -101,13 +101,14 @@ public class CommandArgs {
   public void printHelp() {
     HelpFormatter formatter = new HelpFormatter();
     if (isScript(_callerType)) {
-      formatter.printHelp(80, "java -jar sikuli-script.jar\n",
+      formatter.printHelp(80, "\n",
               "----- Running Sikuli script using sikuli-script.jar "
               + "---------------------------",
               _options,
               "-----\n<foobar.sikuli>\n"
               + "path relative to current working directory or absolute path\n"
-              + "-----------------------------------------------------------",
+							+ "though deprecated: so called executables .skl can be used too\n"
+              + "-------------------------------------------------------------",
               true);
     } else if (isIDE(_callerType)) {
       formatter.printHelp("Sikuli-IDE", _options, true);

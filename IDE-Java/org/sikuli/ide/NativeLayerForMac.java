@@ -29,7 +29,6 @@ public class NativeLayerForMac implements NativeLayer, PreferencesHandler, OpenF
 		List<File> fnameList = evt.getFiles();
 		final String fname = fnameList.get(0).getPath();
 		Debug.log(2, "opening " + fname);
-//TODO ask .skl from open file: run or load
     if (fname.endsWith(".skl")) {
 			SikuliIDE._runningSkl = true;
 			Thread t = new Thread() {

@@ -1,7 +1,11 @@
 package org.sikuli.script;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +14,9 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class FileManager {
 
@@ -278,5 +285,62 @@ public class FileManager {
 		}
 		return p;
 	}
+
+	public static String unzipSKL(String fileName) {
+		File file;
+	      try {
+          file = new File(fileName);
+          if (!file.exists()) {
+            throw new IOException(fileName + ": No such file");
+          }
+          String name = file.getName();
+          name = name.substring(0, name.lastIndexOf('.'));
+          File tmpDir = createTempDir();
+          File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
+          sikuliDir.mkdir();
+          unzip(fileName, sikuliDir.getAbsolutePath());
+          return sikuliDir.getAbsolutePath();
+				} catch (IOException e) {
+					System.err.println(e.getMessage());
+					return null;
+				}
+	}
+
+	public static File createTempDir() {
+		final String baseTempPath = System.getProperty("java.io.tmpdir");
+
+		Random rand = new Random();
+		int randomInt = 1 + rand.nextInt();
+
+		File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + ".sikuli");
+		if (tempDir.exists() == false) {
+			tempDir.mkdir();
+		}
+
+		tempDir.deleteOnExit();
+
+		return tempDir;
+	}
+
+	public static void unzip(String zip, String path)
+					throws IOException, FileNotFoundException {
+		final int BUF_SIZE = 2048;
+		FileInputStream fis = new FileInputStream(zip);
+		ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+		ZipEntry entry;
+		while ((entry = zis.getNextEntry()) != null) {
+			int count;
+			byte data[] = new byte[BUF_SIZE];
+			FileOutputStream fos = new FileOutputStream(
+							new File(path, entry.getName()));
+			BufferedOutputStream dest = new BufferedOutputStream(fos, BUF_SIZE);
+			while ((count = zis.read(data, 0, BUF_SIZE)) != -1) {
+				dest.write(data, 0, count);
+			}
+			dest.close();
+		}
+		zis.close();
+	}
+
 
 }

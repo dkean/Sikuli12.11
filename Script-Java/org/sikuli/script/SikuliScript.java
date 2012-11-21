@@ -32,8 +32,14 @@ public class SikuliScript {
 
     //TODO downward compatibel
     if (args.length > 0 && !args[0].startsWith("-")) {
-      SikuliScriptRunner runner = new SikuliScriptRunner(CommandArgs.getPyArgs(cmdLine));
-      exitCode = runner.runPython(null);
+			String[] pyargs = CommandArgs.getPyArgs(cmdLine);
+			if (! pyargs[0].endsWith(".sikuli")) {
+				Debug.error("No runnable script found: " + pyargs[0]);
+				exitCode = -2;
+			} else{
+				SikuliScriptRunner runner = new SikuliScriptRunner(pyargs);
+				exitCode = runner.runPython(null);
+			}
       Debug.info("You are using deprecated command line argument syntax!");
       cmdArgs.printHelp();
       System.exit(exitCode);
@@ -44,7 +50,6 @@ public class SikuliScript {
         cmdArgs.printHelp();
         return;
       }
-
       if (cmdLine.hasOption("i")) {
 				String[] jy_args = {"-i", "-c",
 					"from sikuli import *; SikuliScript.runningInteractive = True; "
@@ -56,15 +61,16 @@ public class SikuliScript {
 				jython.main(jy_args);
         return;
       }
-
       if (cmdLine.hasOption("run")) {
         SikuliScriptRunner runner = new SikuliScriptRunner(CommandArgs.getPyArgs(cmdLine), "SCRIPT");
         System.exit(runner.runPython(null));
-      }
-    } else {
-      Debug.error("Nothing to do! No valid arguments on commandline!");
-      cmdArgs.printHelp();
-    }
+      } else if (cmdLine.hasOption("test")) {
+				Debug.error("Sorry, support for option -t (test) not yet available - use X-1.0rc3");
+	      System.exit(-2);
+			}
+		}
+		Debug.error("Nothing to do! No valid arguments on commandline!");
+		cmdArgs.printHelp();
   }
 
   public static void shelp() {

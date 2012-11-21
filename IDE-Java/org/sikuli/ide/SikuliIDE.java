@@ -16,6 +16,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -44,6 +46,7 @@ import org.sikuli.script.SikuliScriptRunner;
 import org.sikuli.script.SikuliScript;
 import org.sikuli.script.CommandArgs;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 
 public class SikuliIDE extends JFrame {
 
@@ -160,57 +163,50 @@ public class SikuliIDE extends JFrame {
 
 //TODO run .skl using sikuli-script
     if (!_newCommandline && args != null && args.length >= 1) {
-      try {
-        int exitCode = 0;
-        fileName = args[0];
-        if (fileName.endsWith(".skl")) {
-          file = new File(fileName);
-          if (!file.exists()) {
-            throw new IOException(fileName + ": No such file");
-          }
-          String name = file.getName();
-          name = name.substring(0, name.lastIndexOf('.'));
-          File tmpDir = Utils.createTempDir();
-          File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
-          sikuliDir.mkdir();
-          Utils.unzip(fileName, sikuliDir.getAbsolutePath());
-          args[0] = sikuliDir.getAbsolutePath();
-          _runningSkl = true;
-        }
-      } catch (IOException e) {
-        errorMsg(e.getMessage());
-        System.exit(-2);
-      }
-      if (_runningSkl) {
-        SikuliScript.main(args);
-//TODO System.exit() und return code
-        try {
-          SikuliScript.main(args);
-        } catch (Exception e) {
-        }
-      }
+			int exitCode = 0;
+			fileName = args[0];
+			if (! fileName.startsWith("-") && fileName.endsWith(".skl")) {
+				String f = FileManager.unzipSKL(fileName);
+				if (f != null) {
+					args[0] = f;
+				} else {
+					System.exit(-2);
+				}
+				if (! _runningSkl) {
+					System.out.println("[WARNING] Sikuli IDE is no longer used to run scripts from command line\n"
+									+ "This is delegated now to sikuli-script.jar\n"
+									+ "Look into the docs for more information on command line usage");
+				}
+	//TODO System.exit() und return code
+				try {
+					SikuliScript.main(args);
+				} catch (Exception e) {
+				}
+				if (! _runningSkl) {
+					System.exit(exitCode);
+				} else {
+					return;
+				}
+			}
     }
 
 // we should open the IDE
-    if (!_runningSkl) {
-      SikuliIDESettings.setArgs(CommandArgs.getPyArgs(_cmdLine));
-      initNativeLayer();
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+		SikuliIDESettings.setArgs(CommandArgs.getPyArgs(_cmdLine));
+		initNativeLayer();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-      if (Settings.isMac()) {
-        _native.initApp();
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-        }
-      }
-      SikuliIDE.getInstance(args);
-    }
-    SikuliIDE._runningSkl = false;
+		if (Settings.isMac()) {
+			_native.initApp();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ie) {
+			}
+		}
+		SikuliIDE.getInstance(args);
   }
 
   //<editor-fold defaultstate="collapsed" desc="IDE setup and general">
@@ -451,7 +447,8 @@ public class SikuliIDE extends JFrame {
       getCurrentCodePane().loadFile(file);
       return true;
     } catch (IOException e) {
-      Debug.error("Can't load file " + file);
+//TODO close tab again on error
+			Debug.error("Can't load file " + file);
       Debug.error(e.getMessage());
       return false;
     }
