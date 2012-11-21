@@ -49,6 +49,7 @@ public class SikuliScript {
 				String[] jy_args = {"-i", "-c",
 					"from sikuli import *; SikuliScript.runningInteractive = True; "
 					+ "print \"Hello, this is your interactive Sikuli (rules for interactive Python apply)\\n"
+					+ "use the UP/DOWN arrow keys to walk through the input history\\n"
 					+ "help()<enter> will output some basic Python information\\n"
 					+ "shelp()<enter> will output some basic Sikuli information\\n"
 					+ "... use ctrl-d to end the session\""};
@@ -69,6 +70,16 @@ public class SikuliScript {
   public static void shelp() {
 		if (SikuliScript.runningInteractive) {
 			System.out.println("**** this might be helpful ****");
+			System.out.println(
+				"-- execute a line of code by pressing <enter>\n" +
+				"-- separate more than one statement on a line using ;\n" +
+				"-- Unlike the iDE, this command window will not vanish, when using a Sikuli feature\n" +
+				"   so take care, that all you need is visible on the screen\n" +
+				"-- to create an image interactively:\n" +
+				"img = capture()\n" +
+				"-- use a captured image later:\n" +
+				"click(img)"
+				);
 		}
 	}
 
