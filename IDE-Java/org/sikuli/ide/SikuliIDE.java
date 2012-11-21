@@ -632,16 +632,12 @@ public class SikuliIDE extends JFrame {
             InputEvent.SHIFT_MASK | scMask),
             new FileAction(FileAction.SAVE_AS)));
 
-    //<editor-fold defaultstate="collapsed" desc="FileMenu Export Executable --- RaiMan not used">
-		/*
      _fileMenu.add(createMenuItem(_I("menuFileExport"),
      KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
      InputEvent.SHIFT_MASK | scMask),
      new FileAction(FileAction.EXPORT)));
-     */
-    //</editor-fold>
 
-    _fileMenu.add(createMenuItem(_I("menuFileCloseTab"),
+		 _fileMenu.add(createMenuItem(_I("menuFileCloseTab"),
             KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, scMask),
             new FileAction(FileAction.CLOSE_TAB)));
 
