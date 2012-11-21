@@ -13,13 +13,14 @@ import org.sikuli.system.OSUtil;
 public class Settings {
 
 	public static final int ISWINDOWS = 0;
+	public static final int ISMAC = 1;
 	public static final int ISLINUX = 2;
 	public static final int ISNOTSUPPORTED = 3;
 	public static final float FOREVER = Float.POSITIVE_INFINITY;
-	public static final int ISMAC = 1;
+
 	public final static String SikuliVersion = "X-1.0rc3";
 	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
-	public static float DefaultHighlightTime = 2f;
+
 	public static FindFailedResponse defaultFindFailedResponse = FindFailedResponse.ABORT;
 	public static boolean ThrowException = true; // throw FindFailed exception
 	public static float AutoWaitTimeout = 3f; // in seconds
@@ -27,25 +28,77 @@ public class Settings {
 	public static float ObserveScanRate = 3f; // frames per second
 	public static int ObserveMinChangedPixels = 50; // in pixels
 	public static double MinSimilarity = 0.7;
+
+	public static float MoveMouseDelay = 0.5f; // in seconds
 	public static double DelayBeforeDrop = 0.3;
 	public static double DelayAfterDrag = 0.3;
-	public static float SlowMotionDelay = 2.0f; // in seconds
-	public static float MoveMouseDelay = 0.5f; // in seconds
+
 	public static String BundlePath = null;
+
 	public static String OcrDataPath = null;
 	public static boolean OcrTextSearch = false;
 	public static boolean OcrTextRead = false;
+
+	/**
+	 * in-jar folder to load native libs from
+	 */
 	public static String libSource = "META-INF/lib/";
+	/**
+	 * Mac: standard place for native libs
+	 */
 	public static String libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
+	/**
+	 * Win: standard place for native libs
+	 */
 	public static String libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
+
+	/**
+	 * standard place in the net to get information about extensions<br />
+	 * needs a file extensions.json with content<br />
+	 * {"extension-list":<br />
+   * &nbsp;{"extensions":<br />
+   * &nbsp;&nbsp;[<br />
+   * &nbsp;&nbsp;&nbsp;{<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"name":"SikuliGuide",<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"version":"0.3",<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"description":"visual annotations",<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"imgurl":"somewhere in the net",<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"infourl":"http://doc.sikuli.org",<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;"jarurl":"---extensions---"<br />
+   * &nbsp;&nbsp;&nbsp;},<br />
+   * &nbsp;&nbsp;]<br />
+   * &nbsp;}<br />
+   * }<br />
+	 * imgurl: to get an icon from<br />
+	 * infourl: where to get more information<br />
+	 * jarurl: where to download the jar from (no url: this standard place)<br />
+	 */
   public static String SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
+
+	/**
+	 * true = start slow motion mode, false: stop it (default: false)
+	 * show a visual for SlowMotionDelay seconds (default: 2)
+	 */
 	public static boolean ShowActions = false;
+	public static float SlowMotionDelay = 2.0f; // in seconds
+
+	/**
+	 * true = highlight every match (default: false) (show red rectangle around)
+	 * for DefaultHighlightTime seconds (default: 2)
+	 */
 	public static boolean Highlight = false;
+	public static float DefaultHighlightTime = 2f;
+
 	public static boolean ActionLogs = true;
 	public static boolean InfoLogs = true;
 	public static boolean DebugLogs = true;
 	public static boolean ProfileLogs = false;
+
+	/**
+	 * default pixels to add around with nearby() and grow()
+	 */
 	public static final int DefaultPadding = 50;
+
 	static OSUtil osUtil = null;
 
 	public static boolean isJava7() {
