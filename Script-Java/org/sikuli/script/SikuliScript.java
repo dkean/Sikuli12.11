@@ -33,7 +33,7 @@ public class SikuliScript {
     //TODO downward compatibel
     if (args.length > 0 && !args[0].startsWith("-")) {
 			String[] pyargs = CommandArgs.getPyArgs(cmdLine);
-			if (! pyargs[0].endsWith(".sikuli")) {
+			if (! pyargs[0].endsWith(".sikuli") && ! pyargs[0].endsWith(".skl")) {
 				Debug.error("No runnable script found: " + pyargs[0]);
 				exitCode = -2;
 			} else{

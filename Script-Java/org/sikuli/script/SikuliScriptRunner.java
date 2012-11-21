@@ -85,8 +85,18 @@ public class SikuliScriptRunner {
 	public int runPython(String bundlePath) {
 		if (bundlePath == null) {
 			bundlePath = sysargv.get(0);
-			if (! bundlePath.endsWith(".sikuli")) {
-				Debug.error("No runnable script found: " + bundlePath);
+			if (bundlePath.endsWith(".skl")) {
+				String f = FileManager.unzipSKL(bundlePath);
+				if (f != null) {
+					bundlePath = f;
+				} else {
+					bundlePath = null;
+				}
+			} else 	if (! bundlePath.endsWith(".sikuli")) {
+				bundlePath = null;
+			}
+			if (bundlePath == null) {
+				Debug.error("No runnable script found: " + sysargv.get(0));
 				return -2;
 			}
 		}
