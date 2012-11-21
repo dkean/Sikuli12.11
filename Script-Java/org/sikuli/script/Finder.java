@@ -6,6 +6,7 @@
  */
 package org.sikuli.script;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Iterator;
 import org.sikuli.script.natives.FindInput;
@@ -53,24 +54,52 @@ public class Finder implements Iterator<Match> {
     _region = region;
   }
 
+	/**
+	 * Constructor for special use from a BufferedImage
+	 *
+	 * @param bimg
+	 */
+	public Finder(BufferedImage bimg) {
+    _findInput.setSource(OpenCV.convertBufferedImageToMat(bimg));
+	}
+
   /**
-   * Finder constructor for internal use
-   * <br />(finding in memory image within the given region).
-   */
-  public Finder(ScreenImage img, Region region) {
-		initScreenFinder(img, region);
+	 * Finder constructor for special use froma a ScreenImage
+	 *
+	 * @param simg
+	 */
+	public Finder(ScreenImage simg) {
+		initScreenFinder(simg, null);
   }
 
-	private void initScreenFinder(ScreenImage img, Region region) {
-		setScreenImage(img);
+  /**
+	 * Finder constructor for special use froma a ScreenImage
+	 *
+	 * @param simg
+	 * @param region
+	 */
+	public Finder(ScreenImage simg, Region region) {
+		initScreenFinder(simg, region);
+  }
+
+	private void initScreenFinder(ScreenImage simg, Region region) {
+		setScreenImage(simg);
     _region = region;
 	}
 
-	public void setScreenImage(ScreenImage img) {
-    _findInput.setSource(OpenCV.convertBufferedImageToMat(img.getImage()));
+	/**
+	 * internal use: exchange the source image in existing Finder
+	 *
+	 * @param simg
+	 */
+	public void setScreenImage(ScreenImage simg) {
+    _findInput.setSource(OpenCV.convertBufferedImageToMat(simg.getImage()));
 	}
 
-  public void setRepeating() {
+  /**
+	 * internal use: to be able to reuse the same Finder
+	 */
+	public void setRepeating() {
     repeating = true;
   }
 
@@ -81,8 +110,16 @@ public class Finder implements Iterator<Match> {
   }
 
   public void destroy() {
+		_findInput.delete();
+		_findInput = null;
+		_results.delete();
+		_results = null;
+		_pattern = null;
   }
 
+	/**
+	 * internal use: repeat find with same Finder
+	 */
 	public void findRepeat() {
 		_results = Vision.find(_findInput);
 		_cur_result_i = 0;
@@ -122,6 +159,9 @@ public class Finder implements Iterator<Match> {
     return find(imageOrText, Settings.MinSimilarity);
   }
 
+	/**
+	 * internal use: repeat find with same Finder
+	 */
   public void findAllRepeat() {
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
@@ -203,6 +243,7 @@ public class Finder implements Iterator<Match> {
         parentScreen = _region.getScreen();
       }
       ret = new Match(fr, parentScreen);
+			fr.delete();
       if (_region != null) {
         ret = _region.toGlobalCoord(ret);
       }
@@ -215,7 +256,7 @@ public class Finder implements Iterator<Match> {
   }
 
   /**
-   * not implemented
+   * not implemented - not used
    */
   @Override
   public void remove() {

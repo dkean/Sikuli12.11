@@ -1704,8 +1704,11 @@ public class Region {
     }
 
     public Match getMatch() {
-      return _match;
-    }
+ 			if (_finder != null) {
+				_finder.destroy();
+			}
+      return new Match(_match);
+   }
 
     @Override
     public void run() throws IOException {
