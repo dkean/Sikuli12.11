@@ -17,6 +17,7 @@ import org.python.util.jython;
 public class SikuliScript {
 
   private static CommandLine cmdLine;
+	public static boolean runningInteractive = false;
 
   public SikuliScript() throws AWTException {
   }
@@ -44,6 +45,17 @@ public class SikuliScript {
         return;
       }
 
+      if (cmdLine.hasOption("i")) {
+				String[] jy_args = {"-i", "-c",
+					"from sikuli import *; SikuliScript.runningInteractive = True; "
+					+ "print \"Hello, this is your interactive Sikuli (rules for interactive Python apply)\\n"
+					+ "help()<enter> will output some basic Python information\\n"
+					+ "shelp()<enter> will output some basic Sikuli information\\n"
+					+ "... use ctrl-d to end the session\""};
+				jython.main(jy_args);
+        return;
+      }
+
       if (cmdLine.hasOption("run")) {
         SikuliScriptRunner runner = new SikuliScriptRunner(CommandArgs.getPyArgs(cmdLine), "SCRIPT");
         System.exit(runner.runPython(null));
@@ -54,15 +66,13 @@ public class SikuliScript {
     }
   }
 
-  private static void startInteractiveMode(String[] args) {
-    String[] jy_args = {"-i", "-c",
-      "from sikuli import *;"
-      + "print \"Hello, this is your interactive Sikuli (rules for interactive Python apply)\\n"
-      + "... use ctrl-d to end the session\""};
-    jython.main(jy_args);
-  }
+  public static void shelp() {
+		if (SikuliScript.runningInteractive) {
+			System.out.println("**** this might be helpful ****");
+		}
+	}
 
-  public static void setShowActions(boolean flag) {
+	public static void setShowActions(boolean flag) {
     Settings.ShowActions = flag;
     if (flag) {
       if (Settings.MoveMouseDelay < 1f) {

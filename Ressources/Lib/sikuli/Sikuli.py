@@ -195,6 +195,11 @@ def exit(code=0):
 # @return Returns the output from the executed command.
 def run(cmd):
     return SikuliScript.run(cmd)
+    
+##
+# display some help in interactive mode
+def shelp():
+   SikuliScript.shelp()
 
 ############### SECRET FUNCTIONS ################
 
