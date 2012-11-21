@@ -66,8 +66,16 @@ public class Env {
    * @deprecated use the Settings features
    */
   @Deprecated
-  public static int getOS() {
-		return Settings.getOS();
+  public static OS getOS() {
+		if (Settings.isWindows()) {
+			return OS.WINDOWS;
+		} else if (Settings.isMac()) {
+			return OS.MAC;
+		} else if (Settings.isLinux()) {
+			return OS.MAC;
+		} else {
+			return OS.NOT_SUPPORTED;
+		}
 	}
 
   /**
