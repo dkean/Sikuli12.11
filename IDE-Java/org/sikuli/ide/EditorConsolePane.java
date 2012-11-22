@@ -24,8 +24,8 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 import org.python.util.PythonInterpreter;
-import org.sikuli.script.SikuliScriptRunner;
 import org.sikuli.script.Debug;
+import org.sikuli.script.SikuliScriptRunner;
 
 
 public class EditorConsolePane extends JPanel implements Runnable {
