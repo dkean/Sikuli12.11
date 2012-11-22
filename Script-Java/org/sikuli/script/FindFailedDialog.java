@@ -107,9 +107,28 @@ class FindFailedDialog extends JDialog implements ActionListener {
 			String s = (String) target;
 			image = ImageLocator.getImage(s);
 			if (image != null) {
-				c = new JLabel("Sikuli is unable to find the target image.");
+				int w = image.getWidth(this);
+				int h = image.getHeight(this);
+				String rescale = "";
+				if (w > 500) {
+					w = 500;
+					h = -h;
+					rescale = " (rescaled to 500x...)";
+				}
+				if (h > 300) {
+					h = 300;
+					w = -w;
+					rescale = " (rescaled to ...x300)";
+				}
+				if (h < 0 && w < 0) {
+					w = 500;
+					h = 300;
+					rescale = " (rescaled to 500x300)";
+				}
+				c = new JLabel("Sikuli cannot find image"+rescale+".");
+				image = image.getScaledInstance(w, h, Image.SCALE_DEFAULT);
 			} else {
-				c = new JLabel("Sikuli can not find text :" + s);
+				c = new JLabel("Sikuli cannot find text");
 				return c;
 			}
 		} else {

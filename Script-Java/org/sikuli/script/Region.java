@@ -1355,18 +1355,16 @@ public class Region {
    * return false to skip return true to try again throw FindFailed to abort
    */
   private <PSC> boolean handleFindFailed(PSC target) throws FindFailed {
-
     FindFailedResponse response;
     if (findFailedResponse == FindFailedResponse.PROMPT) {
       FindFailedDialog fd = new FindFailedDialog(target);
       fd.setVisible(true);
       response = fd.getResponse();
-
+			fd.dispose();
+			wait(0.5);
     } else {
       response = findFailedResponse;
     }
-
-
     if (response == FindFailedResponse.SKIP) {
       return false;
     } else if (response == FindFailedResponse.RETRY) {
@@ -1374,7 +1372,6 @@ public class Region {
     } else if (response == FindFailedResponse.ABORT) {
       throw new FindFailed("can not find " + target + " on the screen.");
     }
-
     return false;
   }
 

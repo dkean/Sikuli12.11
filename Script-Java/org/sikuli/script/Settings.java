@@ -22,6 +22,10 @@ public class Settings {
 	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
 
 	public static FindFailedResponse defaultFindFailedResponse = FindFailedResponse.ABORT;
+	public static final FindFailedResponse PROMPT = FindFailedResponse.PROMPT;
+	public static final FindFailedResponse RETRY = FindFailedResponse.RETRY;
+	public static final FindFailedResponse SKIP = FindFailedResponse.SKIP;
+	public static final FindFailedResponse ABORT = FindFailedResponse.ABORT;
 	public static boolean ThrowException = true; // throw FindFailed exception
 	public static float AutoWaitTimeout = 3f; // in seconds
 	public static float WaitScanRate = 3f; // frames per second
