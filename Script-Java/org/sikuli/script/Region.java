@@ -1318,7 +1318,7 @@ public class Region {
 				if (secs < 0) {
 					return lastMatch.highlight((float) -secs);
 				} else {
-					return lastMatch.highlight();
+					return lastMatch.highlight(Settings.DefaultHighlightTime);
 				}
 			} else {
 				return this;
@@ -1459,7 +1459,6 @@ public class Region {
         RepeatableFind rf = new RepeatableFind(target);
         rf.repeat(timeout);
         lastMatch = rf.getMatch();
-
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
       }
@@ -1707,7 +1706,7 @@ public class Region {
  			if (_finder != null) {
 				_finder.destroy();
 			}
-      return new Match(_match);
+      return (_match == null ) ? _match : new Match(_match);
    }
 
     @Override
