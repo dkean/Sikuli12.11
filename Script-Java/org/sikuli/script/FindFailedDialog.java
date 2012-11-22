@@ -97,38 +97,20 @@ class FindFailedDialog extends JDialog implements ActionListener {
 
 	<PatternString> Component createTargetComponent(PatternString target) {
 		Image image = null;
-		JLabel c;
+		JLabel c = null;
+		String targetTyp = "";
 		JPanel p;
 		if (target instanceof Pattern) {
 			Pattern pat = (Pattern) target;
-			c = new JLabel("Sikuli can not find pattern :" + pat);
+			targetTyp = "pattern";
+			target = (PatternString) pat.toString();
 			image = pat.getImage();
 		} else if (target instanceof String) {
-			String s = (String) target;
-			image = ImageLocator.getImage(s);
+			image = ImageLocator.getImage((String) target);
 			if (image != null) {
-				int w = image.getWidth(this);
-				int h = image.getHeight(this);
-				String rescale = "";
-				if (w > 500) {
-					w = 500;
-					h = -h;
-					rescale = " (rescaled to 500x...)";
-				}
-				if (h > 300) {
-					h = 300;
-					w = -w;
-					rescale = " (rescaled to ...x300)";
-				}
-				if (h < 0 && w < 0) {
-					w = 500;
-					h = 300;
-					rescale = " (rescaled to 500x300)";
-				}
-				c = new JLabel("Sikuli cannot find image"+rescale+".");
-				image = image.getScaledInstance(w, h, Image.SCALE_DEFAULT);
+				targetTyp = "image";
 			} else {
-				c = new JLabel("Sikuli cannot find text");
+				c = new JLabel("Sikuli cannot find text:" + (String) target);
 				return c;
 			}
 		} else {
@@ -137,7 +119,29 @@ class FindFailedDialog extends JDialog implements ActionListener {
 		p = new JPanel();
 		p.setLayout(new BorderLayout());
 		JLabel iconLabel = new JLabel();
+		String rescale = "";
+		if (image != null) {
+			int w = image.getWidth(this);
+			int h = image.getHeight(this);
+			if (w > 500) {
+				w = 500;
+				h = -h;
+				rescale = " (rescaled to 500x...)";
+			}
+			if (h > 300) {
+				h = 300;
+				w = -w;
+				rescale = " (rescaled to ...x300)";
+			}
+			if (h < 0 && w < 0) {
+				w = 500;
+				h = 300;
+				rescale = " (rescaled to 500x300)";
+			}
+			image = image.getScaledInstance(w, h, Image.SCALE_DEFAULT);
+		}
 		iconLabel.setIcon(new ImageIcon(image));
+		c = new JLabel("Sikuli cannot find " + targetTyp + rescale + ".");
 		p.add(c, BorderLayout.PAGE_START);
 		p.add(new JLabel((String) target));
 		p.add(iconLabel, BorderLayout.PAGE_END);

@@ -13,21 +13,40 @@ public class Pattern {
 
   private String imgURL = null;
 	private BufferedImage imgBuf = null;
-  private float similarity = 0.7f;
+  private float similarity = (float) Settings.MinSimilarity;
   private Location offset = new Location(0, 0);
 
-  public Pattern() {
+  /**
+	 * creates empty Pattern object
+	 * at least setFilename() or setImage() must be used before
+	 * the Pattern object is ready for anything
+	 */
+	public Pattern() {
   }
 
-  public Pattern(Pattern p) {
+  /**
+	 * create a new Pattern from another (attribs are copied)
+	 *
+	 * @param p
+	 */
+	public Pattern(Pattern p) {
+		if (p.imgBuf != null) {
+			imgBuf = p.imgBuf.getSubimage(0, 0, p.imgBuf.getWidth(), imgBuf.getHeight());
+		}
     imgURL = p.imgURL;
     similarity = p.similarity;
     offset.x = p.offset.x;
     offset.y = p.offset.y;
   }
 
-  public Pattern(String imgURL_) {
-    imgURL = imgURL_;
+  /**
+	 * create a Pattern with an image file name
+	 * checked only when used
+	 *
+	 * @param imgpath
+	 */
+	public Pattern(String imgpath) {
+    imgURL = imgpath;
   }
 
   /**
@@ -47,51 +66,106 @@ public class Pattern {
 	 *
 	 * @param simg
 	 */
- public Pattern(ScreenImage simg) {
+	public Pattern(ScreenImage simg) {
 		imgBuf = simg.getImage();
 		imgURL = "-- BufferedImage --";
 	}
 
+	/**
+	 * sets the minimum Similarity to use with find
+	 *
+	 * @param sim
+	 * @return the Pattern object itself
+	 */
 	public Pattern similar(float sim) {
     similarity = sim;
     return this;
   }
 
-  public Pattern exact() {
+	/**
+	 * sets the minimum Similarity to 0.99 which means exact match
+	 *
+	 * @return  the Pattern object itself
+	 */
+	public Pattern exact() {
     similarity = 0.99f;
     return this;
   }
 
-  public float getSimilar() {
+  /**
+	 *
+	 * @return the current minimum similarity
+	 */
+	public float getSimilar() {
     return this.similarity;
   }
 
-  public Pattern targetOffset(int dx, int dy) {
+  /**
+	 * set the offset from the match's center to be used with mouse actions
+	 *
+	 * @param dx
+	 * @param dy
+	 * @return the Pattern object itself
+	 */
+	public Pattern targetOffset(int dx, int dy) {
     offset.x = dx;
     offset.y = dy;
     return this;
   }
 
-  public Pattern targetOffset(Location off) {
-    offset.x = off.x;
-    offset.y = off.y;
+  /**
+	 * set the offset from the match's center to be used with mouse actions
+	 *
+	 * @param loc
+	 * @return the Pattern object itself
+	 */
+	public Pattern targetOffset(Location loc) {
+    offset.x = loc.x;
+    offset.y = loc.y;
     return this;
   }
 
-  public Location getTargetOffset() {
+  /**
+	 *
+	 * @return the current offset
+	 */
+	public Location getTargetOffset() {
     return offset;
   }
 
-  public Pattern setFilename(String imgURL_) {
+  /**
+	 * set the Patterns image file name
+	 * It is only checked if Pattern is used or with getFilename()
+	 *
+	 * @param imgURL_
+	 * @return the Pattern object itself
+	 */
+	public Pattern setFilename(String imgURL_) {
     imgURL = imgURL_;
     return this;
   }
 
-  public String getFilename() {
-    return imgURL;
-  }
+  /**
+	 * the current image absolute filepath if any
+	 *
+	 * @return might be null
+	 */
+	public String getFilename() {
+		if (imgURL != null) {
+			try {
+				return ImageLocator.locate(imgURL);
+			} catch (IOException ex) {
+			}
+		}
+		return null;
+	}
 
-  public String checkFile() {
+  /**
+	 * Internal Use: check for a valid image file
+	 *
+	 * @return path or null
+	 */
+	public String checkFile() {
 		if (imgBuf != null) {
 			return imgURL;
 		}
@@ -103,17 +177,47 @@ public class Pattern {
     }
   }
 
-  public BufferedImage getImage() {
+  /**
+	 * return the image if any
+	 *
+	 * @return might be null
+	 */
+	public BufferedImage getImage() {
 		if (imgBuf != null) {
 			return imgBuf;
 		}
-    return ImageLocator.getImage(getFilename());
+		if (null != getFilename()) {
+			return ImageLocator.getImage(getFilename());
+		}
+		return null;
   }
+
+	/**
+	 * sets the Pattern's image
+	 *
+	 * @param bimg
+	 * @return the Pattern object itself
+	 */
+	public Pattern setImage(BufferedImage bimg) {
+		imgBuf = bimg;
+		return this;
+	}
+
+	/**
+	 * sets the Pattern's image
+	 *
+	 * @param simg
+	 * @return the Pattern object itself
+	 */
+	public Pattern setImage(ScreenImage simg) {
+		imgBuf = simg.getImage();
+		return this;
+	}
 
   @Override
   public String toString() {
     String ret = "Pattern(\"" + imgURL + "\")";
-    ret += ".minSimilarity(" + similarity + ")";
+    ret += ".similar(" + similarity + ")";
     if (offset.x != 0 || offset.y != 0) {
       ret += ".targetOffset(" + offset.x + "," + offset.y + ")";
     }
