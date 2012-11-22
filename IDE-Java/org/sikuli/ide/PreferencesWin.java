@@ -593,7 +593,7 @@ public class PreferencesWin extends JFrame {
 		winPrefMore.setAlwaysOnTop(true);
 		winPrefMore.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		if (Settings.isJava7()) {
-			winPrefMore.setLocation(getLocation());
+			winPrefMore.setLocation(getLocation().x-70, getLocation().y);
 		}
 		else {
 			winPrefMore.setLocation(getLocation().x+getWidth()+10, getLocation().y);
