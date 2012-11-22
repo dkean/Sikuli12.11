@@ -16,8 +16,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -29,24 +27,24 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXSearchField;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
-import org.sikuli.script.OverlayCapturePrompt;
-import org.sikuli.script.HotkeyEvent;
-import org.sikuli.script.HotkeyListener;
-import org.sikuli.script.HotkeyManager;
-import org.sikuli.script.EventObserver;
-import org.sikuli.script.ScreenImage;
-import org.sikuli.script.Settings;
-import org.sikuli.script.EventSubject;
 import org.sikuli.ide.EditorKit;
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
 import org.sikuli.ide.util.AutoUpdater;
 import org.sikuli.ide.util.Utils;
-import org.sikuli.script.SikuliScriptRunner;
-import org.sikuli.script.SikuliScript;
 import org.sikuli.script.CommandArgs;
 import org.sikuli.script.Debug;
+import org.sikuli.script.EventObserver;
+import org.sikuli.script.EventSubject;
 import org.sikuli.script.FileManager;
+import org.sikuli.script.HotkeyEvent;
+import org.sikuli.script.HotkeyListener;
+import org.sikuli.script.HotkeyManager;
+import org.sikuli.script.OverlayCapturePrompt;
+import org.sikuli.script.ScreenImage;
+import org.sikuli.script.Settings;
+import org.sikuli.script.SikuliScript;
+import org.sikuli.script.SikuliScriptRunner;
 
 public class SikuliIDE extends JFrame {
 
@@ -542,12 +540,13 @@ public class SikuliIDE extends JFrame {
   }
 
   private int askForSaveAll(String typ) {
-    String warn = "Some scripts are not saved yet!";
-    String title = "Need your attention!";
+//TODO I18N
+		String warn = "Some scripts are not saved yet!";
+    String title = SikuliIDEI18N._I("dlgAskCloseTab");
     String[] options = new String[3];
     options[WARNING_DO_NOTHING] = typ + " immediatly";
     options[WARNING_ACCEPTED] = "Save all and " + typ;
-    options[WARNING_CANCEL] = "Cancel";
+    options[WARNING_CANCEL] = SikuliIDEI18N._I("cancel");
     int ret = JOptionPane.showOptionDialog(this, warn, title, 0, JOptionPane.WARNING_MESSAGE, null, options, options[2]);
     if (ret == WARNING_CANCEL || ret == JOptionPane.CLOSED_OPTION) {
       return -1;
@@ -676,6 +675,9 @@ public class SikuliIDE extends JFrame {
 
     public void doQuit(ActionEvent ae) {
       SikuliIDE ide = SikuliIDE.getInstance();
+			if (!doBeforeQuit()) {
+				return;
+			}
       while (true) {
         EditorPane codePane = ide.getCurrentCodePane();
         if (codePane == null) {
@@ -816,9 +818,6 @@ public class SikuliIDE extends JFrame {
 
   protected boolean quit() {
     SikuliIDE ide = SikuliIDE.getInstance();
-    if (!doBeforeQuit()) {
-      return false;
-    }
     (new FileAction()).doQuit(null);
     if (ide.getCurrentCodePane() == null) {
       return true;
@@ -2021,8 +2020,7 @@ public class SikuliIDE extends JFrame {
                   Debug.log(8, "close tab " + i + " n:" + _mainPane.getComponentCount());
                   boolean ret = codePane.close();
                   Debug.log(8, "after close tab n:" + _mainPane.getComponentCount());
-                  //checkDirtyPanes(); //RaiMan no longer needed - no global dirty
-                  if (_mainPane.getTabCount() < 2) {
+                  if (ret && _mainPane.getTabCount() < 2) {
                     (new FileAction()).doNew(null);
                   }
                   return ret;
