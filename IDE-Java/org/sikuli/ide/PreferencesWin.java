@@ -35,6 +35,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.layout.*;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.Debug;
+import org.sikuli.script.Settings;
 
 /*
  * Created by JFormDesigner on Mon Nov 16 10:13:52 EST 2009
@@ -56,6 +57,7 @@ public class PreferencesWin extends JFrame {
   private int _spnTabWidth;
   Locale _locale;
   EditorPane codePane;
+	JFrame winPrefMore;
 
   boolean isDirty = false;
 
@@ -583,16 +585,20 @@ public class PreferencesWin extends JFrame {
   }
 
   private void btnMoreActionPerformed(ActionEvent e) {
-		JFrame mpwin = new JFrame("Preferences: more Options ...");
-    Container mpwinCP = mpwin.getContentPane();
+		winPrefMore = new JFrame("Preferences: more Options ...");
+    Container mpwinCP = winPrefMore.getContentPane();
     mpwinCP.setLayout(new BorderLayout());
 		mpwinCP.add(new PreferencesWindowMore(), BorderLayout.CENTER);
-		mpwin.pack();
-		mpwin.setAlwaysOnTop(true);
-    // mpwin.setUndecorated(true);
-		mpwin.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		mpwin.setLocation(getLocation());
-		mpwin.setVisible(true);
+		winPrefMore.pack();
+		winPrefMore.setAlwaysOnTop(true);
+		winPrefMore.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		if (Settings.isJava7()) {
+			winPrefMore.setLocation(getLocation());
+		}
+		else {
+			winPrefMore.setLocation(getLocation().x+getWidth()+10, getLocation().y);
+		}
+		winPrefMore.setVisible(true);
   }
 
   private void btnOkActionPerformed(ActionEvent e) {
@@ -605,6 +611,7 @@ public class PreferencesWin extends JFrame {
             "Use CANCEL next time, if nothing was changed!";
     JOptionPane.showMessageDialog(this, warn,
             "--- Preferences have been saved ---", JOptionPane.WARNING_MESSAGE);
+		winPrefMore.dispose();
     this.dispose();
   }
 
@@ -616,7 +623,8 @@ public class PreferencesWin extends JFrame {
     if (isDirty) {
       resetPrefs();
     }
-    this.dispose();
+		winPrefMore.dispose();
+	  this.dispose();
   }
 
   private void setTxtHotkey(int code, int mod) {
