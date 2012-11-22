@@ -1,5 +1,4 @@
 .DS_Store
 *$py.class
 Docs/Script-JythonDocs/build/*
-Targets/lib/*
 Targets/libs/*
