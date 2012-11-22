@@ -27,13 +27,14 @@ public class Region {
   private ScreenHighlighter overlay = null;
   public int x, y;
 	/**
-	 * width/height cropped to screen
+	 * current width/height - might be cropped to screen
 	 */
 	public int w, h;
 	/**
-	 * width/height given at time of creation
+	 * width/height given at time of creation is remembered and reused
 	 */
-	public int vWidth, vHeight;
+	protected int vWidth = -1;
+	protected int vHeight = -1;
   protected FindFailedResponse findFailedResponse =
           Settings.defaultFindFailedResponse;
   /**
@@ -65,8 +66,8 @@ public class Region {
   private Region initialize(int X, int Y, int W, int H, Screen parentScreen) {
     x = X;
     y = Y;
-    w = vWidth = W;
-    h = vHeight = H;
+    w = W;
+    h = H;
     if (parentScreen != null) {
       setScreen(parentScreen);
     }
@@ -74,27 +75,37 @@ public class Region {
     return this;
   }
 
+	protected int getVW() {
+		return (vWidth < 0) ? w : vWidth;
+	}
+
+	protected int getVH() {
+		return (vHeight < 0) ? h : vHeight;
+	}
+
   private void initScreen() {
     if (!(this instanceof Screen) && !isJythonScreen()) {
-			Rectangle roi = new Rectangle(x, y, vWidth, vHeight);
-			setScreen(Screen.getScreenContaining(new Location(roi.getLocation())));
+			Rectangle rect = new Rectangle(x, y, getVW(), getVH());
+			setScreen(Screen.getScreenContaining(new Location(rect.getLocation())));
 			if (getScreen()== null) {
 				Debug.error("Region outside any screen - using primary - (x,y) set to (0,0) ---", this);
 				setScreen(Screen.getPrimaryScreen());
         x = 0;
         y = 0;
-				w = vWidth;
-				h = vHeight;
+				w = getVW();
+				h = getVH();
 			} else {
-				roi = getScreen().getBounds().intersection(roi);
-				if (roi.width < w || roi.height < h) {
+				rect = getScreen().getBounds().intersection(rect);
+				if (rect.width < w || rect.height < h) {
 					Debug.log(2, "Region cropped to screen" + toString());
+					vWidth = w;
+					vHeight = h;
 				}
-				x = (int) roi.getX();
-				y = (int) roi.getY();
-				w = (int) roi.getWidth();
-				h = (int) roi.getHeight();
-        int breakpoint = 0;
+				x = (int) rect.getX();
+				y = (int) rect.getY();
+				w = (int) rect.getWidth();
+				h = (int) rect.getHeight();
+        return; // to position a breakpoint here
 			}
 		}
     updateSelf();
@@ -331,7 +342,7 @@ public class Region {
   public Region copyTo(Screen screen) {
     Location o = new Location(getScreen().getBounds().getLocation());
     Location n = new Location(screen.getBounds().getLocation());
-    return Region.create(n.x + x - o.x, n.y + y - o.y, vWidth, vHeight);
+    return Region.create(n.x + x - o.x, n.y + y - o.y, getVW(), getVH());
   }
 
   /**
@@ -967,7 +978,7 @@ public class Region {
    * @return the new region
    */
   public Region offset(Location loc) {
-    return Region.create(x + loc.x, y + loc.y, vWidth, vHeight);
+    return Region.create(x + loc.x, y + loc.y, getVW(), getVH());
   }
 
   /**
@@ -1013,7 +1024,7 @@ public class Region {
    */
   public Region grow(int w, int h) {
     Rectangle r = getRect();
-    r.setSize(vWidth, vHeight);
+    r.setSize(getVW(), getVH());
     r.grow(w, h);
     return Region.create(r.x, r.y, r.width, r.height);
   }
@@ -1032,8 +1043,8 @@ public class Region {
     Rectangle re = getRect();
     int _x = x - l;
     int _y = y - b;
-    int _w = vWidth + l + r;
-    int _h = vHeight + t + b;
+    int _w = getVW() + l + r;
+    int _h = getVH() + t + b;
     return Region.create(_x, _y, _w, _h);
   }
 
@@ -1222,7 +1233,7 @@ public class Region {
    */
   public Region union(Region ur) {
     Rectangle r = getRect();
-    r.setSize(vWidth, vHeight);
+    r.setSize(getVW(), getVH());
     r = r.union(ur.getRect());
     return Region.create(r.x, r.y, r.width, r.height);
   }
@@ -1235,7 +1246,7 @@ public class Region {
    */
   public Region intersection(Region ir) {
     Rectangle r = getRect();
-    r.setSize(vWidth, vHeight);
+    r.setSize(getVW(), getVH());
     r = r.intersection(ir.getRect());
     return Region.create(r.x, r.y, r.width, r.height);
   }

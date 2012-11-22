@@ -429,7 +429,7 @@ public class Screen extends Region implements EventObserver, ScreenIF {
 	 */
 	@Override
   public ScreenImage capture(Region reg) {
-    return capture(newRegion(reg.getTopLeft(), reg.vWidth, reg.vHeight).getRect());
+    return capture(newRegion(reg.getTopLeft(), reg.getVW(), reg.getVH()).getRect());
   }
 
   /**
