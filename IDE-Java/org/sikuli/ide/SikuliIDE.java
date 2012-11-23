@@ -839,7 +839,7 @@ public class SikuliIDE extends JFrame {
           return true;
         }
       } catch (Exception e) {
-        Debug.log("checkDirtyPanes: " + e.getMessage());
+        Debug.error("checkDirtyPanes: " + e.getMessage());
       }
     }
     //RaiMan not used: getRootPane().putClientProperty("Window.documentModified", false);

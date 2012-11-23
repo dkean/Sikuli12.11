@@ -56,7 +56,7 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Debug.log("open Pattern Settings");
+		Debug.log(2, "open Pattern Settings");
 		if (pwin == null) {
 			_offsetSaved = new Location(_offset);
 			_similaritySaved = _similarity;
@@ -110,7 +110,7 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 		File img = new File(_imgFilename);
 		String oldBundle = img.getParent();
 		String newBundle = _pane.getSrcBundle();
-		Debug.log("ImageButton.getFilename: " + oldBundle + " " + newBundle);
+		Debug.log(2, "ImageButton.getFilename: " + oldBundle + " " + newBundle);
 		if (oldBundle == newBundle) {
 			return _imgFilename;
 		}
@@ -165,7 +165,7 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 	}
 
 	public boolean setTargetOffset(Location offset) {
-		Debug.log("setTargetOffset: " + offset);
+		Debug.log(2, "setTargetOffset: " + offset);
 		if (!_offset.equals(offset)) {
 			_offset = offset;
 			setToolTipText(this.toString());

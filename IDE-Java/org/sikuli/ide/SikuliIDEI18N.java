@@ -22,7 +22,7 @@ public class SikuliIDEI18N {
          locale = locale_en;
          PreferencesUser.getInstance().setLocale(locale);
       }
-      Debug.info("locale: " + locale);
+      Debug.log(2, "locale: " + locale);
    }
 
    public static boolean setLocale(Locale locale){

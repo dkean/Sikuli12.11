@@ -64,7 +64,7 @@ public class AutoUpdater {
             }
          }
          catch(Exception e){
-            Debug.log("Can't get version info from " + s + "\n" + e);
+            Debug.error("Can't get version info from " + s + "\n" + e);
          }
       }
       return false;

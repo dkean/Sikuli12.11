@@ -1518,23 +1518,23 @@ public class Region {
     return null;
   }
 
-//TODO implement findText
+//TODO implement findText + check text target already here (find(String))
   /**
    *
    * @param text
    * @param timeout
    * @return
    */
-  public Match findText(String text, double timeout) {
-    return null;
-  }
+	public Match findText(String text, double timeout) throws FindFailed {
+		throw new FindFailed("Region.findText: not yet implemented");
+	}
 
   /**
    *
    * @param text
    * @return
    */
-  public Match findText(String text) {
+  public Match findText(String text) throws FindFailed {
     return findText(text, autoWaitTimeout);
   }
 
@@ -1544,8 +1544,8 @@ public class Region {
    * @param timeout
    * @return
    */
-  public Match findAllText(String text, double timeout) {
-    return null;
+  public Match findAllText(String text, double timeout) throws FindFailed {
+		throw new FindFailed("Region.findText: not yet implemented");
   }
 
   /**
@@ -1553,7 +1553,7 @@ public class Region {
    * @param text
    * @return
    */
-  public Match findAllText(String text) {
+  public Match findAllText(String text) throws FindFailed {
     return findText(text, autoWaitTimeout);
   }
 
@@ -1611,8 +1611,11 @@ public class Region {
 		} else {
 			f = new Finder(simg, this);
 			if (ptn instanceof String) {
-				if (null == f.find((String) ptn)) {
+				String text = f.find((String) ptn);
+				if (null == text) {
 					throw new IOException("ImageFile " + ptn + " not found on disk");
+				} else if ("".equals(text)) {
+					throw new IOException();
 				}
 			} else {
 				if (null == f.find((Pattern) ptn)) {
@@ -2627,10 +2630,15 @@ public class Region {
 
   //<editor-fold defaultstate="collapsed" desc="TODO OCR">
   public String text() {
-    ScreenImage simg = getScreen().capture(x, y, w, h);
-    getScreen().setLastScreenImage(simg);
-    return TextRecognizer.getInstance().recognize(simg);
-  }
+		if (Settings.OcrTextRead) {
+			ScreenImage simg = getScreen().capture(x, y, w, h);
+			getScreen().setLastScreenImage(simg);
+			return TextRecognizer.getInstance().recognize(simg);
+		} else {
+			Debug.error("Region.text: text recognition is currently switched off");
+			return "--- no text ---";
+		}
+	}
 
   public List<Match> listText() {
     ScreenImage simg = getScreen().capture(x, y, w, h);

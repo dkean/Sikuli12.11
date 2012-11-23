@@ -222,7 +222,7 @@ public class PatternWindow extends JFrame {
 						_screenshot.isExact(), _screenshot.getSimilarity(),
 						_screenshot.getNumMatches()));
 		addDirty(_imgBtn.setTargetOffset(_tarOffsetPane.getTargetOffset()));
-		Debug.log("update: " + _imgBtn.toString());
+		Debug.log(2, "update: " + _imgBtn.toString());
 		if (isDirty() || tempDirty) {
 			int i = _imgBtn.getWindow().getTabbedPane().getSelectedIndex();
 			_imgBtn.getWindow().setMessageApplied(i, true);

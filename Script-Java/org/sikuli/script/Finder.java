@@ -274,28 +274,29 @@ public class Finder implements Iterator<Match> {
     }
   }
 
-  private String setTargetSmartly(FindInput fin, String target) {
-    try {
-      //assume it's a file first
-      String filename = ImageLocator.locate(target);
-      fin.setTarget(TARGET_TYPE.IMAGE, filename);
-      return filename;
-    } catch (IOException e) {
-      if (Settings.OcrTextSearch && isImageFile(target)) {
-        if (!repeating) {
-          Debug.error(target +
-                " looks like a file, but not on disk. Assume it's text.");
-        }
-        // this will init text recognizer on demand
-        TextRecognizer tr = TextRecognizer.getInstance();
-        //assume it's text
-        fin.setTarget(TARGET_TYPE.TEXT, target);
-      } else {
-        return null;
-      }
-      return target;
-    }
-  }
+	private String setTargetSmartly(FindInput fin, String target) {
+		if (isImageFile(target)) {
+			try {
+				//assume it's a file first
+				String filename = ImageLocator.locate(target);
+				fin.setTarget(TARGET_TYPE.IMAGE, filename);
+				return filename;
+			} catch (IOException e) {
+				if (!repeating) {
+					Debug.error(target
+									+ " looks like a file, but not on disk. Assume it's text.");
+				}
+			}
+		}
+		if (!Settings.OcrTextSearch) {
+			Debug.error("Region.find(text): text search is currently switched off");
+			return "";
+		} else {
+			fin.setTarget(TARGET_TYPE.IMAGE, target);
+			TextRecognizer.getInstance();
+			return target;
+		}
+	}
 
 	public static boolean isImageFile(String fname) {
 		int dot = fname.lastIndexOf('.');
