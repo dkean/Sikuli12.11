@@ -146,9 +146,13 @@ public class Finder implements Iterator<Match> {
    * @param minSimilarity
    */
   public String find(String imageOrText, double minSimilarity) {
-    if (null == setTargetSmartly(_findInput, imageOrText)) {
+		String target = setTargetSmartly(_findInput, imageOrText);
+    if (null == target) {
       return null;
     }
+		if (target.equals(imageOrText+"???")) {
+			return target;
+		}
     _findInput.setSimilarity(minSimilarity);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
@@ -290,9 +294,9 @@ public class Finder implements Iterator<Match> {
 		}
 		if (!Settings.OcrTextSearch) {
 			Debug.error("Region.find(text): text search is currently switched off");
-			return "";
+			return target + "???";
 		} else {
-			fin.setTarget(TARGET_TYPE.IMAGE, target);
+			fin.setTarget(TARGET_TYPE.TEXT, target);
 			TextRecognizer.getInstance();
 			return target;
 		}

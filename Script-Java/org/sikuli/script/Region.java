@@ -1614,8 +1614,8 @@ public class Region {
 				String text = f.find((String) ptn);
 				if (null == text) {
 					throw new IOException("ImageFile " + ptn + " not found on disk");
-				} else if ("".equals(text)) {
-					throw new IOException();
+				} else if ((((String) ptn) + "???").equals(text)) {
+					throw new IOException("Text search currently switched off");
 				}
 			} else {
 				if (null == f.find((Pattern) ptn)) {
@@ -2628,19 +2628,40 @@ public class Region {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="TODO OCR">
-  public String text() {
+  //<editor-fold defaultstate="collapsed" desc="OCR - read text from Screen">
+  /**
+	 * STILL EXPERIMENTAL: tries to read the text in this region<br />
+	 * might contain misread characters, NL characters and other stuff, when
+	 * interpreting contained grafics as text<br />
+	 * Best results: one line of text with no grafics in the line
+	 *
+	 * @return the text read (utf8 encoded)
+	 */
+	public String text() {
 		if (Settings.OcrTextRead) {
 			ScreenImage simg = getScreen().capture(x, y, w, h);
 			getScreen().setLastScreenImage(simg);
-			return TextRecognizer.getInstance().recognize(simg);
+			String textRead = TextRecognizer.getInstance().recognize(simg);
+			Debug.info("Region.text: #(" + textRead + ")#");
+			return textRead;
 		} else {
 			Debug.error("Region.text: text recognition is currently switched off");
 			return "--- no text ---";
 		}
 	}
 
-  public List<Match> listText() {
+  /**
+	 * VERY EXPERIMENTAL: returns a list of matches, that represent single words,
+	 * that have been found in this region<br />
+	 * the match's x,y,w,h the region of the word<br />
+	 * Match.getText() returns the word (utf8) at this match<br />
+	 * Match.getScore() returns a value between 0 ... 1, that represents
+	 * some OCR-confidence value<br />
+	 * (the higher, the better the OCR engine thinks the result is)
+	 *
+	 * @return a list of matches
+	 */
+	public List<Match> listText() {
     ScreenImage simg = getScreen().capture(x, y, w, h);
     return TextRecognizer.getInstance().listText(simg, this);
   }

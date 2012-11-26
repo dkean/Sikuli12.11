@@ -72,6 +72,10 @@ public class Match extends Region implements Comparable {
     return simScore;
   }
 
+  public String getText() {
+    return ocrText;
+  }
+
   @Override
   public Location getTarget() {
     if (target != null) {
@@ -107,14 +111,6 @@ public class Match extends Region implements Comparable {
     } else {
       return ImageLocator.getImage(image);
     }
-  }
-
-  @Override
-  public String text() {
-    if (ocrText == null) {
-      return super.text();
-    }
-    return ocrText;
   }
 
   @Override

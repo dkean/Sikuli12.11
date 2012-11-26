@@ -39,7 +39,7 @@ public class Settings {
 
 	public static String BundlePath = null;
 
-	public static String OcrDataPath = null;
+	public static String OcrDataPath = "/usr/local/share";
 	public static boolean OcrTextSearch = false;
 	public static boolean OcrTextRead = false;
 

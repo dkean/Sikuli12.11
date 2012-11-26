@@ -23,7 +23,6 @@ public class TextRecognizer {
 
   static {
     FileManager.loadLibrary("VisionProxy");
-//TODO         TextRecognizer tr = TextRecognizer.getInstance();
   }
 
   protected TextRecognizer() {
@@ -32,18 +31,25 @@ public class TextRecognizer {
   boolean _init_succeeded = false;
 
   public void init() {
-    Debug.info("Text Recognizer inited.");
+    String path;
+		File fpath;
     try {
-      String path = FileManager.extract("tessdata");
-      // TESSDATA_PREFIX doesn't contain tessdata/
-      if (path.endsWith("tessdata/")) {
-        path = path.substring(0, path.length() - 9);
-      }
-      Settings.OcrDataPath = path;
-      Debug.log(3, "OCR data path: " + path);
+			// TESSDATA_PREFIX doesn't contain tessdata/
+			path = FileManager.slashify(Settings.OcrDataPath, true);
+			fpath = new File(path, "tessdata");
+			if (!fpath.exists()) {
+				path = FileManager.extract("tessdata");
+				if (path.endsWith("tessdata/")) {
+					path = path.substring(0, path.length() - 9);
+				}
+				Settings.OcrDataPath = path;
+			}
+			Settings.OcrDataPath = path;
+      Debug.log(2, "OCR data path: " + path);
 
       Vision.initOCR(Settings.OcrDataPath);
       _init_succeeded = true;
+	    Debug.log(2, "TextRecognizer: inited.");
     } catch (IOException e) {
       e.printStackTrace();
     } catch (Exception e) {
