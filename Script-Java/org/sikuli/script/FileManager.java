@@ -21,13 +21,15 @@ import java.util.zip.ZipInputStream;
 public class FileManager {
 
   private static File jniDir = null;
-  private static String libSource;
+  private static String jarResources;
+	private static String libSource;
   private static String[] libPathsSettings;
   private static ArrayList<String> libPaths;
   private static StringBuffer alreadyLoaded = new StringBuffer("");
 	static final int DOWNLOAD_BUFFER_SIZE = 153600;
 
   static {
+		jarResources = Settings.jarResources;
     libSource = Settings.libSource;
     libPathsSettings = new String[]{
       slashify(System.getenv("SIKULI_HOME"), true) + "libs",
@@ -341,6 +343,5 @@ public class FileManager {
 		}
 		zis.close();
 	}
-
 
 }

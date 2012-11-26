@@ -44,6 +44,10 @@ public class Settings {
 	public static boolean OcrTextRead = false;
 
 	/**
+	 * in-jar folder to load other ressources from
+	 */
+	public static String jarResources = "META-INF/res/";
+	/**
 	 * in-jar folder to load native libs from
 	 */
 	public static String libSource = "META-INF/lib/";
