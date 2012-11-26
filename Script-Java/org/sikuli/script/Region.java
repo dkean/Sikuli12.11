@@ -2642,7 +2642,7 @@ public class Region {
 			ScreenImage simg = getScreen().capture(x, y, w, h);
 			getScreen().setLastScreenImage(simg);
 			String textRead = TextRecognizer.getInstance().recognize(simg);
-			Debug.info("Region.text: #(" + textRead + ")#");
+			Debug.log(2, "Region.text: #(" + textRead + ")#");
 			return textRead;
 		} else {
 			Debug.error("Region.text: text recognition is currently switched off");

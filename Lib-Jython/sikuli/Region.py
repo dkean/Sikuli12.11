@@ -91,7 +91,10 @@ class Region(JRegion):
       if isinstance(s, types.StringType):
          s = java.lang.String(s, "utf-8")
       return JRegion.paste(self, target, s)
-
+      
+######################### the new Region.text() feature (Tesseract 3) returns utf8
+   def text(self):
+      return JRegion.text(self).encode("utf8")
 
 ########################## observe(): Special setup for Jython
    def onAppear(self, target, handler):
