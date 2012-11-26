@@ -101,8 +101,6 @@ static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
    return TRUE;
 }
 
-
-
 static HWND gFoundHandle;
 static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
@@ -305,7 +303,6 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_Win32Util_bringWindowToFront
    //takeWindowOffTaskbar(hwnd);
    if(jIgnoreMouse)
       makeClickThrough(hwnd);
-
 }
 
 

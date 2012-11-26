@@ -2566,7 +2566,7 @@ public class Region {
 
   private <PatternFilenameRegionMatchLocation> int keyin(PatternFilenameRegionMatchLocation target, String text, int modifiers)
           throws FindFailed {
-    if (0 == click(target, 0)) {
+    if (target != null && 0 == click(target, 0)) {
       return 0;
     }
     if (text != null && !"".equals(text)) {

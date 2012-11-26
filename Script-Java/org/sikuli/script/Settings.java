@@ -188,7 +188,7 @@ public class Settings {
 			case ISMAC:
 				return pkg + "MacUtil";
 			case ISWINDOWS:
-				return pkg + "Win32Util";
+				return "org.sikuli.script." + "Win32Util";
 			case ISLINUX:
 				return pkg + "LinuxUtil";
 			default:
