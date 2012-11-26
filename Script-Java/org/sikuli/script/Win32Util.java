@@ -4,13 +4,14 @@
  *
  * modified RaiMan 2012
  */
-package org.sikuli.system;
+package org.sikuli.script;
 
 import java.awt.Rectangle;
 import java.awt.Window;
 import org.sikuli.script.Region;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FileManager;
+import org.sikuli.system.OSUtil;
 
 public class Win32Util implements OSUtil {
 
