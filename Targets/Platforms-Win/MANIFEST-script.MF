@@ -1,0 +1,5 @@
+Manifest-Version: 1.0 
+Class-Path: commons-cli-1.2.jar sikuli-script.jar 
+ jintellitype-1.3.6.jar 
+Main-Class: org.sikuli.script.SikuliScript 
+ 
