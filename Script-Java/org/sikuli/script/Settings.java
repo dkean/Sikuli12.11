@@ -12,54 +12,18 @@ import org.sikuli.system.OSUtil;
 
 public class Settings {
 
-	public static final int ISWINDOWS = 0;
-	public static final int ISMAC = 1;
-	public static final int ISLINUX = 2;
-	public static final int ISNOTSUPPORTED = 3;
-	public static final float FOREVER = Float.POSITIVE_INFINITY;
-
-	public final static String SikuliVersion = "X-1.0rc3";
-	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
-
-	public static FindFailedResponse defaultFindFailedResponse = FindFailedResponse.ABORT;
-	public static final FindFailedResponse PROMPT = FindFailedResponse.PROMPT;
-	public static final FindFailedResponse RETRY = FindFailedResponse.RETRY;
-	public static final FindFailedResponse SKIP = FindFailedResponse.SKIP;
-	public static final FindFailedResponse ABORT = FindFailedResponse.ABORT;
-	public static boolean ThrowException = true; // throw FindFailed exception
-	public static float AutoWaitTimeout = 3f; // in seconds
-	public static float WaitScanRate = 3f; // frames per second
-	public static float ObserveScanRate = 3f; // frames per second
-	public static int ObserveMinChangedPixels = 50; // in pixels
-	public static double MinSimilarity = 0.7;
-
-	public static float MoveMouseDelay = 0.5f; // in seconds
-	public static double DelayBeforeDrop = 0.3;
-	public static double DelayAfterDrag = 0.3;
-
-	public static String BundlePath = null;
-
-	public static String OcrDataPath = "/usr/local/share";
-	public static boolean OcrTextSearch = false;
-	public static boolean OcrTextRead = false;
-
-	/**
-	 * in-jar folder to load other ressources from
-	 */
-	public static String jarResources = "META-INF/res/";
-	/**
-	 * in-jar folder to load native libs from
-	 */
-	public static String libSource = "META-INF/lib/";
 	/**
 	 * Mac: standard place for native libs
 	 */
-	public static String libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
+	public static String libPathMac;
 	/**
 	 * Win: standard place for native libs
 	 */
-	public static String libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
-
+	public static String libPathWin;
+	/**
+	 * location of folder Tessdata
+	 */
+	public static String OcrDataPath;
 	/**
 	 * standard place in the net to get information about extensions<br />
 	 * needs a file extensions.json with content<br />
@@ -81,7 +45,63 @@ public class Settings {
 	 * infourl: where to get more information<br />
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
-  public static String SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
+  public static String SikuliRepo;
+	{
+		if (java.lang.System.getProperty("sikuli.developement") != null) {
+			libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
+			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
+			SikuliRepo = null;
+		} else {
+			libPathMac = "/Applications/Sikuli-IDE.app/Contents/Frameworks";
+			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
+			SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
+		}
+		if (isWindows()) {
+			OcrDataPath = libPathWin;
+		} else if (isMac()) {
+			OcrDataPath = libPathMac;
+		} else {
+			OcrDataPath = "/usr/local/share";
+		}
+	}
+
+	public static final int ISWINDOWS = 0;
+	public static final int ISMAC = 1;
+	public static final int ISLINUX = 2;
+	public static final int ISNOTSUPPORTED = 3;
+	public static final float FOREVER = Float.POSITIVE_INFINITY;
+
+	public final static String SikuliVersion = "X-1.0";
+	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
+
+	public static FindFailedResponse defaultFindFailedResponse = FindFailedResponse.ABORT;
+	public static final FindFailedResponse PROMPT = FindFailedResponse.PROMPT;
+	public static final FindFailedResponse RETRY = FindFailedResponse.RETRY;
+	public static final FindFailedResponse SKIP = FindFailedResponse.SKIP;
+	public static final FindFailedResponse ABORT = FindFailedResponse.ABORT;
+	public static boolean ThrowException = true; // throw FindFailed exception
+	public static float AutoWaitTimeout = 3f; // in seconds
+	public static float WaitScanRate = 3f; // frames per second
+	public static float ObserveScanRate = 3f; // frames per second
+	public static int ObserveMinChangedPixels = 50; // in pixels
+	public static double MinSimilarity = 0.7;
+
+	public static float MoveMouseDelay = 0.5f; // in seconds
+	public static double DelayBeforeDrop = 0.3;
+	public static double DelayAfterDrag = 0.3;
+
+	public static String BundlePath = null;
+
+	/**
+	 * in-jar folder to load other ressources from
+	 */
+	public static String jarResources = "META-INF/res/";
+	/**
+	 * in-jar folder to load native libs from
+	 */
+	public static String libSource = "META-INF/lib/";
+	public static boolean OcrTextSearch = false;
+	public static boolean OcrTextRead = false;
 
 	/**
 	 * true = start slow motion mode, false: stop it (default: false)

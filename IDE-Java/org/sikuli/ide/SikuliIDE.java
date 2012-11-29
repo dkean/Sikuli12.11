@@ -279,7 +279,7 @@ public class SikuliIDE extends JFrame {
     c.doLayout();
 
     initShortcutKeys();
-    initHotkeys();
+//    initHotkeys();
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     initWindowListener();
     initTooltip();
@@ -1182,9 +1182,11 @@ public class SikuliIDE extends JFrame {
     int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     _toolMenu.setMnemonic(java.awt.event.KeyEvent.VK_T);
 
-    _toolMenu.add(createMenuItem(_I("menuToolExtensions"),
-            null,
-            new ToolAction(ToolAction.EXTENSIONS)));
+		if (Settings.SikuliRepo != null) {
+			_toolMenu.add(createMenuItem(_I("menuToolExtensions"),
+							null,
+							new ToolAction(ToolAction.EXTENSIONS)));
+		}
   }
 
   class ToolAction extends MenuAction {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="make-sikuli-ide-jar" default="jar" basedir=".">
+	<property name="my.sys" value="${sys}"/>
+	<property name="my.src" location="../IDE-Java"/>
+	<property name="my.build" location="build/${my.sys}/iclasses"/>
+	<property name="my.dist" location="${basedir}"/>
+	<property name="my.jar" value="sikuli-ide.jar"/>
+	<property name="my.cp" location="lib/"/>
+
+	<property name="my.is${my.sys}" value="YES"/>
+
+	<path id="my.class.path">
+		<pathelement location="../Lib-Jython/"/>
+    <pathelement path="${my.cp}/commons-cli-1.2.jar"/>
+    <pathelement path="${my.cp}/forms-1.2.1.jar"/>
+<!--    <pathelement path="${my.cp}/jmf.jar"/>-->
+    <pathelement path="${my.cp}/json_simple-1.1.jar"/>
+    <pathelement path="${my.cp}/junit-3.8.1.jar"/>
+    <pathelement path="${my.cp}/mac_widgets.jar"/>
+    <pathelement path="${my.cp}/swingx-core-1.6.2.jar"/>
+    <pathelement path="${my.cp}/swing-layout-1.0.4.jar"/>
+    <pathelement path="${my.dist}/build/${my.sys}/sikuli-script.jar"/>
+  </path>
+
+	<target name="jar" depends="compile">
+		<echo message="*** making jar"/>
+		<jar destfile="${my.dist}/build/${my.sys}/${my.jar}"
+				 manifest="${my.dist}/Platforms/MANIFEST-ide.MF">
+			<fileset dir="${my.src}">
+				<exclude name="org/"/>
+				<exclude name="resources/"/>
+			</fileset>
+			<fileset	dir="${my.build}" includes="**/*.class"/>
+		</jar>
+	</target>
+
+	<target name="compile" depends="native">
+		<echo message="*** compiling java"/>
+		<mkdir dir="${my.build}"/>
+		<javac sourcepath="" srcdir="${my.src}" destdir="${my.build}"
+						includeantruntime="no">
+      <classpath refid="my.class.path"/>
+			<include name="**/*.java"/>
+			<exclude name="**/Native*Mac*.java" if="my.isWin"/>
+			<exclude name="**/Native*Linux*.java" if="my.isWin"/>
+			<exclude name="**/Native*Win*.java" if="my.isMac"/>
+			<exclude name="**/Native*Linux*.java" if="my.isMac"/>
+			<exclude name="**/Native*Win*.java" if="my.isLinux"/>
+			<exclude name="**/Native*Mac*.java" if="my.isLinux"/>
+		</javac>
+	</target>
+
+	<target name="native">
+		<echo message="*** setting up native stuff"/>
+		<echo message="*** nothing to do currently - all pre built"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${my.build}"/>
+		<delete file="${my.dist}/build/${my.sys}/${my.jar}"/>
+	</target>
+
+	<target name="clean-all">
+		<delete dir="build/Win/iclasses"/>
+		<delete dir="build/Mac/iclasses"/>
+		<delete dir="build/Linux/iclasses"/>
+		<delete file="${my.dist}/build/Mac/${my.jar}"/>
+		<delete file="${my.dist}/build/Win/${my.jar}"/>
+		<delete file="${my.dist}/build/Linux/${my.jar}"/>
+	</target>
+</project>

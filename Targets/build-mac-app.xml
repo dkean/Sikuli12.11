@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build-mac-app" default="all" basedir=".">
+	<property name="my.build" location="build/Mac/"/>
+	<property name="my.dist" location="dist/Mac"/>
+	<property name="my.cp" location="lib/"/>
+	<property name="my.app" location="${my.dist}/Sikuli-IDE.app"/>
+	<property name="my.native" location="../Ressources/natives/Mac"/>
+
+	<target name="all">
+		<delete dir="${my.app}"/>
+		<copy includeemptydirs="yes" todir="${my.app}">
+			<fileset dir="Platforms-Mac/Sikuli-IDE.app"/>
+		</copy>
+		<copy todir="${my.app}/Contents/Frameworks">
+			<fileset dir="${my.native}" includes="*.dylib"/>
+		</copy>
+		<copy todir="${my.app}/Contents/Frameworks">
+			<fileset dir="Platforms-Mac/libs"/>
+		</copy>
+		<copy todir="${my.app}/Contents/Resources/Java">
+			<fileset dir="${my.cp}">
+				<exclude name="JXGrabKey.jar"/>
+				<exclude name="jintellitype-1.3.6.jar"/>
+			</fileset>
+		</copy>
+		<copy file="${my.build}/sikuli-script.jar" todir="${my.app}/Contents/Resources/Java"/>
+		<copy file="${my.build}/sikuli-ide.jar" todir="${my.app}/Contents/Resources/Java"/>
+	</target>
+</project>
