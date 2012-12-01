@@ -29,7 +29,7 @@
 		<echo message="*** compiling java"/>
 		<mkdir dir="${my.build}"/>
 		<javac sourcepath="" srcdir="${my.src}" destdir="${my.build}"
-						includeantruntime="no">
+						includeantruntime="no" compiler="javac1.6">
       <classpath refid="my.class.path"/>
 			<include name="**/*.java"/>
 			<exclude name="**/Mac*.java" if="my.isWin"/>
@@ -52,9 +52,9 @@
 	</target>
 
 	<target name="clean-all">
-		<delete dir="build/Win/classes"/>
-		<delete dir="build/Mac/classes"/>
-		<delete dir="build/Linux/classes"/>
+		<delete dir="build/Win/sclasses"/>
+		<delete dir="build/Mac/sclasses"/>
+		<delete dir="build/Linux/sclasses"/>
 		<delete file="${my.dist}/build/Mac/${my.jar}"/>
 		<delete file="${my.dist}/build/Win/${my.jar}"/>
 		<delete file="${my.dist}/build/Linux/${my.jar}"/>

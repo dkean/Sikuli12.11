@@ -13,7 +13,6 @@
 		<pathelement location="../Lib-Jython/"/>
     <pathelement path="${my.cp}/commons-cli-1.2.jar"/>
     <pathelement path="${my.cp}/forms-1.2.1.jar"/>
-<!--    <pathelement path="${my.cp}/jmf.jar"/>-->
     <pathelement path="${my.cp}/json_simple-1.1.jar"/>
     <pathelement path="${my.cp}/junit-3.8.1.jar"/>
     <pathelement path="${my.cp}/mac_widgets.jar"/>
@@ -38,7 +37,7 @@
 		<echo message="*** compiling java"/>
 		<mkdir dir="${my.build}"/>
 		<javac sourcepath="" srcdir="${my.src}" destdir="${my.build}"
-						includeantruntime="no">
+						includeantruntime="no" source="1.6" target="1.6">
       <classpath refid="my.class.path"/>
 			<include name="**/*.java"/>
 			<exclude name="**/Native*Mac*.java" if="my.isWin"/>

@@ -46,7 +46,8 @@ public class Settings {
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
   public static String SikuliRepo;
-	{
+
+	static {
 		if (java.lang.System.getProperty("sikuli.developement") != null) {
 			libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
 			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";

@@ -58,8 +58,6 @@ public class SikuliScript {
 					+ "help()<enter> will output some basic Python information\\n"
 					+ "shelp()<enter> will output some basic Sikuli information\\n"
 					+ "... use ctrl-d to end the session\""};
-				System.out.println(java.lang.System.getProperty("java.class.path"));
-				System.out.println("Trying Jython .........");
 				jython.main(jy_args);
         return;
       }
