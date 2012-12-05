@@ -51,11 +51,11 @@ public class Settings {
 		if (java.lang.System.getProperty("sikuli.developement") != null) {
 			libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
 			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
-			SikuliRepo = null;
+			SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
 		} else {
 			libPathMac = "/Applications/Sikuli-IDE.app/Contents/Frameworks";
 			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
-			SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
+			SikuliRepo = null;
 		}
 		if (isWindows()) {
 			OcrDataPath = libPathWin;
