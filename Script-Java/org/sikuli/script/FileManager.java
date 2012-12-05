@@ -142,6 +142,8 @@ public class FileManager {
         if (jniDir.exists()) {
           System.setProperty("java.library.tmpdir", path);
           Debug.log(2, "Using as JNI library working directory: '" + jniDir + "'");
+          Debug.log(2, "Using JNI directory as OCR directory (tessdata) too");
+          Settings.OcrDataPath = jniDir.getAbsolutePath();
           return jniDir;
         }
       }
