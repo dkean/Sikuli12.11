@@ -1,3 +1,15 @@
+I have to postpone a generally useable new version to January 2013.
+---------------
+I am sorry about that, but
+- I have problems to get running versions outside of Netbeans for environements with Java 6 or Java 7 or both
+- the build of the Windows native stuff is not yet really working
+- not all new features are tested in all aspects
+- multi monitor behavior not yet tested seriously
+
+... and I am offline on a vacation until Dec 20th
+
+But I will post in Target/dist downloadable zip-packages, that can be tested running from command line.
+
 Sikuli12.11
 ===========
 
@@ -30,8 +42,6 @@ Status of Sikuli development --- we are waiting for a new version
 ---------------------------
 
 So I decided, to revise the Sikuli version in its current shape, fix some bugs and implement some requests.
-
-My plan: Part 1 and 2 ready per end of November 2012.
 
 In parallel I am cooperating with Tom Yeh on his plans to implement a completely new Sikuli.
 
@@ -116,7 +126,9 @@ Changes/Fixes to the Scripting API
 - Region: added methods to make it functinally compatible with AWT Rectangle and added more methods to create
 new Regions easily based on existing Regions and Locations
 - click() and similar, click the lastMatch()
+- convenience version of highlight() using last match
+- a new option, to always highlight() a match
 - revise the observe API (Jython callbacks in Java possible with Jython 2.5.3)
-- short version of FindFailed message in Jython
+- short version of FindFailed message in Jython and better error messages
 
 
