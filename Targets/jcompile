@@ -2,6 +2,7 @@
 # javac -cp classpath -sourcepath spath -d path-classes -source 1.6 target 1.6
 
 export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+bpath=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar
 echo ---java_home--- 
 echo $JAVA_HOME
 echo --- java version ---
@@ -24,17 +25,18 @@ echo $tgtbase/$cfiles
 mkdir $tgtbase/$cfiles 
 
 cpb=$runbase/lib
-clp=$tgtbase/$cfiles
+clp=/Volumes/RaiManStuff/51_Sikuli2012/RaiManSikuli2012-Script/jython-2.5.3.jar 
 clp=$clp:$cpb/commons-cli-1.2.jar
 clp=$clp:$cpb/jintellitype-1.3.6.jar
 clp=$clp:$cpb/JXGrabKey.jar
-clp=$clp:/Volumes/RaiManStuff/51_Sikuli2012/RaiManSikuli2012-Script/jython-2.5.3.jar 
+clp=$clp:$tgtbase/$cfiles
 echo --- class path ---
 echo $clp
 
 echo --- command ---
 sb=$srcbase
-cmd="javac -classpath $clp -sourcepath $srcbase -d $tgtbase/$cfiles"
+cmd="javac -source 1.6 -target 1.6 -bootclasspath $bpath -extdirs \"\"" 
+cmd="$cmd -classpath $clp -sourcepath $srcbase -d $tgtbase/$cfiles"
 $cmd $sb/org/sikuli/script/*.java 
 $cmd $sb/org/sikuli/system/*.java
 $cmd $sb/org/sikuli/utility/*.java

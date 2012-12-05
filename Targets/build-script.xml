@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="make-sikuli-script-jar" default="jar" basedir=".">
+  <condition property="my.comp6">
+    <equals arg1="${comp}" arg2="6"/>
+  </condition>
+  <property name="my.comp" value="${comp}"/>
 	<property name="my.sys" value="${sys}"/>
 	<property name="my.src" location="../Script-Java"/>
 	<property name="my.build" location="build/${my.sys}/sclasses"/>
 	<property name="my.dist" location="${basedir}"/>
 	<property name="my.jar" value="sikuli-script.jar"/>
 	<property name="my.cp" location="lib/"/>
+  <property name="my.plat" location="Platforms-${my.sys}"/>
 
 	<property name="my.is${my.sys}" value="YES"/>
 
@@ -16,7 +21,7 @@
 		<pathelement path="${my.cp}/JXGrabKey.jar"/>
   </path>
 
-	<target name="jar" depends="compile">
+	<target name="jar" depends="compile, compile6">
 		<echo message="*** making jar"/>
 		<jar destfile="${my.dist}/build/${my.sys}/${my.jar}"
 				 manifest="${my.dist}/Platforms-${my.sys}/MANIFEST-script.MF">
@@ -25,11 +30,11 @@
 		</jar>
 	</target>
 
-	<target name="compile" depends="native">
-		<echo message="*** compiling java"/>
+	<target name="compile" depends="native" unless="${my.comp6}">
+		<echo message="*** compiling with current java"/>
 		<mkdir dir="${my.build}"/>
 		<javac sourcepath="" srcdir="${my.src}" destdir="${my.build}"
-						includeantruntime="no" compiler="javac1.6">
+						includeantruntime="no">
       <classpath refid="my.class.path"/>
 			<include name="**/*.java"/>
 			<exclude name="**/Mac*.java" if="my.isWin"/>
@@ -40,6 +45,11 @@
 			<exclude name="**/Mac*.java" if="my.isLinux"/>
 		</javac>
 	</target>
+
+  <target name="compile6" depends="native" if="${my.comp6}">
+		<echo message="*** compiling with java 6"/>
+  	<property name="my.build" location="build/${my.sys}/sclasses6"/>
+  </target>
 
 	<target name="native">
 		<echo message="*** setting up native stuff"/>

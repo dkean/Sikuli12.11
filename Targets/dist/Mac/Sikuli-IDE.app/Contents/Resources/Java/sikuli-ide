@@ -1,0 +1,23 @@
+#!/bin/sh
+# setting it to 3 makes some sense if you get any problems
+DEBUG=1
+if [ "$1" != "" ]; then
+  DEBUG=$1
+fi
+#setting this to false you get all output in the command window synchronously
+CONSOLE=false
+
+if [ "$SIKULI_HOME" == "" ]; then
+  echo no SIKULI_HOME
+  export SIKULI_HOME=`pwd`
+fi
+
+echo SIKULI_HOME is $SIKULI_HOME
+
+if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
+  echo SIKULI_HOME seems to be valid - trying to start Sikuli IDE
+  java -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar sikuli-ide.jar
+else
+  echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
+fi
+  

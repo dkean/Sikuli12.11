@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-mac-app" default="all" basedir=".">
-	<property name="my.build" location="build/Mac"/>
-	<property name="my.dist" location="dist/Mac"/>
-	<property name="my.util" location="../Ressources/util/Mac"/>
+  <property name="my.sys" value="Mac"/>
+	<property name="my.build" location="build/${my.sys}"/>
+	<property name="my.dist" location="dist/${my.sys}"/>
+	<property name="my.util" location="../Ressources/util/${my.sys}"/>
 	<property name="my.cp" location="lib"/>
 	<property name="my.app" location="${my.dist}/Sikuli-IDE.app"/>
-	<property name="my.native" location="../Ressources/natives/Mac/libs"/>
+	<property name="my.native" location="../Ressources/natives/${my.sys}/libs"/>
 
-	<target name="all">
+	<target name="all" depends="make-ide">
 		<delete dir="${my.app}"/>
 
 		<copy includeemptydirs="yes" todir="${my.app}">
-			<fileset dir="Platforms-Mac/Sikuli-IDE.app"/>
+			<fileset dir="Platforms-${my.sys}/Sikuli-IDE.app"/>
 		</copy>
 
 		<copy todir="${my.app}/Contents/Frameworks">
@@ -19,7 +20,7 @@
 		</copy>
 
 		<copy todir="${my.app}/Contents/Frameworks">
-			<fileset dir="Platforms-Mac/libs"/>
+			<fileset dir="Platforms-${my.sys}/libs"/>
 		</copy>
 
 		<exec executable="${my.util}/change-lib-path.sh">
@@ -42,9 +43,39 @@
 		<copy file="${my.build}/sikuli-script.jar" todir="${my.app}/Contents/Resources/Java"/>
 		<copy file="${my.build}/sikuli-ide.jar" todir="${my.app}/Contents/Resources/Java"/>
 
-		<exec executable="ln">
-			<arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
-			<arg value="${my.app}/Contents/MacOS/JavaApplicationStub"/>
-		</exec>
+<!--TODO unitl App works-->
+    <copy todir="${my.app}/Contents/Resources/Java/libs">
+      <fileset dir="${my.app}/Contents/Frameworks"/>
+    </copy>
+
+    <copy todir="${my.app}/Contents/Resources/Java">
+      <fileset file="${my.util}/sikuli-ide"/>
+      <fileset file="${my.util}/sikuli-script"/>
+    </copy>
+
+    <chmod file="${my.app}/Contents/Resources/Java/sikuli-ide" perm="ugo+rx"/>
+    <chmod file="${my.app}/Contents/Resources/Java/sikuli-script" perm="ugo+rx"/>
+
 	</target>
+
+  <target name="make-ide" depends="make-script">
+    <ant antfile="build-ide.xml" inheritall="no">
+      <property name="sys" value="${my.sys}"/>
+    </ant>
+  </target>
+
+  <target name="make-script" depends="clean">
+    <ant antfile="build-script.xml" inheritall="no">
+      <property name="sys" value="${my.sys}"/>
+    </ant>
+  </target>
+
+  <target name="clean">
+    <ant antfile="build-script.xml" target="clean" inheritall="no">
+      <property name="sys" value="${my.sys}"/>
+    </ant>
+    <ant antfile="build-ide.xml" target="clean" inheritall="no">
+      <property name="sys" value="Mac"/>
+    </ant>
+  </target>
 </project>
