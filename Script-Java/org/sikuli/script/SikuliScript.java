@@ -8,8 +8,6 @@ package org.sikuli.script;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.*;
 import org.apache.commons.cli.CommandLine;
 import org.python.util.jython;

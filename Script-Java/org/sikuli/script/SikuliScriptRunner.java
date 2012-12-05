@@ -66,7 +66,7 @@ public class SikuliScriptRunner {
 		String[] h = new String[]{
 			"# coding=utf-8",
 			"import sys",
-			"for e in sys.path: print e",
+			"#for e in sys.path: print e",
 			"from __future__ import with_statement",
 			"from sikuli import *",
 			"resetROI()",

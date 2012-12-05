@@ -149,7 +149,11 @@ public class SikuliIDE extends JFrame {
       return;
     }
 
-//TODO geht das auch anders?
+    if (_cmdLine.hasOption("test")) {
+      Debug.error("Test no longer supported! See docs for alternatives");
+      return;
+    }
+
     if (_cmdLine.hasOption("s")) {
       _useStderr = true;
     }
@@ -159,7 +163,6 @@ public class SikuliIDE extends JFrame {
       _newCommandline = true;
     }
 
-//TODO run .skl using sikuli-script
     if (!_newCommandline && args != null && args.length >= 1) {
 			int exitCode = 0;
 			fileName = args[0];
@@ -167,20 +170,20 @@ public class SikuliIDE extends JFrame {
 				String f = FileManager.unzipSKL(fileName);
 				if (f != null) {
 					args[0] = f;
+          _runningSkl = true;
 				} else {
 					System.exit(-2);
 				}
-				if (! _runningSkl) {
-					System.out.println("[WARNING] Sikuli IDE is no longer used to run scripts from command line\n"
-									+ "This is delegated now to sikuli-script.jar\n"
-									+ "Look into the docs for more information on command line usage");
-				}
-	//TODO System.exit() und return code
+        Debug.error(
+            "Sikuli IDE is no longer used to run scripts from command line\n"
+            + "This is delegated now to sikuli-script.jar\n"
+            + "Look into the docs for more information on command line usage");
 				try {
 					SikuliScript.main(args);
 				} catch (Exception e) {
 				}
 				if (! _runningSkl) {
+//TODO System.exit() und return code
 					System.exit(exitCode);
 				} else {
 					return;
