@@ -1,0 +1,19 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+  debug=1
+else
+  debug=$1
+fi
+base=/Volumes/RaiManStuff/51_Sikuli2012
+cd $base
+app=RaiManSikuli2012-Script
+cd $app/dist
+#export SIKULI_HOME=$base/$app/dist/
+#export SIKULI_HOME=/Applications/Sikuli-IDE.app/Contents/Frameworks
+if [ "$2" == "" ]
+then
+  java -Dsikuli.Debug=$debug -jar $app.jar -i
+else
+  java -Dsikuli.Debug=$debug -jar $app.jar $2
+fi

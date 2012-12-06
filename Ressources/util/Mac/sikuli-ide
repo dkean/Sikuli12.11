@@ -5,7 +5,7 @@ if [ "$1" != "" ]; then
   DEBUG=$1
 fi
 #setting this to false you get all output in the command window synchronously
-CONSOLE=false
+CONSOLE=True
 
 if [ "$SIKULI_HOME" == "" ]; then
   echo no SIKULI_HOME

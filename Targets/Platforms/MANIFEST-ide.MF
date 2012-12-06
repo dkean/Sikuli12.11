@@ -7,6 +7,5 @@ Class-Path:
  mac_widgets.jar 
  swingx-core-1.6.2.jar 
  swing-layout-1.0.4.jar 
- sikuli-script.jar 
-Main-Class: org.sikuli.ide.SikuliIDE 
- 
+ sikuli-script.jar
+Main-Class: org.sikuli.ide.SikuliIDE

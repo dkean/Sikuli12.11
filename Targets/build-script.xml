@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="make-sikuli-script-jar" default="jar" basedir=".">
-  <condition property="my.comp6">
-    <equals arg1="${comp}" arg2="6"/>
-  </condition>
   <property name="my.comp" value="${comp}"/>
 	<property name="my.sys" value="${sys}"/>
 	<property name="my.src" location="../Script-Java"/>
@@ -21,7 +18,7 @@
 		<pathelement path="${my.cp}/JXGrabKey.jar"/>
   </path>
 
-	<target name="jar" depends="compile, compile6">
+	<target name="jar" depends="compile">
 		<echo message="*** making jar"/>
 		<jar destfile="${my.dist}/build/${my.sys}/${my.jar}"
 				 manifest="${my.dist}/Platforms-${my.sys}/MANIFEST-script.MF">
@@ -30,7 +27,7 @@
 		</jar>
 	</target>
 
-	<target name="compile" depends="native" unless="${my.comp6}">
+	<target name="compile" depends="native">
 		<echo message="*** compiling with current java"/>
 		<mkdir dir="${my.build}"/>
 		<javac sourcepath="" srcdir="${my.src}" destdir="${my.build}"
@@ -45,11 +42,6 @@
 			<exclude name="**/Mac*.java" if="my.isLinux"/>
 		</javac>
 	</target>
-
-  <target name="compile6" depends="native" if="${my.comp6}">
-		<echo message="*** compiling with java 6"/>
-  	<property name="my.build" location="build/${my.sys}/sclasses6"/>
-  </target>
 
 	<target name="native">
 		<echo message="*** setting up native stuff"/>
