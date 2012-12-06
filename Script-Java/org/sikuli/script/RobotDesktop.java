@@ -20,7 +20,7 @@ public class RobotDesktop extends Robot implements RobotIF {
   final static int MAX_DELAY = 60000;
   private static int heldButtons = 0;
   private static String heldKeys = "";
-  private static ArrayList<Integer> heldKeyCodes;
+  private static ArrayList<Integer> heldKeyCodes = new ArrayList<Integer>();
   private Screen scr = null;
 
   public RobotDesktop(Screen screen) throws AWTException {
@@ -189,7 +189,7 @@ public class RobotDesktop extends Robot implements RobotIF {
   public void keyUp(int code) {
     if (heldKeyCodes.contains(code)) {
       keyRelease(code);
-      heldKeyCodes.remove(code);
+      heldKeyCodes.remove((Object) code);
     }
     waitForIdle();
   }
