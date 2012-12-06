@@ -48,7 +48,7 @@ public class Settings {
   public static String SikuliRepo;
 
 	static {
-		if (java.lang.System.getProperty("sikuli.developement") != null) {
+		if (java.lang.System.getProperty("sikuli.test") != null) {
 			libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
 			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
 			SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
