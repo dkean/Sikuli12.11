@@ -56,6 +56,11 @@
     <chmod file="${my.app}/Contents/Resources/Java/sikuli-ide" perm="ugo+rx"/>
     <chmod file="${my.app}/Contents/Resources/Java/sikuli-script" perm="ugo+rx"/>
 
+    <zip preserve0permissions="yes" destfile="${my.dist}/SikuliX-1.0MacBeta.zip">
+      <fileset dir="${my.app}/Contents/Resources/Java"/>
+    </zip>
+<!-- unitl App works-->
+
 	</target>
 
   <target name="make-ide" depends="make-script">
