@@ -1,5 +1,14 @@
 I have to postpone a generally useable new version to January 2013.
 ---------------
+
+
+**You can download the current working bundles (all beta and work in progress) 
+here on github in the Downloads section**
+
+**Unzip to any folder, look into the contained readme.txt and Have Fun ;-)**
+
+----------------------------
+
 I am sorry about that, but
 - I have problems to get running versions outside of Netbeans for environements with Java 6 or Java 7 or both
 - the build of the Windows native stuff is not yet really working
