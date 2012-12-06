@@ -5,6 +5,8 @@ I have to postpone a generally useable new version to January 2013.
 **You can download the current working bundles (all beta and work in progress) 
 here on github in the Downloads section**
 
+Sorry, but only a Mac version currently.
+
 **Unzip to any folder, look into the contained readme.txt and Have Fun ;-)**
 
 ----------------------------
