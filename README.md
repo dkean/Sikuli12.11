@@ -17,8 +17,6 @@ I am sorry about that, but
 
 ... and I am offline on a vacation until Dec 20th
 
-But I will post in Target/dist downloadable zip-packages, that can be tested running from command line.
-
 Sikuli12.11
 ===========
 
