@@ -161,6 +161,8 @@ public class SikuliIDE extends JFrame {
     if (_cmdLine.hasOption("load")) {
 //TODO preload .sikuli scripts
       _newCommandline = true;
+      Debug.error("Option -load: not yet working");
+      return;
     }
 
     if (!_newCommandline && args != null && args.length >= 1) {
@@ -294,10 +296,9 @@ public class SikuliIDE extends JFrame {
       for (String f : _cmdLine.getArgs()) {
         loadFile(Utils.slashify(f, false));
       }
-    } else {
-      if (restoredScripts == 0) {
-        (new FileAction()).doNew(null);
-      }
+    }
+    if (_mainPane.getTabCount() == 0) {
+      (new FileAction()).doNew(null);
     }
 
     _inited = true;

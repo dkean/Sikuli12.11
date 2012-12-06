@@ -69,7 +69,7 @@ public class CommandArgs {
       _options.addOption(
               OptionBuilder.withLongOpt("load")
               .withDescription("peload scripts in IDE")
-              .hasArgs()
+              .hasOptionalArgs()
               .withArgName("one or more foobar.sikuli")
               .create('l'));
     }
