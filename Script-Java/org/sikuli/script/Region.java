@@ -42,7 +42,7 @@ public class Region {
 	protected boolean throwException = Settings.ThrowException;
   protected double autoWaitTimeout = Settings.AutoWaitTimeout;
   protected boolean observing = false;
-  protected EventManager evtMgr = null;
+  protected SikuliEventManager evtMgr = null;
   protected Match lastMatch = null;
   protected Iterator<Match> lastMatches;
 
@@ -356,7 +356,7 @@ public class Region {
   }
 
   /**
-   * used in EventManager.callChangeObserver, Finder.next to adjust region
+   * used in SikuliEventManager.callChangeObserver, Finder.next to adjust region
    * relative coordinates of matches to screen coordinates
    *
    * @param m
@@ -1907,9 +1907,9 @@ public class Region {
 	//</editor-fold>
 
 	//<editor-fold defaultstate="collapsed" desc="Observer">
-  private EventManager getEventManager() {
+  private SikuliEventManager getEventManager() {
     if (evtMgr == null) {
-      evtMgr = new EventManager(this);
+      evtMgr = new SikuliEventManager(this);
     }
     return evtMgr;
   }

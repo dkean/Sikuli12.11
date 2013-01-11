@@ -14,7 +14,7 @@ import org.sikuli.script.natives.Mat;
 import org.sikuli.script.natives.OpenCV;
 import org.sikuli.script.natives.Vision;
 
-public class EventManager {
+public class SikuliEventManager {
    protected enum State {
       UNKNOWN, APPEARED, VANISHED
    }
@@ -28,7 +28,7 @@ public class EventManager {
    private int _minChanges;
 
 
-   public EventManager(Region region){
+   public SikuliEventManager(Region region){
       _region = region;
       _state = new HashMap<Object, State>();
       _lastMatch = new HashMap<Object, Match>();
