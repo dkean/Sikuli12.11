@@ -4,7 +4,7 @@ DEBUG=1
 #setting this to false you get all output in the command window synchronously
 CONSOLE=True
 # other Java settings
-props=-Xmx512M -Dapple.laf.useScreenMenuBar -Dfile.encoding=UTF-8
+props='-Xmx512M -Dapple.laf.useScreenMenuBar -Dfile.encoding=UTF-8'
 
 if [ "$SIKULI_HOME" == "" ]; then
   echo no SIKULI_HOME
@@ -15,6 +15,7 @@ echo SIKULI_HOME is $SIKULI_HOME
 
 if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
   echo SIKULI_HOME seems to be valid - trying to start Sikuli IDE
+  echo 'running: java -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar sikuli-ide.jar $*'
   java -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar sikuli-ide.jar $*
 else
   echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
