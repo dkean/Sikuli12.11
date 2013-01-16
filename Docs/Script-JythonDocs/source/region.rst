@@ -118,7 +118,7 @@ method calls, e.g. to change their position and/or dimension. Here you will find
 	.. versionadded:: X1.0-rc2
 	.. py:method:: moveTo(location)
 		
-		Set the position of this region regarding it's top left corner 
+		Set the position of this region regarding its top left corner 
 		to the given location (the x and y values are modified).
 		
 		:param location: location object becomes the new top left corner
@@ -505,7 +505,7 @@ using a string containing the file name (path to an image file).
 		decide how to proceed in your workflow. So it is typically used with an
 		if statement.  At least one find operation is performed, even if 0
 		seconds is specified. So specifying 0 seconds saves some time, in case
-		there is no need to wait, since its your intention to get the
+		there is no need to wait, since it is your intention to get the
 		information "not found" directly. 
 
 		**Side Effect** *lastMatch*: the best match can be accessed using :py:meth:`Region.getLastMatch` afterwards.
@@ -546,7 +546,7 @@ calling :py:meth:`Region.stopObserver`
 or by starting the observation with a timing parameter.
 
 Since you can have as many region objects as needed and each region can have
-one observation active and running. So theoretically it's possible to have as
+one observation active and running. So theoretically it is possible to have as
 many visual events being observered at the same time as needed. But in reality,
 the number of observation is still limited by the system resources available to
 Sikuli at that time.
@@ -1231,7 +1231,7 @@ These are the possibilities to handle "not found" situations:
 
 This feature is helpful in following situations:
 
-* you are developing something, that needs an application with it's windows to be in place, but this workflow you want to script later. If it comes to that point, you get the prompt, arrange the app and click *Retry*. Your workflow should continue.
+* you are developing something, that needs an application with its windows to be in place, but this workflow you want to script later. If it comes to that point, you get the prompt, arrange the app and click *Retry*. Your workflow should continue.
 * you have a workflow, where the user might do some corrective actions, if you get a FindFailed
 * guess you find more ;-)
 
