@@ -17,8 +17,6 @@ I am sorry about that, but
 - not all new features are tested in all aspects
 - multi monitor behavior not yet tested seriously
 
-... and I am offline on a vacation until Dec 20th
-
 Sikuli12.11
 ===========
 
