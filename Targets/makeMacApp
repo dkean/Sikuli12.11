@@ -1,0 +1,13 @@
+#!/bin/sh
+if [ "$1" = "6" ]; then
+  echo switching to java 6
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+elif [ "$1" = "o" ]; then
+  echo switching to OpenJDK 7
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+else
+  echo switching to java 7
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+fi 
+java -version
+ant -f build-mac-app.xml
