@@ -1,12 +1,11 @@
 I have to postpone a generally useable new version to January 2013.
 ---------------
 
-
 **You can download the current working bundles (all beta and work in progress)** 
 
-Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip
-Windows: not yet available
-Linux: not yet available
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip
+- Windows: not yet available
+- Linux: not yet available
 
 **Unzip to any folder, look into the contained readme.txt and Have Fun ;-)**
 
