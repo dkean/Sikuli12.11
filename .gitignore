@@ -3,3 +3,4 @@
 *$py.class
 Docs/Script-JythonDocs/build/*
 Targets/build/*
+Targets/dist/*
