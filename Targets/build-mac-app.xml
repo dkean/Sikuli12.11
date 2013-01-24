@@ -62,9 +62,7 @@
       <fileset dir="${my.app}/Contents/Resources/Java"/>
     </copy>
 
-    <zip destfile="../../SikuliX-1.0MacBeta.zip">
-      <fileset dir="/Users/rhocke/SikuliX"/>
-    </zip>
+    <zip destfile="/Users/rhocke/SikuliX-1.0MacBeta.zip" basedir="/Users/rhocke/SikuliX"></zip>
     
     <chmod file="/Users/rhocke/SikuliX/sikuli-ide" perm="ugo+rx"/>
     <chmod file="/Users/rhocke/SikuliX/sikuli-script" perm="ugo+rx"/>
