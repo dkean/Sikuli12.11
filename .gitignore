@@ -2,5 +2,5 @@
 .DS_Store
 *$py.class
 Docs/Script-JythonDocs/build/*
-Targets/build/*
-Targets/dist/*
+Targets/build/
+Targets/dist/
