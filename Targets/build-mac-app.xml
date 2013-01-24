@@ -53,16 +53,21 @@
       <fileset file="${my.util}/sikuli-script"/>
     </copy>
 
-    <chmod file="${my.app}/Contents/Resources/Java/sikuli-ide" perm="ugo+rx"/>
-    <chmod file="${my.app}/Contents/Resources/Java/sikuli-script" perm="ugo+rx"/>
-
     <copy todir="${my.app}/Contents/Resources/Java">
       <fileset file="${my.util}/readme.txt"/>
     </copy>
 
-    <zip destfile="/Users/rhocke/Dropbox/Public/SikuliX/SikuliX-1.0MacBeta.zip">
+    <delete dir ="/Users/rhocke/SikuliX"/>    
+    <copy todir="/Users/rhocke/SikuliX">
       <fileset dir="${my.app}/Contents/Resources/Java"/>
+    </copy>
+
+    <zip destfile="../../SikuliX-1.0MacBeta.zip">
+      <fileset dir="/Users/rhocke/SikuliX"/>
     </zip>
+    
+    <chmod file="/Users/rhocke/SikuliX/sikuli-ide" perm="ugo+rx"/>
+    <chmod file="/Users/rhocke/SikuliX/sikuli-script" perm="ugo+rx"/>
 <!-- unitl App works-->
 
 	</target>

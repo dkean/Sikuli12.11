@@ -2,19 +2,79 @@
 # setting it to 3 makes some sense if you get any problems
 DEBUG=1
 # other Java settings
+JAVA=X
 PROPS='-Xmx512M -Dfile.encoding=UTF-8'
+
+usage()
+{
+cat << EOF
+usage: $0 options
+OPTIONS:
+   -h      Show this message
+   -d      debug level (1)
+   -j      Java version 6, 7, o 
+EOF
+}
+
+while getopts “hd:j:r:i” OPTION
+do
+  case $OPTION in
+    h)
+       usage
+       ARGS=-h
+       ;;
+    d)
+       DEBUG=$OPTARG
+       ;;
+    j)
+       JAVA=$OPTARG
+       ;;
+    i)
+       ARGS=-i
+       ;;
+    r)
+       ARGS="-r $OPTARG"
+       ;;
+  esac
+done
+
+DOWN=$(expr $# - $OPTIND + 1)
+while (( "$#" != "$DOWN"  ))
+do
+  shift
+done
+
+if [ "$JAVA" != "X" ]; then
+  echo "being asked to switch to Java "$JAVA
+  if [ "$JAVA" = "6" ]; then
+    echo trying Java 6
+    export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+  elif [ "$JAVA" = "o" ]; then
+    if [ -e /Library/Java/JavaVirtualMachines/1.7.0u.jdk/Contents/Home ]; then
+      echo trying OpenJDK 7
+      export JAVA_HOME=/Library/Java/JavaVirtualMachines/1.7.0u.jdk/Contents/Home
+    fi
+  elif [ "$JAVA" = "7" ]; then
+    echo trying Java 7
+    export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+  fi
+fi
 
 if [ "$SIKULI_HOME" == "" ]; then
   echo no SIKULI_HOME
-  export SIKULI_HOME=`pwd`
+  if [ -e `pwd`/SikuliX ]; then
+    export SIKULI_HOME=`pwd`/SikuliX
+  else
+    export SIKULI_HOME=`pwd`
+  fi 
 fi
 
-echo SIKULI_HOME is $SIKULI_HOME
-
 if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
-  echo SIKULI_HOME seems to be valid - trying to start Sikuli IDE
-  echo "running: java $PROPS  -Dsikuli.Debug=$DEBUG -jar sikuli-ide.jar $*"
-  java $PROPS -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar sikuli-script.jar $*
+  echo SIKULI_HOME is $SIKULI_HOME
+  echo seems to be valid - trying to start Sikuli Script
+  echo "running $PROPS -Dsikuli.Debug=$DEBUG"
+  echo "-jar $SIKULI_HOME/sikuli-script.jar $ARGS"
+  java $PROPS -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar $SIKULI_HOME/sikuli-script.jar $ARGS
 else
   echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
 fi
