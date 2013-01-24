@@ -23,7 +23,7 @@ public class SikuliScript {
   public static void main(String[] args) {
     int exitCode = 0;
 
-    Debug.log(2, "Running on Java " + Settings.JavaVersion);
+    Settings.showJavaInfo();
 
     CommandArgs cmdArgs = new CommandArgs("SCRIPT");
     cmdLine = cmdArgs.getCommandLine(args);

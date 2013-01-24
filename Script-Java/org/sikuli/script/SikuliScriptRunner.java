@@ -132,17 +132,17 @@ public class SikuliScriptRunner {
 
 		// where the java command is run
 		addTempHeader("addModPath(\""
-						+ FileManager.slashify(System.getProperty("user.dir"), true) + "\")");
+						+ Settings.slashify(System.getProperty("user.dir"), true) + "\")");
 
 		// the script directory ..../foobar.sikuli
 		addTempHeader("addModPath(\""
-						+ FileManager.slashify(bundlePath, true) + "\")");
+						+ Settings.slashify(bundlePath, true) + "\")");
 
 		// the directory whre the .sikuli is located
 		String parent =  (new File(bundlePath)).getParent();
 		if (parent != null) {
 			addTempHeader("addModPath(\""
-							+ FileManager.slashify(parent, true) + "\")");
+							+ Settings.slashify(parent, true) + "\")");
 		}
 
 		addTempHeader("sys.argv = ['' for i in range(" + sysargv.size() + ")]");

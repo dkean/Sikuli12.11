@@ -35,7 +35,7 @@ public class TextRecognizer {
 		File fpath;
     try {
 			// TESSDATA_PREFIX doesn't contain tessdata/
-			path = FileManager.slashify(Settings.OcrDataPath, true);
+			path = Settings.slashify(Settings.OcrDataPath, true);
 			fpath = new File(path, "tessdata");
 			if (!fpath.exists()) {
 				path = FileManager.extract("tessdata");

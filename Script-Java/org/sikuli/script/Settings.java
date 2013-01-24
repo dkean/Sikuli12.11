@@ -8,6 +8,7 @@ package org.sikuli.script;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.Properties;
 import org.sikuli.system.OSUtil;
 
 public class Settings {
@@ -15,11 +16,14 @@ public class Settings {
 	/**
 	 * Mac: standard place for native libs
 	 */
-	public static String libPathMac;
+	public static final String libPathMac = "/Applications/SikuliX.app/Contents/Frameworks";
+  public static String libPath = null;
 	/**
 	 * Win: standard place for native libs
 	 */
-	public static String libPathWin;
+  public static final String libSub = slashify("SikuliX/libs", false);
+	public static final String libPathWin = slashify(System.getenv("ProgramFiles"), true)+libSub;
+	public static final String libPathWin32 = slashify(System.getenv("ProgramFiles(x86)"), true)+libSub;
 	/**
 	 * location of folder Tessdata
 	 */
@@ -48,15 +52,17 @@ public class Settings {
   public static String SikuliRepo;
 
 	static {
-		if (java.lang.System.getProperty("sikuli.test") != null) {
-			libPathMac = "/Applications/RaiManSikuli2012-IDE.app/Contents/Frameworks";
-			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
-			SikuliRepo = "https://dl.dropbox.com/u/42895525/Extensions/";
-		} else {
-			libPathMac = "/Applications/Sikuli-IDE.app/Contents/Frameworks";
-			libPathWin = "C:\\Users\\Raimund Hocke\\Downloads\\Sikuli-IDE\\libs";
-			SikuliRepo = null;
-		}
+    Properties props = System.getProperties();
+    File wd = new File(System.getProperty("user.dir"));
+    File wdp = new File(System.getProperty("user.dir")).getParentFile();
+    wd = new File(slashify(wd.getAbsolutePath(), true) + libSub);
+    wdp = new File(slashify(wdp.getAbsolutePath(), true) + libSub);
+    if (wd.exists()) {
+      libPath = wd.getAbsolutePath();
+    } else if (wdp.exists()) {
+      libPath = wdp.getAbsolutePath();
+    }
+    SikuliRepo = null;
 		if (isWindows()) {
 			OcrDataPath = libPathWin;
 		} else if (isMac()) {
@@ -74,6 +80,7 @@ public class Settings {
 
 	public final static String SikuliVersion = "X-1.0";
 	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
+	public static final String JREVersion = java.lang.System.getProperty("java.runtime.version");
 
 	public static FindFailedResponse defaultFindFailedResponse = FindFailedResponse.ABORT;
 	public static final FindFailedResponse PROMPT = FindFailedResponse.PROMPT;
@@ -133,6 +140,10 @@ public class Settings {
 	public static boolean isJava7() {
 		return JavaVersion > 6;
 	}
+
+  public static void showJavaInfo() {
+    Debug.log(1, "Running on Java " + JavaVersion + " (" + JREVersion + ")");
+  }
 
 	public static String getFilePathSeperator() {
 		return File.separator;
@@ -230,4 +241,20 @@ public class Settings {
 		}
 		return osUtil;
 	}
+
+  public static String slashify(String path, boolean isDirectory) {
+    String p;
+    if (path == null) {
+      p = "";
+    } else {
+      p = path;
+      if (File.separatorChar != '/') {
+        p = p.replace(File.separatorChar, '/');
+      }
+      if (!p.endsWith("/") && isDirectory) {
+        p = p + "/";
+      }
+    }
+    return p;
+  }
 }

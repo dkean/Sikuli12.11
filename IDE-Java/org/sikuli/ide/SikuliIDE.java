@@ -138,8 +138,8 @@ public class SikuliIDE extends JFrame {
     File file;
     String fileName;
 
-    Debug.log(2, "Running on Java " + Settings.JavaVersion);
-
+    Settings.showJavaInfo();
+    
     CommandArgs cmdArgs = new CommandArgs("IDE");
     _cmdLine = cmdArgs.getCommandLine(args);
     boolean _newCommandline = false;

@@ -23,19 +23,31 @@ public class FileManager {
   private static File jniDir = null;
   private static String jarResources;
 	private static String libSource;
-  private static String[] libPathsSettings;
-  private static ArrayList<String> libPaths;
+  private static final String sikhome = System.getenv("SIKULI_HOME");
+  private static final ArrayList<String> libPaths = new ArrayList<String>();
   private static StringBuffer alreadyLoaded = new StringBuffer("");
 	static final int DOWNLOAD_BUFFER_SIZE = 153600;
 
   static {
 		jarResources = Settings.jarResources;
     libSource = Settings.libSource;
-    libPathsSettings = new String[]{
-      slashify(System.getenv("SIKULI_HOME"), true) + "libs",
-      System.getenv("SIKULI_HOME"),
-			Settings.libPathMac, Settings.libPathWin};
-    libPaths = new ArrayList<String>(Arrays.asList(libPathsSettings));
+    if (sikhome != null) {
+      libPaths.add(Settings.slashify(sikhome, true) + "libs");
+      libPaths.add(sikhome);
+    }
+    if (Settings.isMac()) {
+      if (Settings.libPath != null) {
+        libPaths.add(Settings.libPath);
+      } else {
+        libPaths.add(Settings.libPathMac);
+      }
+    }
+    if (Settings.isWindows()) {
+      if (Settings.libPathWin32 != null) {
+        libPaths.add(Settings.libPathWin32);
+      }
+      libPaths.add(Settings.libPathWin);
+    }
   }
 
   /**
@@ -274,20 +286,6 @@ public class FileManager {
 		reader.close();
 		writer.close();
 		return fullpath.getAbsolutePath();
-	}
-
-	public static String slashify(String path, boolean isDirectory) {
-		if (path == null) {
-			path = "";
-		}
-		String p = path;
-		if (File.separatorChar != '/') {
-			p = p.replace(File.separatorChar, '/');
-		}
-		if (!p.endsWith("/") && isDirectory) {
-			p = p + "/";
-		}
-		return p;
 	}
 
 	public static String unzipSKL(String fileName) {

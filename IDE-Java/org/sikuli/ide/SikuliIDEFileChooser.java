@@ -32,7 +32,6 @@ public class SikuliIDEFileChooser {
 				return showJFileChooser(msg, mode, filters, FILES);
 			} else {
 //TODO Mac Java7: FileDialog not taking bundles as files
-//TODO Mac Java7: error msg:  java[5167] (FileSync.framework) _SFSendMessage: gServerMessagePortName = 'com.apple.FileSyncAgent.iDisk'
 				FileDialog fd = new FileDialog(_parent, msg, mode);
 				for (GeneralFileFilter filter : filters) {
 					fd.setFilenameFilter(filter);
