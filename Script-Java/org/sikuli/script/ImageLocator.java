@@ -190,7 +190,7 @@ public class ImageLocator {
 		String pl[] = splitImagePath(path);
 		pathList.set(0, null);
 		removeImagePath(pl);
-		pathList.set(0, Settings.BundlePath);
+		pathList.set(0, Settings.BundlePath + File.separator);
 	}
 
 	/**
@@ -261,7 +261,7 @@ public class ImageLocator {
 		String pl[] = splitImagePath(bundlePath);
 		if (pl.length > 0) {
 			pathList.set(0, pl[0]);
-			Settings.BundlePath = pl[0];
+			Settings.BundlePath = pl[0].substring(0, pl[0].length()-1);
 		}
 	}
 
