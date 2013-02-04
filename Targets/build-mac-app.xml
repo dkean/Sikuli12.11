@@ -62,6 +62,10 @@
       <fileset dir="${my.app}/Contents/Resources/Java"/>
     </copy>
 
+		<exec executable="${my.util}/post-build">
+			<arg path="/Users/rhocke/SikuliX/libs"/>
+		</exec>
+
     <zip destfile="/Users/rhocke/SikuliX-1.0MacBeta.zip" basedir="/Users/rhocke/SikuliX"></zip>
     
     <chmod file="/Users/rhocke/SikuliX/sikuli-ide" perm="ugo+rx"/>

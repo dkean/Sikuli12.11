@@ -1,0 +1,8 @@
+#!/bin/sh
+echo *** Mac build post cleanup
+cd $1
+ln -s libopencv_core.2.4.2.dylib libopencv_core.2.4.dylib
+ln -s libopencv_features2d.2.4.2.dylib libopencv_features2d.2.4.dylib
+ln -s libopencv_flann.2.4.2.dylib libopencv_flann.2.4.dylib
+ln -s libopencv_highgui.2.4.2.dylib libopencv_highgui.2.4.dylib
+ln -s libopencv_imgproc.2.4.2.dylib libopencv_imgproc.2.4.dylib
