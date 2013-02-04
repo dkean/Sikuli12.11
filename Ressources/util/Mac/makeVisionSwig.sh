@@ -1,5 +1,5 @@
 #!/bin/sh
-base=`pwd`/../$1
+base=`pwd`/../../$1
 odir=$base/Script-Java/org/sikuli/script/natives
 icv=/usr/local/include/opencv
 ivision=$base/Ressources/natives/Vision
