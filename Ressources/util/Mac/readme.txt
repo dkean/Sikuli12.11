@@ -43,9 +43,10 @@ with the above mentioned command scripts
 - take care, that sikuli-script.jar is in the Java classpath of your project
 - rename the downloaded, unzipped folder to SikuliX (it contains the lib folder and the other stuff like jars ...)
 - to give Sikuli access to the native stuff in SikuliX/libs, choose one of the following:
-  1. have SIKULI_HOME=absolute-path-to-the-folder-containing-the-libsfolder in the environement at runtime
-  2. copy/move the folder SikuliX to the work folder (basedir) 
+  1. specify -Dsikuli.Home=path-to-the-folder-containing-Sikuli-stuff (relative or absolute)
+  2. have SIKULI_HOME=absolute-path-to-the-folder-containing-the-libsfolder in the environement at runtime
+  3. copy/move the folder SikuliX to the work folder (basedir) 
      at the time you run your project (Java system property user.dir)
      (e.g. Netbeans: to the same folder, where you store your NB projects)
-  Internally 1. will overwrite 2.
+  4. have SikuliX in your home directory
   
