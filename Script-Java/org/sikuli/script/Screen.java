@@ -416,7 +416,7 @@ public class Screen extends Region implements EventObserver, ScreenIF {
     ScreenImage simg = robots[curID].captureScreen(rect);
     simg.x += bounds.x;
     simg.y += bounds.y;
-    Debug.log(2, "Screen.capture: " + rect + " Image: " + simg.getImage().toString().substring(0, 25));
+    Debug.log(2, "Screen.capture: " + rect);
     return simg;
   }
 
