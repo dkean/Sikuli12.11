@@ -23,7 +23,8 @@ public class FileManager {
   private static File jniDir = null;
   private static String jarResources;
 	private static String libSource;
-  private static final String sikhome = System.getenv("SIKULI_HOME");
+  private static final String sikhomeEnv = System.getenv("SIKULI_HOME");
+  private static final String sikhomeProp = System.getProperty("sikuli.Home");
   private static final ArrayList<String> libPaths = new ArrayList<String>();
   private static StringBuffer alreadyLoaded = new StringBuffer("");
 	static final int DOWNLOAD_BUFFER_SIZE = 153600;
@@ -31,16 +32,16 @@ public class FileManager {
   static {
 		jarResources = Settings.jarResources;
     libSource = Settings.libSource;
-    if (sikhome != null) {
-      libPaths.add(Settings.slashify(sikhome, true) + "libs");
-      libPaths.add(sikhome);
+    if (sikhomeProp != null) {
+      libPaths.add(Settings.slashify(sikhomeProp, true) + "libs");
+    } else if (sikhomeEnv != null) {
+      libPaths.add(Settings.slashify(sikhomeEnv, true) + "libs");
+    }
+    if (Settings.libPath != null) {
+      libPaths.add(Settings.libPath);
     }
     if (Settings.isMac()) {
-      if (Settings.libPath != null) {
-        libPaths.add(Settings.libPath);
-      } else {
         libPaths.add(Settings.libPathMac);
-      }
     }
     if (Settings.isWindows()) {
       if (Settings.libPathWin32 != null) {
