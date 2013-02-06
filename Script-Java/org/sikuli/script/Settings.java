@@ -62,6 +62,12 @@ public class Settings {
     } else if (wdp.exists()) {
       libPath = wdp.getAbsolutePath();
     }
+    if (libPath == null) {
+      wd = new File(slashify(System.getProperty("user.home"), true) + libSub);
+      if (wd.exists()) {
+        libPath = wd.getAbsolutePath();
+      }
+    }
     SikuliRepo = null;
 		if (isWindows()) {
 			OcrDataPath = libPathWin;

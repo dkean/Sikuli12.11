@@ -52,10 +52,15 @@ public class FileManager {
   }
 
   /**
-   * System.load() the given library module either
-   * <br /> from standard places
-   * Settings.libPlaces or
-   * <br /> from the current .jar at Settings.libSource
+   * System.load() the given library module
+   * <br /> from standard places (SikuliX/libs)
+   * in the following order<br />
+   * 1. -Dsikuli.Home=<br />
+   * 2. Environement SIKULI_HOME<br />
+   * 3. current working dir<br />
+   * 4. parent of current working dir<br />
+   * 5. folder user's home (user.home)<br />
+   * 6. standard installation places of Sikuli<br />
    *
    * @param libname
    * @param doLoad = true: load it here
