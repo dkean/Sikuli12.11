@@ -64,15 +64,20 @@ public class ScreenImage {
 	 * @return absolute path to stored file
 	 * @throws IOException
 	 */
-	public String getFile() throws IOException {
-		if (_filename == null) {
-			File tmp = File.createTempFile("sikuli-image-", ".png");
-			tmp.deleteOnExit();
-			ImageIO.write(_img, "png", tmp);
-			_filename = tmp.getAbsolutePath();
-		}
-		return _filename;
-	}
+	public String getFile() {
+    if (_filename == null) {
+      try {
+        File tmp = File.createTempFile("sikuli-image-", ".png");
+        tmp.deleteOnExit();
+        ImageIO.write(_img, "png", tmp);
+        _filename = tmp.getAbsolutePath();
+      } catch (IOException iOException) {
+        Debug.error("ScreenImage.getFile: IOException", iOException);
+        return null;
+      }
+    }
+    return _filename;
+  }
 
 	/**
 	 * stores the image as PNG file in the given path
@@ -82,11 +87,16 @@ public class ScreenImage {
 	 * @return absolute path to stored file
 	 * @throws IOException
 	 */
-	public String getFile(String path) throws IOException {
-		File tmp = File.createTempFile("sikuli-image-", ".png", new File(path));
-		createFile(tmp);
-		return _filename;
-	}
+  public String getFile(String path) {
+    try {
+      File tmp = File.createTempFile("sikuli-image-", ".png", new File(path));
+      createFile(tmp);
+    } catch (IOException iOException) {
+      Debug.error("ScreenImage.getFile: IOException", iOException);
+      return null;
+    }
+    return _filename;
+  }
 
 	/**
 	 * stores the image as PNG file in the given path
@@ -97,12 +107,17 @@ public class ScreenImage {
 	 * @return absolute path to stored file
 	 * @throws IOException
 	 */
-	public String getFile(String path, String name) throws IOException {
+	public String getFile(String path, String name) {
 		if (! name.endsWith(".png")) {
 			name += ".png";
 		}
-		File tmp = new File(path, name);
-		createFile(tmp);
+    try {
+      File tmp = new File(path, name);
+      createFile(tmp);
+    } catch (IOException iOException) {
+      Debug.error("ScreenImage.getFile: IOException", iOException);
+      return null;
+    }
 		return _filename;
 	}
 
