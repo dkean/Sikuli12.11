@@ -134,7 +134,8 @@ public class Settings {
 
 	public static boolean ActionLogs = true;
 	public static boolean InfoLogs = true;
-	public static boolean DebugLogs = true;
+	public static boolean DebugLogs = false;
+	public static boolean ProfileLogs = false;
 	public static boolean UserLogs = true;
 	public static String UserLogPrefix = "user";
 	public static boolean UserLogTime = true;
