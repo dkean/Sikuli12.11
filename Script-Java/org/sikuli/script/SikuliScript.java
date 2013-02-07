@@ -39,7 +39,9 @@ public class SikuliScript {
 				exitCode = runner.runPython(null);
 			}
       Debug.info("You are using deprecated command line argument syntax!");
-      cmdArgs.printHelp();
+      if (Settings.InfoLogs) {
+        cmdArgs.printHelp();
+      }
       System.exit(exitCode);
     }
 
