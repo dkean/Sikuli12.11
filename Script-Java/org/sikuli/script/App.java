@@ -22,9 +22,14 @@ import org.sikuli.system.OSUtil;
 
 public class App {
 
-  protected static OSUtil _osUtil = Settings.getOSUtil();
+  protected static final OSUtil _osUtil = Settings.getOSUtil();
   protected String _appName;
   protected int _pid;
+
+  static {
+//TODO Sikuli hangs if App is used before Screen
+    new Screen();
+  }
 
   public App(String appName) {
     _appName = appName;
