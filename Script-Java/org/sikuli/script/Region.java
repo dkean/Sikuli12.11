@@ -1300,7 +1300,7 @@ public class Region {
    */
   public Region highlight(float secs) {
 		if (secs < 0.1) {
-			highlight((int) secs);
+			return highlight((int) secs);
 		}
     Debug.history("highlight " + toString() + " for " + secs + " secs");
     if (!(getScreen()instanceof Screen)) {
@@ -1322,7 +1322,7 @@ public class Region {
 	 * @return
 	 */
 	public Region highlight(int secs) {
-		if (secs > 1) {
+		if (secs > 0) {
 			return highlight((float) secs);
 		} else {
 			if (lastMatch != null) {
