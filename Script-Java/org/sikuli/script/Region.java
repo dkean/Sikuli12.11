@@ -1395,7 +1395,7 @@ public class Region {
    * @return If found, the element. null otherwise
    * @throws FindFailed if the Find operation failed
    */
-  public <PatternOrString> Match find(final PatternOrString target) throws FindFailed {
+  public <PatternOrString> Match find(PatternOrString target) throws FindFailed {
     if (autoWaitTimeout > 0) {
       return wait(target, autoWaitTimeout);
     }
