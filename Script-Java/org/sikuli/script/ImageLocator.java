@@ -27,6 +27,9 @@ public class ImageLocator {
 	static {
 		pathList.add("");
 		resetImagePath("");
+    if (pathList.size() >= 1 && "".equals(pathList.get(0))) {
+      pathList.set(0, System.getProperty("user.dir"));
+    }
 		if (!_cache_dir_global.exists()) {
 			try {
 				_cache_dir_global.mkdir();
@@ -103,12 +106,20 @@ public class ImageLocator {
 		if (addedAt == pathList.size()) {
 			first = false;
 		}
+    String epl;
+    File fepl;
 		for (int i = 0; i < pl.length; i++) {
-			if (pl[i] != null && !pathList.contains(pl[i])) {
+      if (pl[i] == null) {
+        continue;
+      }
+      epl = pl[i];
+      //fepl = new File(epl);
+//TODO handle relative paths
+			if (!pathList.contains(epl)) {
 				if (!first) {
-					pathList.add(pl[i]);
+					pathList.add(epl);
 				} else {
-					pathList.add(addedAt, pl[i]);
+					pathList.add(addedAt, epl);
 					addedAt++;
 				}
 			}
