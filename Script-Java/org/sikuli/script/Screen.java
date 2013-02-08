@@ -525,7 +525,9 @@ public class Screen extends Region implements EventObserver, ScreenIF {
 
 	public static void showMonitors() {
     initScreens();
-//		for (int i=0; i <= gdevs; i++)
+		for (int i=0; i < gdevs.length; i++) {
+      Debug.info("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
+    }
 	}
 
   @Override
