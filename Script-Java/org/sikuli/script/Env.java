@@ -48,7 +48,7 @@ public class Env {
    */
   @Deprecated
   public static Location getMouseLocation() throws HeadlessException {
-    return Region.getMouseLocation();
+    return Region.atMouse();
   }
 
   /**

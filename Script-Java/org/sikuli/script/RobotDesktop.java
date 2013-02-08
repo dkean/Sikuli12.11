@@ -35,7 +35,7 @@ public class RobotDesktop extends Robot implements RobotIF {
 
   @Override
   public void smoothMove(Location dest) {
-    smoothMove(Screen.getMouseLocation(), dest, (long) (Settings.MoveMouseDelay * 1000L));
+    smoothMove(Screen.atMouse(), dest, (long) (Settings.MoveMouseDelay * 1000L));
   }
 
   @Override

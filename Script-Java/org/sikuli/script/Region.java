@@ -310,7 +310,7 @@ public class Region {
    * @return true/false
    */
   public boolean containsMouse() {
-    return contains(getMouseLocation());
+    return contains(atMouse());
   }
 
   /**
@@ -985,7 +985,7 @@ public class Region {
    * create a region enlarged 50 pixels on each side
    *
    * @return the new region
-   * @deprecated to be like AWT Rectangle API use grow() instaed
+   * @deprecated to be like AWT Rectangle API use grow() instead
    */
   @Deprecated
   public Region nearby() {
@@ -1100,12 +1100,12 @@ public class Region {
   }
 
   /**
-   * positive offset goes to the left <br />might be off current screen
+   * negative offset goes to the left <br />might be off current screen
    *
    * @return point with given offset horizontally to middle point on left edge
    */
   public Location leftAt(int offset) {
-    return new Location(x - offset, y + h / 2);
+    return new Location(x + offset, y + h / 2);
   }
 
   /**
@@ -1144,13 +1144,13 @@ public class Region {
   }
 
   /**
-   * positive offset goes towards top of screen <br />might be off current
+   * negative offset goes towards top of screen <br />might be off current
    * screen
    *
    * @return point with given offset vertically to middle point on top edge
    */
   public Location aboveAt(int offset) {
-    return new Location(x + w / 2, y - offset);
+    return new Location(x + w / 2, y + offset);
   }
 
   /**
@@ -1460,11 +1460,11 @@ public class Region {
    * @throws FindFailed if the Find operation failed
    */
   public <PatternOrString> Match wait(PatternOrString target, double timeout) throws FindFailed {
-
+    RepeatableFind rf;
     while (true) {
       try {
         Debug.log(2, "waiting for " + target + " to appear");
-        RepeatableFind rf = new RepeatableFind(target);
+        rf = new RepeatableFind(target);
         rf.repeat(timeout);
         lastMatch = rf.getMatch();
       } catch (Exception e) {
@@ -1472,7 +1472,7 @@ public class Region {
       }
 
       if (lastMatch != null) {
-        lastMatch.setImage(getImageFilename(target));
+        lastMatch.setImage(rf._imagefilename);
         Debug.log(2, "" + target + " has appeared.");
         break;
       }
@@ -1610,21 +1610,24 @@ public class Region {
 			f.findRepeat();
 		} else {
 			f = new Finder(simg, this);
+      String text;
 			if (ptn instanceof String) {
-				String text = f.find((String) ptn);
+				text = f.find((String) ptn);
 				if (null == text) {
 					throw new IOException("ImageFile " + ptn + " not found on disk");
 				} else if ((((String) ptn) + "???").equals(text)) {
 					throw new IOException("Text search currently switched off");
 				}
 			} else {
+        text = ((Pattern) ptn).getFilename();
 				if (null == f.find((Pattern) ptn)) {
-					throw new IOException("ImageFile " + ((Pattern) ptn).getFilename()
+					throw new IOException("ImageFile " + text
 									+ " not found on disk");
 				}
 			}
 			if (repeating != null) {
 				repeating._finder = f;
+        repeating._imagefilename = text;
 			}
 		}
     if (f.hasNext()) {
@@ -1708,6 +1711,7 @@ public class Region {
     Object _target;
     Match _match = null;
 		Finder _finder = null;
+    String _imagefilename = null;
 
     public <PSC> RepeatableFind(PSC target) {
       _target = target;
@@ -2401,9 +2405,8 @@ public class Region {
   /**
    *
    * @return the current mouse pointer Location
-   * @throws HeadlessException
    */
-  public static Location getMouseLocation() throws HeadlessException {
+  public static Location atMouse() {
     Point loc = MouseInfo.getPointerInfo().getLocation();
     return new Location(loc.x, loc.y);
   }
