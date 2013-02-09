@@ -1467,6 +1467,7 @@ public class Region {
         rf = new RepeatableFind(target);
         rf.repeat(timeout);
         lastMatch = rf.getMatch();
+        lastMatch.setImage(rf._imagefilename);
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
       }

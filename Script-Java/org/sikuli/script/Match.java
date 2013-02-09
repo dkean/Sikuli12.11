@@ -84,7 +84,10 @@ public class Match extends Region implements Comparable {
     simScore = m.simScore;
     ocrText = m.ocrText;
     image = m.image;
-    target = (Location) m.target.clone();
+    target = null;
+    if (m.target != null) {
+      target = (Location) m.target.clone();
+    }
   }
 
   /**
@@ -214,9 +217,9 @@ public class Match extends Region implements Comparable {
     String starget;
     Location c = getCenter();
     if (target != null && !c.equals(target)) {
-      starget = String.format("Center: %d, %d", c.x, c.y);
+      starget = String.format("Target:%d,%d", target.x, target.y);
     } else {
-      starget = String.format("Target: %d, %d", target.x, target.y);
+      starget = String.format("Center:%d,%d", c.x, c.y);
     }
     return String.format("M[%d,%d %dx%d]@%s S:%.2f %s", x, y, w, h,
               (getScreen()== null ? "Screen???" : getScreen().toStringShort()),

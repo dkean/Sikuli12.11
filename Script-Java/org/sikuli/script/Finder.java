@@ -156,7 +156,7 @@ public class Finder implements Iterator<Match> {
     _findInput.setSimilarity(minSimilarity);
     _results = Vision.find(_findInput);
     _cur_result_i = 0;
-    return _findInput.getTargetText();
+    return target;
   }
 
   public String find(String imageOrText) {
@@ -201,9 +201,13 @@ public class Finder implements Iterator<Match> {
    * @param minSimilarity
    */
   public String findAll(String imageOrText, double minSimilarity) {
-    if (null == setTargetSmartly(_findInput, imageOrText)) {
+		String target = setTargetSmartly(_findInput, imageOrText);
+    if (null == target) {
       return null;
     }
+		if (target.equals(imageOrText+"???")) {
+			return target;
+		}
     Debug timing = new Debug();
     timing.startTiming("Finder.findAll");
 
@@ -214,7 +218,7 @@ public class Finder implements Iterator<Match> {
     _cur_result_i = 0;
 
     timing.endTiming("Finder.findAll");
-    return _findInput.getTargetText();
+    return target;
   }
 
   public String findAll(String imageOrText) {
