@@ -50,3 +50,6 @@ with the above mentioned command scripts
      (e.g. Netbeans: to the same folder, where you store your NB projects)
   4. have SikuliX in your home directory
   
+Used Images: Sikuli searches for image files in the standard in the current working directory (Java property "user.dir")
+So e.g. in Netbeans you can store images in your project folder and they will be found when simply using "some-image.png". Relative pathnames are possible too (e.g. "images/some-image.png").
+  
