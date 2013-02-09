@@ -18,6 +18,8 @@ I am sorry about that, but
 
 **Unzip to any folder, look into the contained readme.txt and Have Fun ;-)**
 
+Have a look at the JavaDocs of Sikuli Script: https://dl.dropbox.com/u/42895525/SikuliX/javadoc/index.html
+
 ----------------------------
 
 Be aware
