@@ -28,7 +28,7 @@ public class Debug {
   private static final int DEFAULT_LEVEL = 1;
   private static int DEBUG_LEVEL = DEFAULT_LEVEL;
   private long _beginTime;
-  private static PrintStream out;
+  private static PrintStream printout = null;
   private static String logfile;
   private static final DateFormat df =
           DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
@@ -46,13 +46,12 @@ public class Debug {
       }
     }
     logfile = System.getProperty("sikuli.Logfile");
-    out = System.out;
     if (logfile != null) {
       if ("".equals(logfile)) {
         logfile = Settings.slashify(System.getProperty("user.dir"), true) + "SikuliLog.txt";
       }
       try {
-        out = new PrintStream(logfile);
+        printout = new PrintStream(logfile);
       } catch (FileNotFoundException ex) {
         System.out.printf("[Error] Logfile %s not found", logfile);
         System.out.println();
@@ -141,13 +140,20 @@ public class Debug {
   }
 
   private static void log(int level, String prefix, String message, Object... args) {
+    String sout;
     if (isEnabled(level)) {
       if (args.length != 0) {
-        out.printf(prefix + message, args);
+        sout = String.format(prefix + message, args);
       } else {
-        out.print(prefix + message);
+        sout = prefix + message;
       }
-      out.println();
+      if (printout != null) {
+        printout.print(sout);
+        printout.println();
+      } else {
+        System.out.print(sout);
+        System.out.println();
+      }
     }
   }
 
