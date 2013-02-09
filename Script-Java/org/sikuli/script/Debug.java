@@ -107,8 +107,10 @@ public class Debug {
   }
 
   /**
-   * messages from Sikuli actions like click, ...<br /> switch on/off:
-   * Settings.ActionLogs
+   * messages given by the user<br /> switch on/off:
+   * Settings.UserLogs<br />
+   * depending on Settings.UserLogTime, the prefix contains a timestamp <br />
+   * the user prefix (default "user") can be set: Settings,UserLogPrefix
    *
    * @param message (String or format string)
    * @param args to use with format string
