@@ -484,9 +484,9 @@ public class Region {
   }
 
   /**
-   * conveneince: can be used on Region and Match (returns TargetOffset)
+   * conveneince method
    *
-   * @return the regions center
+   * @return the region's center or match's TargetOffset
    */
   public Location getTarget() {
     return getCenter();

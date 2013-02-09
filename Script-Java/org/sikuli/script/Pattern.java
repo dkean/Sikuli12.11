@@ -9,6 +9,12 @@ package org.sikuli.script;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+/**
+ * to define a more complex search target<br />
+ * - non-standard minimum similarity <br />
+ * - click target other than center <br />
+ * - image as in-memory image
+ */
 public class Pattern {
 
   private String imgURL = null;
@@ -40,8 +46,9 @@ public class Pattern {
   }
 
   /**
-	 * create a Pattern with an image file name
-	 * checked only when used
+	 * create a Pattern with an image file name<br />
+	 * checked only when used<br />
+   * see checkFile()
 	 *
 	 * @param imgpath
 	 */
@@ -161,7 +168,7 @@ public class Pattern {
 	}
 
   /**
-	 * Internal Use: check for a valid image file
+	 * check for a valid image file
 	 *
 	 * @return path or null
 	 */
@@ -216,10 +223,10 @@ public class Pattern {
 
   @Override
   public String toString() {
-    String ret = "Pattern(\"" + imgURL + "\")";
-    ret += ".similar(" + similarity + ")";
+    String ret = "P(" + imgURL + ")";
+    ret += " S: " + similarity;
     if (offset.x != 0 || offset.y != 0) {
-      ret += ".targetOffset(" + offset.x + "," + offset.y + ")";
+      ret += " T: " + offset.x + "," + offset.y;
     }
     return ret;
   }

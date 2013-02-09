@@ -9,13 +9,26 @@ package org.sikuli.script;
 import java.awt.image.BufferedImage;
 import org.sikuli.script.natives.FindResult;
 
+/**
+ * holds the result of a find operation, is itself the region on the screen,
+ * where the image was found and hence inherits all methods from Region<br />
+ * attributes:<br /> the match score (0 ... 1.0)<br /> the click target (e.g.
+ * from Pattern)<br /> the filename of the used image<br />or the text used for
+ * find text
+ */
 public class Match extends Region implements Comparable {
 
   private double simScore;
-  private String ocrText = null;
   private Location target = null;
   private String image = null;
+  private String ocrText = null;
 
+  /**
+   * create a copy of Match object<br />
+   * to e.g. set another TargetOffset for same match
+   *
+   * @param m
+   */
   public Match(Match m) {
     init(m.x, m.y, m.w, m.h, m.getScreen());
     copy(m);
@@ -27,7 +40,7 @@ public class Match extends Region implements Comparable {
   }
 
   /**
-   * used by TextRecognizer.listText()
+   * internally used constructor by TextRecognizer.listText()
    *
    * @param x
    * @param x
@@ -37,7 +50,7 @@ public class Match extends Region implements Comparable {
    * @param parent
    * @param text
    */
-  public Match(int x, int y, int w, int h, double Score, Screen parent, String text) {
+  protected Match(int x, int y, int w, int h, double Score, Screen parent, String text) {
     init(x, y, w, h, parent);
     simScore = Score;
     ocrText = text;
@@ -48,6 +61,12 @@ public class Match extends Region implements Comparable {
     simScore = score;
   }
 
+  /**
+   * internally used constructor used by find image
+   *
+   * @param f
+   * @param _parent
+   */
   protected Match(FindResult f, Screen _parent) {
     init(f.getX(), f.getY(), f.getW(), f.getH(), _parent);
     simScore = f.getScore();
@@ -65,15 +84,16 @@ public class Match extends Region implements Comparable {
     simScore = m.simScore;
     ocrText = m.ocrText;
     image = m.image;
-    target = m.target;
+    target = (Location) m.target.clone();
   }
 
+  /**
+   * the match score
+   *
+   * @return a decimal value between 0 (no match) and 1 (exact match)
+   */
   public double getScore() {
     return simScore;
-  }
-
-  public String getText() {
-    return ocrText;
   }
 
   @Override
@@ -84,33 +104,72 @@ public class Match extends Region implements Comparable {
     return getCenter();
   }
 
+  /**
+   * like Pattern.TargetOffset sets the click target by offset relative to the
+   * center
+   *
+   * @param offset
+   */
   public void setTargetOffset(Location offset) {
     target = new Location(getCenter());
     target.translate(offset.x, offset.y);
   }
 
   /**
-   * convenience - returns same as for the used Pattern
+   * like Pattern.TargetOffset sets the click target relative to the center
+   * @param x
+   * @param y
+   */
+  public void setTargetOffset(int x, int y) {
+    setTargetOffset(new Location(x,y));
+  }
+
+  /**
+   * convenience - same as for Pattern
    *
-   * @return the relative offset
+   * @return the relative offset to the center
    */
   public Location getTargetOffset() {
-    return(Location.getOffset(getTarget(), getCenter()));
+    return (Location.getOffset(getTarget(), getCenter()));
   }
 
+  /**
+   * internal use: set the image filename after finding with success
+   * @param imageFileName
+   */
   protected void setImage(String imageFileName) {
     image = imageFileName;
-		if (Settings.Highlight) {
-			highlight(DEFAULT_HIGHLIGHT_TIME);
-		}
+    if (Settings.Highlight) {
+      highlight(DEFAULT_HIGHLIGHT_TIME);
+    }
   }
 
+  /**
+   * get the image used for searching as in-memory image
+   * @return image
+   */
   public BufferedImage getImage() {
     if (image == null) {
       return null;
     } else {
       return ImageLocator.getImage(image);
     }
+  }
+
+  /**
+   * get the filename of the image used for searching
+   * @return filename
+   */
+  public String getImageFilename() {
+    return image;
+  }
+
+  /**
+   *
+   * @return the text used for searching
+   */
+  public String getText() {
+    return ocrText;
   }
 
   @Override
@@ -152,11 +211,15 @@ public class Match extends Region implements Comparable {
 
   @Override
   public String toString() {
-    String target = "center";
+    String starget;
     Location c = getCenter();
     if (target != null && !c.equals(target)) {
-      target = target.toString();
+      starget = String.format("Center: %d, %d", c.x, c.y);
+    } else {
+      starget = String.format("Target: %d, %d", target.x, target.y);
     }
-    return String.format("Match[%d,%d %dx%d score=%.2f target=%s]", x, y, w, h, simScore, target);
+    return String.format("M[%d,%d %dx%d]@%s S:%.2f %s", x, y, w, h,
+              (getScreen()== null ? "Screen???" : getScreen().toStringShort()),
+              simScore, starget);
   }
 }

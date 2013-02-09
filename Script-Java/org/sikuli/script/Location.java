@@ -268,6 +268,6 @@ public class Location extends Point {
 
   @Override
   public String toString() {
-    return "L(" + x + "," + y + ") on "+getScreen().toStringShort();
+    return "L(" + x + "," + y + ")@"+getScreen().toStringShort();
   }
 }
