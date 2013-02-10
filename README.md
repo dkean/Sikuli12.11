@@ -12,7 +12,7 @@ I am sorry about that, but
 
 **You can download the current working bundles (all beta and work in progress)** 
 
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-January-24)
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-10)
 - Windows: not yet available
 - Linux: not yet available
 
@@ -65,6 +65,7 @@ I have made up a release information for X-1.0 on launchpad, so you can see the 
 - add a help topic QuickStart for newcomers
 - better display of errors in message area
 - revised the extension feature and made it functional again
+- Debug.xxx is available on Jython level (see below)
 
 **Changes/Fixes to the Scripting API**
 
@@ -80,6 +81,7 @@ new Regions easily based on existing Regions and Locations
 - a new option, to always highlight() a match
 - revise the observe API (Jython callbacks in Java possible with Jython 2.5.3)
 - short version of FindFailed message in Jython and better error messages
+- totally revised the Debug.xxx interface, added user logs with optional timestamp, logging to file seperate for Sikuli and user possible
 
 Motivation
 ==========
