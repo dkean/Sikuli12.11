@@ -51,13 +51,23 @@ public class SikuliScript {
         return;
       }
       if (cmdLine.hasOption("i")) {
-				String[] jy_args = {"-i", "-c",
+        String[] sargs = CommandArgs.getPyArgs(cmdLine);
+        String[] jy_args = null;
+        String[] iargs = {"-i", "-c",
 					"from sikuli import *; SikuliScript.runningInteractive = True; "
 					+ "print \"Hello, this is your interactive Sikuli (rules for interactive Python apply)\\n"
 					+ "use the UP/DOWN arrow keys to walk through the input history\\n"
 					+ "help()<enter> will output some basic Python information\\n"
 					+ "shelp()<enter> will output some basic Sikuli information\\n"
 					+ "... use ctrl-d to end the session\""};
+        if (sargs.length > 0) {
+          jy_args = new String[sargs.length + iargs.length];
+          System.arraycopy(iargs, 0, jy_args, 0, iargs.length);
+          System.arraycopy(sargs, 0, jy_args, iargs.length, sargs.length);
+        } else {
+          jy_args = iargs;
+        }
+
 				jython.main(jy_args);
         return;
       }
