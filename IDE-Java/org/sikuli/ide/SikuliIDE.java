@@ -139,7 +139,7 @@ public class SikuliIDE extends JFrame {
     String fileName;
 
     Settings.showJavaInfo();
-    
+
     CommandArgs cmdArgs = new CommandArgs("IDE");
     _cmdLine = cmdArgs.getCommandLine(args);
     boolean _newCommandline = false;
@@ -194,7 +194,7 @@ public class SikuliIDE extends JFrame {
     }
 
 // we should open the IDE
-		SikuliIDESettings.setArgs(CommandArgs.getPyArgs(_cmdLine));
+		Settings.setArgs(CommandArgs.getPyArgs(_cmdLine));
 		initNativeLayer();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -292,11 +292,6 @@ public class SikuliIDE extends JFrame {
 
     // RaiMan not used		autoCheckUpdate();
 
-    if (_cmdLine.getArgs().length > 0) {
-      for (String f : _cmdLine.getArgs()) {
-        loadFile(Utils.slashify(f, false));
-      }
-    }
     if (_mainPane.getTabCount() == 0) {
       (new FileAction()).doNew(null);
     }
@@ -1685,7 +1680,7 @@ public class SikuliIDE extends JFrame {
 
     protected void runPython(File f) throws Exception {
       String path = SikuliIDE.getInstance().getCurrentBundlePath();
-      SikuliScriptRunner srunner = new SikuliScriptRunner(SikuliIDESettings.getArgs(), "IDE");
+      SikuliScriptRunner srunner = new SikuliScriptRunner(Settings.getArgs(), "IDE");
       addPythonCode(srunner);
       try {
         srunner.runPython(path, f);

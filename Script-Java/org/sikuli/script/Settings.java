@@ -50,6 +50,7 @@ public class Settings {
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
   public static String SikuliRepo;
+  private static String[] args = new String[0];
 
 	static {
     Properties props = System.getProperties();
@@ -266,5 +267,13 @@ public class Settings {
       }
     }
     return p;
+  }
+
+  public static void setArgs(String[] args) {
+    Settings.args = args;
+  }
+
+  public static String[] getArgs() {
+    return Settings.args;
   }
 }

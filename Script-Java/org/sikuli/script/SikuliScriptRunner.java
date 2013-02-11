@@ -56,6 +56,9 @@ public class SikuliScriptRunner {
 		py = new PythonInterpreter();
 		if (sysargv == null) {
 			sysargv = new ArrayList<String>(Arrays.asList(args));
+    	if (CommandArgs.isIDE(_runType)) {
+        sysargv.add(0, "");
+      }
 		}
 /*
 		if (syspath == null) {

@@ -1,8 +1,7 @@
 #!/bin/sh
-# setting it to 3 makes some sense if you get any problems
+# Sikuli settings presets
 DEBUG=1
-#setting this to false you get all output in the command window synchronously
-CONSOLE=True
+CONSOLE="-Dsikuli.console=true"
 # other Java settings
 JAVA=X
 PROPS='-Xmx512M -Dapple.laf.useScreenMenuBar -Dfile.encoding=UTF-8'
@@ -12,13 +11,24 @@ usage()
 cat << EOF
 usage: $0 options
 OPTIONS:
+           () = default
    -h      Show this message
-   -d      debug level (1)
-   -j      Java version 6, 7, o 
+   -d n    n = debug level (1)
+   -j n    n = Java version 6, 7, o (current active version)
+   -f      logs to SikuliLog.txt in working dir
+   -u      user logs go to UserLog.txt in working dir
+   -c      all output goes to command window synchonously (IDE message area)
+
+if you want to store something in sys.argv for later script runs
+   --      ends the command script option list - trailing stuff goes to sys.argv
+           a string not starting with a hyphen does the same and is passed too
+   
+(the deprecated options -r -t -s are not supported by this command script)
+--------------------------------------------------------------------------------   
 EOF
 }
 
-while getopts “hd:j:” OPTION
+while getopts “:hd:j:fuc” OPTION
 do
   case $OPTION in
     h)
@@ -31,14 +41,27 @@ do
     j)
        JAVA=$OPTARG
        ;;
+    f)
+       PROPS="$PROPS -Dsikuli.Logfile"
+       ;;
+    u)
+       PROPS="$PROPS -Dsikuli.LogfileUser"
+       ;;
+    c)
+       CONSOLE="-Dsikuli.console=false"
+       ;;
+    ?)
+       usage
+       exit 1
+       ;;
+    :)
+       usage
+       exit 1
+       ;;
   esac
 done
 
-DOWN=$(expr $# - $OPTIND + 1)
-while (( "$#" != "$DOWN"  ))
-do
-  shift
-done
+shift $((OPTIND-1))
 
 if [ "$JAVA" != "X" ]; then
   echo "being asked to switch to Java "$JAVA
@@ -68,9 +91,9 @@ fi
 if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
   echo SIKULI_HOME is $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli IDE
-  echo "running $PROPS -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE"
+  echo "running $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG"
   echo "-jar $SIKULI_HOME/sikuli-ide.jar $*"
-  java $PROPS -Dsikuli.Debug=$DEBUG -Dsikuli.console=$CONSOLE -jar $SIKULI_HOME/sikuli-ide.jar $*
+  java $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG -jar $SIKULI_HOME/sikuli-ide.jar $@
 else
   echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
 fi
