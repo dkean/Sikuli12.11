@@ -26,7 +26,7 @@ public class Finder implements Iterator<Match> {
   private int _cur_result_i;
   private boolean repeating = false;
 
-  //TODO Vision.setParameter("GPU", 1);
+//TODO Vision.setParameter("GPU", 1);
   static {
     FileManager.loadLibrary("VisionProxy");
   }
@@ -73,7 +73,7 @@ public class Finder implements Iterator<Match> {
   }
 
   /**
-	 * Finder constructor for special use froma a ScreenImage
+	 * Finder constructor for special use from a ScreenImage
 	 *
 	 * @param simg
 	 * @param region
@@ -86,6 +86,17 @@ public class Finder implements Iterator<Match> {
 		setScreenImage(simg);
     _region = region;
 	}
+
+  /**
+   * to explicitly free the Finder's resources
+   */
+  public void destroy() {
+		_findInput.delete();
+		_findInput = null;
+		_results.delete();
+		_results = null;
+		_pattern = null;
+  }
 
 	/**
 	 * internal use: exchange the source image in existing Finder
@@ -103,20 +114,6 @@ public class Finder implements Iterator<Match> {
     repeating = true;
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    super.finalize();
-    destroy();
-  }
-
-  public void destroy() {
-		_findInput.delete();
-		_findInput = null;
-		_results.delete();
-		_results = null;
-		_pattern = null;
-  }
-
 	/**
 	 * internal use: repeat find with same Finder
 	 */
@@ -124,21 +121,6 @@ public class Finder implements Iterator<Match> {
 		_results = Vision.find(_findInput);
 		_cur_result_i = 0;
 	}
-
-  /**
-   * find given pattern within the stored image
-   *
-   * @param aPtn
-   */
-  public String find(Pattern aPtn) {
-    if (null == aPtn.checkFile()) {
-      return null;
-    }
-    setFindInput(aPtn);
-    _results = Vision.find(_findInput);
-    _cur_result_i = 0;
-    return aPtn.getFilename();
-  }
 
   /**
    *
@@ -159,6 +141,24 @@ public class Finder implements Iterator<Match> {
     return target;
   }
 
+  /**
+   * find given pattern within the stored image
+   *
+   * @param aPtn
+   */
+  public String find(Pattern aPtn) {
+    _pattern = (Pattern) aPtn;
+    String img = aPtn.getFilename();
+    if (img == null) {
+      return null;
+    }
+		_findInput.setTarget(TARGET_TYPE.IMAGE, img);
+    _findInput.setSimilarity(aPtn.getSimilar());
+    _results = Vision.find(_findInput);
+    _cur_result_i = 0;
+    return img;
+  }
+
   public String find(String imageOrText) {
     return find(imageOrText, Settings.MinSimilarity);
   }
@@ -173,27 +173,6 @@ public class Finder implements Iterator<Match> {
     _cur_result_i = 0;
     timing.endTiming("Finder.findAll");
 	}
-
-	/**
-   *
-   * @param Pattern
-   * @param aPtn
-   */
-  public String findAll(Pattern aPtn)  {
-    if (null == aPtn.checkFile()) {
-      return null;
-    }
-    Debug timing = new Debug();
-    timing.startTiming("Finder.findAll");
-
-    setFindInput(aPtn);
-    _findInput.setFindAll(true);
-    _results = Vision.find(_findInput);
-    _cur_result_i = 0;
-
-    timing.endTiming("Finder.findAll");
-    return aPtn.getFilename();
-  }
 
   /**
    *
@@ -221,9 +200,67 @@ public class Finder implements Iterator<Match> {
     return target;
   }
 
+	/**
+   *
+   * @param Pattern
+   * @param aPtn
+   */
+  public String findAll(Pattern aPtn)  {
+    _pattern = (Pattern) aPtn;
+    String img = aPtn.getFilename();
+    if (img == null) {
+      return null;
+    }
+		_findInput.setTarget(TARGET_TYPE.IMAGE, img);
+    _findInput.setSimilarity(aPtn.getSimilar());
+    _findInput.setFindAll(true);
+    Debug timing = new Debug();
+    timing.startTiming("Finder.findAll");
+    _results = Vision.find(_findInput);
+    _cur_result_i = 0;
+    timing.endTiming("Finder.findAll");
+    return aPtn.getFilename();
+  }
+
   public String findAll(String imageOrText) {
     return findAll(imageOrText, Settings.MinSimilarity);
   }
+
+	private String setTargetSmartly(FindInput fin, String target) {
+		if (isImageFile(target)) {
+			try {
+				//assume it's a file first
+				String filename = ImageLocator.locate(target);
+				fin.setTarget(TARGET_TYPE.IMAGE, filename);
+				return filename;
+			} catch (IOException e) {
+				if (!repeating) {
+					Debug.error(target
+									+ " looks like a file, but not on disk. Assume it's text.");
+				}
+			}
+		}
+		if (!Settings.OcrTextSearch) {
+			Debug.error("Region.find(text): text search is currently switched off");
+			return target + "???";
+		} else {
+			fin.setTarget(TARGET_TYPE.TEXT, target);
+			TextRecognizer.getInstance();
+			return target;
+		}
+	}
+
+	private static boolean isImageFile(String fname) {
+		int dot = fname.lastIndexOf('.');
+		if (dot < 0) {
+			return false;
+		}
+		String suffix = fname.substring(dot + 1).toLowerCase();
+		if (suffix.equals("png") || suffix.equals("jpg")) {
+			return true;
+		}
+		return false;
+	}
 
   /**
    *
@@ -264,58 +301,16 @@ public class Finder implements Iterator<Match> {
   }
 
   /**
-   * not implemented - not used
+   * not used
    */
   @Override
-  public void remove() {
+  public void remove(){}
+
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize();
+    destroy();
   }
 
-  private <PatternString> void setFindInput(PatternString ptn) {
-    if (ptn instanceof Pattern) {
-      _pattern = (Pattern) ptn;
-      Mat targetMat = OpenCV.convertBufferedImageToMat(_pattern.getImage());
-      _findInput.setTarget(targetMat);
-      _findInput.setSimilarity(_pattern.getSimilar());
-    } else if (ptn instanceof String) {
-      setTargetSmartly(_findInput, (String) ptn);
-      _findInput.setSimilarity(Settings.MinSimilarity);
-    }
-  }
-
-	private String setTargetSmartly(FindInput fin, String target) {
-		if (isImageFile(target)) {
-			try {
-				//assume it's a file first
-				String filename = ImageLocator.locate(target);
-				fin.setTarget(TARGET_TYPE.IMAGE, filename);
-				return filename;
-			} catch (IOException e) {
-				if (!repeating) {
-					Debug.error(target
-									+ " looks like a file, but not on disk. Assume it's text.");
-				}
-			}
-		}
-		if (!Settings.OcrTextSearch) {
-			Debug.error("Region.find(text): text search is currently switched off");
-			return target + "???";
-		} else {
-			fin.setTarget(TARGET_TYPE.TEXT, target);
-			TextRecognizer.getInstance();
-			return target;
-		}
-	}
-
-	public static boolean isImageFile(String fname) {
-		int dot = fname.lastIndexOf('.');
-		if (dot < 0) {
-			return false;
-		}
-		String suffix = fname.substring(dot + 1).toLowerCase();
-		if (suffix.equals("png") || suffix.equals("jpg")) {
-			return true;
-		}
-		return false;
-	}
 
 }
