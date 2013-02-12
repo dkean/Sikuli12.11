@@ -62,6 +62,10 @@ public class Region {
     scriptingType = type;
   }
 
+  public String getScriptingType () {
+    return scriptingType;
+  }
+
   private Region initialize(int X, int Y, int W, int H, Screen parentScreen) {
     x = X;
     y = Y;
@@ -1365,7 +1369,7 @@ public class Region {
   /**
    * return false to skip return true to try again throw FindFailed to abort
    */
-  private <PSC> boolean handleFindFailed(PSC target) throws FindFailed {
+  private <PatternOrString> boolean handleFindFailed(PatternOrString target) throws FindFailed {
     FindFailedResponse response;
     if (findFailedResponse == FindFailedResponse.PROMPT) {
       FindFailedDialog fd = new FindFailedDialog(target);
@@ -1467,7 +1471,9 @@ public class Region {
         rf = new RepeatableFind(target);
         rf.repeat(timeout);
         lastMatch = rf.getMatch();
-        lastMatch.setImage(rf._imagefilename);
+        if (lastMatch != null) {
+          lastMatch.setImage(rf._imagefilename);
+        }
       } catch (Exception e) {
         throw new FindFailed(e.getMessage());
       }
@@ -1714,7 +1720,7 @@ public class Region {
 		Finder _finder = null;
     String _imagefilename = null;
 
-    public <PSC> RepeatableFind(PSC target) {
+    public <PatternOrString> RepeatableFind(PatternOrString target) {
       _target = target;
     }
 
@@ -1738,7 +1744,7 @@ public class Region {
 
   private class RepeatableVanish extends RepeatableFind {
 
-    public <PSC> RepeatableVanish(PSC target) {
+    public <PatternOrString> RepeatableVanish(PatternOrString target) {
       super(target);
     }
 
@@ -1754,7 +1760,7 @@ public class Region {
     Iterator<Match> _matches = null;
 		Finder _finder = null;
 
-    public <PSC> RepeatableFindAll(PSC target) {
+    public <PatternOrString> RepeatableFindAll(PatternOrString target) {
       _target = target;
     }
 
@@ -1783,7 +1789,7 @@ public class Region {
 	 * @deprecated should not be used anymore - use find() instead
 	 */
 	@Deprecated
-	public <PSC> Match findNow(PSC ptn) throws FindFailed {
+	public <PatternOrString> Match findNow(PatternOrString ptn) throws FindFailed {
 		Debug.log("capture: " + x + "," + y);
 		ScreenImage simg = getScreen().capture(x, y, w, h);
 		Debug.log("ScreenImage: " + simg.getROI());
@@ -1815,7 +1821,7 @@ public class Region {
 	 * @deprecated should not be used anymore - use findAll() instead
 	 */
 	@Deprecated
-	public <PSC> Iterator<Match> findAllNow(PSC ptn)
+	public <PatternOrString> Iterator<Match> findAllNow(PatternOrString ptn)
 					throws FindFailed {
 		ScreenImage simg = getScreen().capture(x, y, w, h);
 		getScreen().setLastScreenImage(simg);
@@ -1846,7 +1852,7 @@ public class Region {
 	 * @deprecated does not really make sense - use findAll() instead
 	 */
 	@Deprecated
-	public <PSC> Iterator<Match> waitAll(PSC target, double timeout)
+	public <PatternOrString> Iterator<Match> waitAll(PatternOrString target, double timeout)
 					throws FindFailed {
 
 		while (true) {
@@ -1919,21 +1925,37 @@ public class Region {
     return evtMgr;
   }
 
-  public <PSC> void onAppear(PSC target, SikuliEventObserver observer) {
-    getEventManager().addAppearObserver(target, observer);
+  public <PatternOrString> void onAppear(PatternOrString target, Object observer) {
+    if (! observer.getClass().getName().startsWith("org.python.core.PyFunction")) {
+      getEventManager().addAppearObserver(target, (SikuliEventObserver) observer);
+    } else {
+      Debug.error("onAppear(%s): invalid Region - use r = Region(r) before as workaround", target);
+    }
   }
 
-  public <PSC> void onVanish(PSC target, SikuliEventObserver observer) {
-    getEventManager().addVanishObserver(target, observer);
+  public <PatternOrString> void onVanish(PatternOrString target, Object observer) {
+    if (! observer.getClass().getName().startsWith("org.python.core.PyFunction")) {
+      getEventManager().addVanishObserver(target, (SikuliEventObserver) observer);
+    } else {
+      Debug.error("onVanish(%s): invalid Region - use r = Region(r) before as workaround", target);
+    }
   }
 
-  public void onChange(int threshold, SikuliEventObserver observer) {
-    getEventManager().addChangeObserver(threshold, observer);
+  public void onChange(int threshold, Object observer) {
+    if (! observer.getClass().getName().startsWith("org.python.core.PyFunction")) {
+      getEventManager().addChangeObserver(threshold, (SikuliEventObserver) observer);
+    } else {
+      Debug.error("onChange(%s): invalid Region - use r = Region(r) before as workaround", threshold);
+    }
   }
 
   public void onChange(SikuliEventObserver observer) {
-    getEventManager().addChangeObserver(Settings.ObserveMinChangedPixels,
-            observer);
+    if (! observer.getClass().getName().startsWith("org.python.core.PyFunction")) {
+      getEventManager().addChangeObserver(Settings.ObserveMinChangedPixels,
+                                          (SikuliEventObserver) observer);
+    } else {
+      Debug.error("onChange(): invalid Region - use r = Region(r) before as workaround");
+    }
   }
 
   public void observe() {
@@ -1956,16 +1978,21 @@ public class Region {
 
   public void observe(double secs) {
     if (evtMgr == null) {
+      Debug.error("observe(): Nothing to observe (for Jython: region might be invalid)");
       return;
     }
     int MaxTimePerScan = (int) (1000.0 / Settings.ObserveScanRate);
     long begin_t = (new Date()).getTime();
     observing = true;
+    evtMgr.initialize();
     while (observing && begin_t + secs * 1000 > (new Date()).getTime()) {
       long before_find = (new Date()).getTime();
       ScreenImage simg = getScreen().capture(x, y, w, h);
       getScreen().setLastScreenImage(simg);
-      evtMgr.update(simg);
+      if (! evtMgr.update(simg)) {
+        stopObserver();
+        break;
+      }
       long after_find = (new Date()).getTime();
       try {
         if (after_find - before_find < MaxTimePerScan) {

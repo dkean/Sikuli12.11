@@ -15,167 +15,174 @@ import org.sikuli.script.natives.OpenCV;
 import org.sikuli.script.natives.Vision;
 
 public class SikuliEventManager {
-   protected enum State {
-      UNKNOWN, APPEARED, VANISHED
-   }
 
-   private Region _region;
-   private Mat _lastImgMat = null;
-   private Map<Object, State> _state;
-   private Map<Object, Match> _lastMatch;
-   private Map<Object, SikuliEventObserver> _appearOb, _vanishOb;
-   private Map<Integer, SikuliEventObserver> _changeOb;
-   private int _minChanges;
+  protected enum State {
 
+    UNKNOWN, MISSING, APPEARED, VANISHED
+  }
+  private Region _region;
+  private Mat _lastImgMat = null;
+  private Map<Object, State> _state;
+  private Map<Object, Match> _lastMatch;
+  private Map<Object, SikuliEventObserver> _appearOb, _vanishOb;
+  private Map<Integer, SikuliEventObserver> _changeOb;
+  private int _minChanges;
+  private boolean sthgLeft = true;
 
-   public SikuliEventManager(Region region){
-      _region = region;
-      _state = new HashMap<Object, State>();
-      _lastMatch = new HashMap<Object, Match>();
-      _appearOb = new HashMap<Object, SikuliEventObserver>();
-      _vanishOb = new HashMap<Object, SikuliEventObserver>();
-      _changeOb = new HashMap<Integer, SikuliEventObserver>();
-   }
+  public SikuliEventManager(Region region) {
+    _region = region;
+    _state = new HashMap<Object, State>();
+    _lastMatch = new HashMap<Object, Match>();
+    _appearOb = new HashMap<Object, SikuliEventObserver>();
+    _vanishOb = new HashMap<Object, SikuliEventObserver>();
+    _changeOb = new HashMap<Integer, SikuliEventObserver>();
+  }
 
-   private <PSC> float getSimiliarity(PSC ptn){
-      float similarity=-1f;
-      if( ptn instanceof Pattern ){
-         similarity=((Pattern)ptn).getSimilar();
+  public void initialize() {
+  }
+
+  private <PSC> float getSimiliarity(PSC ptn) {
+    float similarity = -1f;
+    if (ptn instanceof Pattern) {
+      similarity = ((Pattern) ptn).getSimilar();
+    }
+    if (similarity < 0) {
+      similarity = (float) Settings.MinSimilarity;
+    }
+    return similarity;
+  }
+
+  public <PSC> void addAppearObserver(PSC ptn, SikuliEventObserver ob) {
+    _appearOb.put(ptn, ob);
+    _state.put(ptn, State.UNKNOWN);
+  }
+
+  public <PSC> void addVanishObserver(PSC ptn, SikuliEventObserver ob) {
+    _vanishOb.put(ptn, ob);
+    _state.put(ptn, State.UNKNOWN);
+  }
+
+  protected void callAppearObserver(Object ptn, Match m) {
+    SikuliEventAppear se = new SikuliEventAppear(ptn, m, _region);
+    SikuliEventObserver ob = _appearOb.get(ptn);
+    ob.targetAppeared(se);
+  }
+
+  protected void callVanishObserver(Object ptn, Match m) {
+    SikuliEventVanish se = new SikuliEventVanish(ptn, m, _region);
+    SikuliEventObserver ob = _vanishOb.get(ptn);
+    ob.targetVanished(se);
+  }
+
+  protected void checkPatterns(ScreenImage simg) {
+    Finder finder = new Finder(simg, _region);
+    String imgOK;
+    for (Object ptn : _state.keySet()) {
+      if (_state.get(ptn) != State.UNKNOWN) {
+        continue;
       }
-      if(similarity<0) {
-         similarity=(float)Settings.MinSimilarity;
+      if (ptn.getClass().isInstance("")) {
+        imgOK = finder.find((String) ptn);
+      } else {
+        imgOK = finder.find((Pattern) ptn);
       }
-      return similarity;
-   }
-
-   public <PSC> void addAppearObserver(PSC ptn, SikuliEventObserver ob){
-      _appearOb.put(ptn, ob);
-      _state.put(ptn, State.UNKNOWN);
-   }
-
-   public <PSC> void addVanishObserver(PSC ptn, SikuliEventObserver ob){
-      _vanishOb.put(ptn, ob);
-      _state.put(ptn, State.UNKNOWN);
-   }
-
-   public void addChangeObserver(int threshold, SikuliEventObserver ob){
-      _changeOb.put(new Integer(threshold), ob);
-      _minChanges = getMinChanges();
-   }
-
-   protected void callAppearObserver(Object ptn, Match m){
-      SikuliEventAppear se = new SikuliEventAppear(ptn, m, _region);
-      SikuliEventObserver ob = _appearOb.get(ptn);
-      ob.targetAppeared(se);
-   }
-
-   protected void callVanishObserver(Object ptn, Match m){
-      SikuliEventVanish se = new SikuliEventVanish(ptn, m, _region);
-      SikuliEventObserver ob = _vanishOb.get(ptn);
-      ob.targetVanished(se);
-   }
-
-   protected void checkPatterns(ScreenImage img){
-      Finder finder = new Finder(img, _region);
-      for(Object ptn : _state.keySet()){
-        if (ptn.getClass().isInstance("")) {
-          if (null == finder.find((String) ptn)) {
-            Debug.error("Observe: ImageFile not found", ptn);
-            continue;
-          }
-        } else {
-          finder.find((Pattern) ptn);
+      if (null == imgOK) {
+        Debug.error("Observe: ImageFile not found", ptn);
+        _state.put(ptn, State.MISSING);
+        continue;
+      }
+      Match m = null;
+      boolean hasMatch = false;
+      if (finder.hasNext()) {
+        m = finder.next();
+        if (m.getScore() >= getSimiliarity(ptn)) {
+          hasMatch = true;
+          _lastMatch.put(ptn, m);
         }
-        Match m = null;
-        boolean hasMatch = false;
-        if(finder.hasNext()){
-           m = finder.next();
-           if(m.getScore() >= getSimiliarity(ptn)){
-              hasMatch = true;
-              _lastMatch.put(ptn, m);
-           }
-        }
-        Debug.log(9, "check pattern: " + _state.get(ptn) + " match:" + hasMatch);
-        if(_appearOb.containsKey(ptn)){
-           if(_state.get(ptn) != State.APPEARED && hasMatch) {
-            callAppearObserver(ptn, m);
-          }
-        }
-        if(_vanishOb.containsKey(ptn)){
-           if(_state.get(ptn) != State.VANISHED && !hasMatch){
-              callVanishObserver(ptn, _lastMatch.get(ptn));
-           }
-        }
-        if(hasMatch) {
+      }
+      Debug.log(9, "check pattern: " + _state.get(ptn) + " match:" + hasMatch);
+      sthgLeft = true;
+      if (_appearOb.containsKey(ptn)) {
+        if (_state.get(ptn) != State.APPEARED && hasMatch) {
           _state.put(ptn, State.APPEARED);
+          sthgLeft = false;
+          callAppearObserver(ptn, m);
         }
-        else {
+      } else if (_vanishOb.containsKey(ptn)) {
+        if (_state.get(ptn) != State.VANISHED && !hasMatch) {
+          sthgLeft = false;
           _state.put(ptn, State.VANISHED);
+          callVanishObserver(ptn, _lastMatch.get(ptn));
         }
       }
+    }
 
-   }
+  }
 
-   protected void callChangeObserver(FindResults results) throws AWTException{
-      for(Integer n : _changeOb.keySet()){
-         List<Match> changes = new ArrayList<Match>();
-         for(int i=0;i<results.size();i++){
-            FindResult r = results.get(i);
-            if( r.getW() * r.getH() >= n )
-               changes.add(_region.toGlobalCoord(new Match(r, _region.getScreen())));
-         }
-         if(changes.size() > 0){
-            SikuliEventChange se = new SikuliEventChange(changes, _region);
-            SikuliEventObserver ob = _changeOb.get(n);
-            ob.targetChanged(se);
-         }
+  public void addChangeObserver(int threshold, SikuliEventObserver ob) {
+    _changeOb.put(new Integer(threshold), ob);
+    _minChanges = getMinChanges();
+  }
+
+  private int getMinChanges() {
+    int min = Integer.MAX_VALUE;
+    for (Integer n : _changeOb.keySet()) {
+      if (n < min) {
+        min = n;
       }
-   }
+    }
+    return min;
+  }
 
-   protected int getMinChanges(){
-      int min = Integer.MAX_VALUE;
-      for(Integer n : _changeOb.keySet())
-         if(n < min)
-            min = n;
-      return min;
-   }
-
-   protected void checkChanges(ScreenImage img){
-      if(_lastImgMat == null){
-         _lastImgMat = OpenCV.convertBufferedImageToMat(img.getImage());
-         return;
+  protected void callChangeObserver(FindResults results) throws AWTException {
+    for (Integer n : _changeOb.keySet()) {
+      List<Match> changes = new ArrayList<Match>();
+      for (int i = 0; i < results.size(); i++) {
+        FindResult r = results.get(i);
+        if (r.getW() * r.getH() >= n) {
+          changes.add(_region.toGlobalCoord(new Match(r, _region.getScreen())));
+        }
       }
-
-      FindInput fin = new FindInput();
-      fin.setSource(_lastImgMat);
-      Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
-      fin.setTarget(target);
-      fin.setSimilarity(_minChanges);
-
-      FindResults results = Vision.findChanges(fin);
-      try{
-         callChangeObserver(results);
+      if (changes.size() > 0) {
+        SikuliEventChange se = new SikuliEventChange(changes, _region);
+        SikuliEventObserver ob = _changeOb.get(n);
+        ob.targetChanged(se);
       }
-      catch(AWTException e){
-         e.printStackTrace();
-      }
+    }
+  }
 
-      _lastImgMat = target;
-   }
+  protected void checkChanges(ScreenImage img) {
+    if (_lastImgMat == null) {
+      _lastImgMat = OpenCV.convertBufferedImageToMat(img.getImage());
+      return;
+    }
+    FindInput fin = new FindInput();
+    fin.setSource(_lastImgMat);
+    Mat target = OpenCV.convertBufferedImageToMat(img.getImage());
+    fin.setTarget(target);
+    fin.setSimilarity(_minChanges);
+    FindResults results = Vision.findChanges(fin);
+    try {
+      callChangeObserver(results);
+    } catch (AWTException e) {
+      e.printStackTrace();
+    }
+    _lastImgMat = target;
+  }
 
-   public void update(ScreenImage img){
-      checkPatterns(img);
-      if(_changeOb.size()>0)
-         checkChanges(img);
-   }
+  public boolean update(ScreenImage simg) {
+    boolean ret; ret = sthgLeft;
+    if (sthgLeft) {
+      checkPatterns(simg);
+    }
+    ret = sthgLeft;
+    if (_changeOb.size() > 0) {
+      checkChanges(simg);
+      ret = true;
+    }
+    return ret;
+  }
 
-   protected void finalize() throws Throwable {
-   }
-
-
-   public void dispose(){
-   }
-
+  protected void finalize() throws Throwable {
+  }
 }
-
-
