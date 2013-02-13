@@ -75,6 +75,31 @@ public class Debug {
   }
 
   /**
+   *
+   * @return current debug level
+   */
+  public static int getDebugLevel() {
+    return DEBUG_LEVEL;
+  }
+
+  /**
+   * set debug level to default level
+   * @return default level
+   */
+  public static int setDebugLevel() {
+    setDebugLevel(DEFAULT_LEVEL);
+    return DEBUG_LEVEL;
+  }
+
+  /**
+   * set debug level to given value
+   * @param level
+   */
+  public static void setDebugLevel(int level) {
+    DEBUG_LEVEL = level;
+  }
+
+  /**
    * Sikuli messages from actions like click, ...<br /> switch on/off: Settings.ActionLogs
    *
    * @param message (String or format string)
