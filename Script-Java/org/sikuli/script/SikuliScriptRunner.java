@@ -80,6 +80,7 @@ public class SikuliScriptRunner {
 		it = headers.iterator();
 		while (it.hasNext()) {
 			String line = it.next();
+      Debug.log(5,"PyInit: %s",line);
 			py.exec(line);
 		}
 		headers.clear();
@@ -156,6 +157,7 @@ public class SikuliScriptRunner {
 		it = headers.iterator();
 		while (it.hasNext()) {
 			String line = it.next();
+      Debug.log(5,"PyInit: %s",line);
 			py.exec(line);
 		}
 		headers.clear();
