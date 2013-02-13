@@ -478,6 +478,20 @@ public class Region {
     return getScreen().getActionRobot().getColorAt(loc.x, loc.y).getRGB();
   }
 
+  /**
+   * synonym for showMonitors to be available in Jython
+   */
+  public void showScreens() {
+    Screen.showMonitors();
+  }
+
+  /**
+   * synonym for resetMonitors to be available in Jython
+   */
+  public void resetScreens() {
+    Screen.resetMonitors();
+  }
+
   // ************************************************
   /**
    *

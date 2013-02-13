@@ -156,6 +156,33 @@ public class Screen extends Region implements EventObserver, ScreenIF {
     // to block the Region method
   }
 
+	/**
+   * show the current monitor setup
+   */
+  public static void showMonitors() {
+    initScreens();
+    Debug.info("*** monitor configuration ***");
+		for (int i=0; i < gdevs.length; i++) {
+      Debug.info("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
+    }
+    Debug.info("*** end monitor configuration ***");
+	}
+
+  /**
+   * re-initialize the monitor setup (e.g. when it was changed while running)
+   */
+  public static void resetMonitors() {
+    Debug.error("Re-evaluation of the monitor setup has been requested\n" +
+            "... Current Region objects might not be valid any longer\n" +
+            "... Use existing Region objects only if you know what you are doing");
+    initScreens(true);
+    Debug.error("*** new monitor configuration ***");
+		for (int i=0; i < gdevs.length; i++) {
+      Debug.error("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
+    }
+    Debug.error("*** end monitor configuration ***");
+  }
+
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="getters setters">
@@ -522,15 +549,6 @@ public class Screen extends Region implements EventObserver, ScreenIF {
     }
   }
   //</editor-fold>
-
-	public static void showMonitors() {
-    initScreens();
-    Debug.info("*** monitor configuration ***");
-		for (int i=0; i < gdevs.length; i++) {
-      Debug.info("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
-    }
-    Debug.info("*** end monitor configuration ***");
-	}
 
   @Override
   public String toString() {
