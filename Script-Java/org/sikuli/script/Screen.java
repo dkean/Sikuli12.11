@@ -161,7 +161,8 @@ public class Screen extends Region implements EventObserver, ScreenIF {
    */
   public static void showMonitors() {
     initScreens();
-    Debug.info("*** monitor configuration ***");
+    Debug.info("*** monitor configuration [ %s Screen(s)] ***", Screen.getNumberScreens());
+    Debug.info("*** Primary is Screen %d", Screen.getPrimaryId());
 		for (int i=0; i < gdevs.length; i++) {
       Debug.info("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
     }
@@ -172,11 +173,12 @@ public class Screen extends Region implements EventObserver, ScreenIF {
    * re-initialize the monitor setup (e.g. when it was changed while running)
    */
   public static void resetMonitors() {
-    Debug.error("Re-evaluation of the monitor setup has been requested\n" +
-            "... Current Region objects might not be valid any longer\n" +
-            "... Use existing Region objects only if you know what you are doing");
+    Debug.error("Re-evaluation of the monitor setup has been requested");
+    Debug.error("... Current Region objects might not be valid any longer");
+    Debug.error("... Use existing Region objects only if you know what you are doing");
     initScreens(true);
-    Debug.error("*** new monitor configuration ***");
+    Debug.info("*** new monitor configuration [ %s Screen(s)] ***", Screen.getNumberScreens());
+    Debug.info("*** Primary is Screen %d", Screen.getPrimaryId());
 		for (int i=0; i < gdevs.length; i++) {
       Debug.error("Screen %d: %s", i, Screen.getScreen(i).toStringShort());
     }
