@@ -21,30 +21,30 @@ public class Region {
 
   final static float DEFAULT_HIGHLIGHT_TIME = Settings.DefaultHighlightTime;
   static final int PADDING = Settings.DefaultPadding;
+
   private String scriptingType = "";
   private Screen scr;
   private ScreenHighlighter overlay = null;
+
   public int x, y;
 	/**
 	 * current width/height - might be cropped to screen
 	 */
 	public int w, h;
 	/**
-	 * width/height given at time of creation is remembered and reused
-	 */
+	 * width/height is remembered when region is cropped the 1st time and reused later
+   */
 	protected int vWidth = -1;
 	protected int vHeight = -1;
-  protected FindFailedResponse findFailedResponse =
+
+  private FindFailedResponse findFailedResponse =
           Settings.defaultFindFailedResponse;
-  /**
-	 *
-	 */
 	protected boolean throwException = Settings.ThrowException;
   protected double autoWaitTimeout = Settings.AutoWaitTimeout;
-  protected boolean observing = false;
-  protected SikuliEventManager evtMgr = null;
-  protected Match lastMatch = null;
-  protected Iterator<Match> lastMatches;
+  private boolean observing = false;
+  private SikuliEventManager evtMgr = null;
+  private Match lastMatch = null;
+  private Iterator<Match> lastMatches;
 
   @Override
   public String toString() {
@@ -74,7 +74,7 @@ public class Region {
     if (parentScreen != null) {
       setScreen(parentScreen);
     }
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -86,26 +86,39 @@ public class Region {
 		return (vHeight < 0) ? h : vHeight;
 	}
 
-  private void initScreen() {
+  private void initScreen(Screen scr) {
     if (!(this instanceof Screen) && !isJythonScreen()) {
 			Rectangle rect = new Rectangle(x, y, getVW(), getVH());
-			setScreen(Screen.getScreenContaining(new Location(rect.getLocation())));
-			if (getScreen()== null) {
-				Debug.error("Region outside any screen - using primary - (x,y) set to (0,0) ---", this);
-				setScreen(Screen.getPrimaryScreen());
-        x = 0;
-        y = 0;
+			setScreen(null);
+      for (int i = 0; i < Screen.getNumberScreens(); i++) {
+        Rectangle sb = Screen.getBounds(i);
+        if (sb.contains(rect.getLocation())) {
+          setScreen(Screen.getScreen(i));
+          break;
+        }
+      }
+      Screen scrNew = getScreen();
+			if (scrNew == null) {
 				w = getVW();
 				h = getVH();
-			} else {
-				rect = getScreen().getBounds().intersection(rect);
+        if (scr == null) {
+          Debug.error("Region (%s, %s) outside any screen --- subsequent actions will crash");
+        } else {
+          scrNew = scr;
+        }
+			}
+      if (scrNew != null) {
+        setScreen(scrNew);
+        rect = scrNew.getBounds().intersection(rect);
 				if (rect.width < w || rect.height < h) {
-					Debug.log(2, "Region cropped to screen" + toString());
-					vWidth = w;
-					vHeight = h;
+					Debug.log(1, "%s cropped to screen", this);
+          if (vWidth < 0) {
+            vWidth = w;
+  					vHeight = h;
+          }
 				}
-				x = (int) rect.getX();
-				y = (int) rect.getY();
+        x = (int) rect.getX();
+        y = (int) rect.getY();
 				w = (int) rect.getWidth();
 				h = (int) rect.getHeight();
         return; // to position a breakpoint here
@@ -115,7 +128,7 @@ public class Region {
   }
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="Constructors only for Jython">
+  //<editor-fold defaultstate="collapsed" desc="Constructors to be used with Jython">
   /**
    * Create a region with the provided coordinate / size
    *
@@ -123,9 +136,7 @@ public class Region {
    * @param Y Y position
    * @param W width
    * @param H heigth
-   * @deprecated Not for use in Java. Use Region.create() instead.
    */
-  @Deprecated
   public Region(int X, int Y, int W, int H) {
     initialize(X, Y, W, H, null);
   }
@@ -134,16 +145,9 @@ public class Region {
    * Create a region from a Rectangle
    *
    * @param r the Rectangle
-   * @deprecated Not for use in Java. Use Region.create() instead.
    */
-  @Deprecated
   public Region(Rectangle r) {
     initialize(r.x, r.y, r.width, r.height, null);
-  }
-
-  @Deprecated
-  protected Region(Rectangle r, Screen parentScreen) {
-    initialize(r.x, r.y, r.width, r.height, parentScreen);
   }
 
   /**
@@ -151,9 +155,7 @@ public class Region {
    * settings
    *
    * @param r the region
-   * @deprecated Not for use in Java. Use Region.create() instead.
    */
-  @Deprecated
   public Region(Region r) {
     autoWaitTimeout = r.autoWaitTimeout;
     findFailedResponse = r.findFailedResponse;
@@ -183,6 +185,20 @@ public class Region {
     return reg.initialize(X, Y, W, H, null);
   }
 
+  /**
+   * Create a region with the provided top left corner and size
+   *
+   * @param X top left X position
+   * @param Y top left Y position
+   * @param W width
+   * @param H heigth
+   * @return
+   */
+  private static Region create(int X, int Y, int W, int H, Screen scr) {
+    Region reg = new Region();
+    return reg.initialize(X, Y, W, H, scr);
+  }
+
 	/**
    * Create a region with the provided top left corner and size
 	 *
@@ -209,7 +225,11 @@ public class Region {
    * @return the new region
    */
   public static Region create(Location loc, int x, int y, int w, int h) {
-    Region r = Region.create(0, 0, w, h);
+    Region r = new Region();
+    r.x = 0;
+    r.y = 0;
+    r.w = w;
+    r.h = h;
     if (x == 0) {
       if (y == 0) {
         r.setLocation(loc);
@@ -450,6 +470,21 @@ public class Region {
   }
 
   /**
+	 *
+	 * @return the screen, that contains the top left corner of the region.
+	 * Returns primary screen if outside of any screen.
+	 */
+	public Screen getScreenContaining() {
+    for (int i = 0; i < Screen.getNumberScreens(); i++) {
+      Rectangle sb = Screen.getBounds(i);
+      if (sb.contains(this.getTopLeft())) {
+        return Screen.getScreen(i);
+      }
+    }
+    return Screen.getPrimaryScreen();
+  }
+
+  /**
    *
    * @param is the containing screen object
    */
@@ -507,7 +542,7 @@ public class Region {
     Location c = getCenter();
     x = x - c.x + loc.x;
     y = y - c.y + loc.y;
-    initScreen();
+    initScreen(loc.getScreen());
     return this;
   }
 
@@ -547,7 +582,7 @@ public class Region {
     Location c = getTopRight();
     x = x - c.x + loc.x;
     y = y - c.y + loc.y;
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -570,7 +605,7 @@ public class Region {
     Location c = getBottomLeft();
     x = x - c.x + loc.x;
     y = y - c.y + loc.y;
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -593,7 +628,7 @@ public class Region {
     Location c = getBottomRight();
     x = x - c.x + loc.x;
     y = y - c.y + loc.y;
-    initScreen();
+    initScreen(null);
     return this;
   }
 
@@ -688,7 +723,7 @@ public class Region {
   public Region setSize(int W, int H) {
     w = W;
     h = H;
-    initScreen();
+    initScreen(null);
     return this;
   }
 
@@ -727,7 +762,7 @@ public class Region {
     y = Y;
     w = W;
     h = H;
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -776,7 +811,7 @@ public class Region {
     y = Y;
     w = W;
     h = H;
-    initScreen();
+    initScreen(getScreen());
     getScreen().setCurROI(new Rectangle(X, Y, W, H));
   }
 
@@ -796,7 +831,7 @@ public class Region {
     y = (int) roi.getY();
     w = (int) roi.getWidth();
     h = (int) roi.getHeight();
-    initScreen();
+    initScreen(getScreen());
     getScreen().setCurROI(roi);
   }
 
@@ -816,7 +851,7 @@ public class Region {
     y = reg.y;
     w = reg.w;
     h = reg.h;
-    initScreen();
+    initScreen(getScreen());
     getScreen().setCurROI(reg.getRect());
   }
 
@@ -876,7 +911,7 @@ public class Region {
   public Region setLocation(Location loc) {
     x = loc.x;
     y = loc.y;
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -907,7 +942,7 @@ public class Region {
     y = y - t;
     w = w + l + r;
     h = h + t + b;
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -922,7 +957,7 @@ public class Region {
     Rectangle rect = getRect();
     rect.add(r.getRect());
     setRect(rect);
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -937,7 +972,7 @@ public class Region {
     Rectangle rect = getRect();
     rect.add(loc.x, loc.y);
     setRect(rect);
-    initScreen();
+    initScreen(getScreen());
     return this;
   }
 
@@ -963,7 +998,46 @@ public class Region {
   public Iterator<Match> getLastMatches() {
     return lastMatches;
   }
-  //</editor-fold>
+
+  // ************************************************
+  /**
+	 * get the last image taken on this regions screen
+	 * @return
+	 */
+	public ScreenImage getLastScreenImage() {
+		return getScreen().lastScreenImage;
+	}
+
+	/**
+	 * stores the lastScreenImage in the current bundle path with a created unique name
+	 *
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile() throws IOException {
+		return getLastScreenImageFile(Settings.BundlePath);
+	}
+
+	/**
+	 * stores the lastScreenImage in the current bundle path with the given name
+	 *
+	 * @param name file name (.png is added if not there)
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile(String name) throws IOException {
+		return getScreen().lastScreenImage.getFile(Settings.BundlePath, name);
+	}
+
+	/**
+	 * stores the lastScreenImage in the given path with the given name
+	 *
+	 * @param name file name (.png is added if not there)
+	 * @return the absolute file name
+	 */
+	public String getLastScreenImageFile(String path, String name) throws IOException {
+		return getScreen().lastScreenImage.getFile(path, name);
+	}
+
+//</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="spatial operators - new regions">
   /**
@@ -1031,7 +1105,7 @@ public class Region {
     Rectangle r = getRect();
     r.setSize(getVW(), getVH());
     r.grow(w, h);
-    return Region.create(r.x, r.y, r.width, r.height);
+    return Region.create(r.x, r.y, r.width, r.height, scr);
   }
 
   /**
@@ -1610,7 +1684,6 @@ public class Region {
   private <PatternOrString> Match doFind(PatternOrString ptn, RepeatableFind repeating) throws IOException {
 		Finder f;
     ScreenImage simg = getScreen().capture(x, y, w, h);
-    getScreen().setLastScreenImage(simg);
 		if (repeating != null && repeating._finder != null) {
 			f = repeating._finder;
 			f.setScreenImage(simg);
@@ -1651,7 +1724,6 @@ public class Region {
 	private <PatternOrString> Iterator<Match> doFindAll(PatternOrString ptn, RepeatableFindAll repeating) throws IOException {
 		Finder f;
 		ScreenImage simg = getScreen().capture(x, y, w, h);
-		getScreen().setLastScreenImage(simg);
 		if (repeating != null && repeating._finder != null) {
 			f = repeating._finder;
 			f.setScreenImage(simg);
@@ -1791,10 +1863,7 @@ public class Region {
 	 */
 	@Deprecated
 	public <PatternOrString> Match findNow(PatternOrString ptn) throws FindFailed {
-		Debug.log("capture: " + x + "," + y);
 		ScreenImage simg = getScreen().capture(x, y, w, h);
-		Debug.log("ScreenImage: " + simg.getROI());
-		getScreen().setLastScreenImage(simg);
 		Finder f = new Finder(simg, this);
 		Match ret = null;
 		if (ptn instanceof String) {
@@ -1825,7 +1894,6 @@ public class Region {
 	public <PatternOrString> Iterator<Match> findAllNow(PatternOrString ptn)
 					throws FindFailed {
 		ScreenImage simg = getScreen().capture(x, y, w, h);
-		getScreen().setLastScreenImage(simg);
 		Finder f = new Finder(simg, this);
 		if (ptn instanceof String) {
 			if (null == f.findAll((String) ptn)) {
@@ -1989,7 +2057,6 @@ public class Region {
     while (observing && begin_t + secs * 1000 > (new Date()).getTime()) {
       long before_find = (new Date()).getTime();
       ScreenImage simg = getScreen().capture(x, y, w, h);
-      getScreen().setLastScreenImage(simg);
       if (! evtMgr.update(simg)) {
         stopObserver();
         break;
@@ -2672,7 +2739,6 @@ public class Region {
 	public String text() {
 		if (Settings.OcrTextRead) {
 			ScreenImage simg = getScreen().capture(x, y, w, h);
-			getScreen().setLastScreenImage(simg);
 			String textRead = TextRecognizer.getInstance().recognize(simg);
 			Debug.log(2, "Region.text: #(" + textRead + ")#");
 			return textRead;

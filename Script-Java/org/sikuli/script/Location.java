@@ -7,6 +7,7 @@
 package org.sikuli.script;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * A point like AWT.Point using global coordinates, hence modifications might move location out of
@@ -25,6 +26,7 @@ public class Location extends Point {
   @Deprecated
   public Location(float x, float y) {
     super((int) x, (int) y);
+    checkScreen();
   }
 
   /**
@@ -34,6 +36,7 @@ public class Location extends Point {
    */
   public Location(int x, int y) {
     super(x, y);
+    checkScreen();
   }
 
   /**
@@ -42,6 +45,7 @@ public class Location extends Point {
    */
   public Location(Location loc) {
     super(loc.x, loc.y);
+    checkScreen();
   }
 
   /**
@@ -50,6 +54,31 @@ public class Location extends Point {
    */
   public Location(Point point) {
     super(point);
+    checkScreen();
+  }
+
+  private void checkScreen() {
+    getScreenContaining(true);
+  }
+
+  /**
+	 *
+	 * @return the screen, that contains the given point.<br />
+	 * Returns null, if outside of any screen<br />
+   * subsequent actions will crash
+	 */
+	public Screen getScreenContaining(boolean verbose) {
+    for (int i = 0; i < Screen.getNumberScreens(); i++) {
+      Rectangle sb = Screen.getBounds(i);
+      sb.setSize(sb.width+1, sb.height+1);
+      if (sb.contains(this)) {
+        return Screen.getScreen(i);
+      }
+    }
+    if (verbose) {
+      Debug.error("Location: outside any screen (%s, %s) - subsequent actions will crash", x, y);
+    }
+    return null;
   }
 
   /**
@@ -59,7 +88,7 @@ public class Location extends Point {
    * @return a 32-Bit value (Bits 24-31 is alpha, 16-23 is red, 8-15 is green, 0-7 is blue)
    */
   public int getColor() {
-    return Screen.getScreenContaining(this).getActionRobot().getColorAt(x, y).getRGB();
+    return getScreenContaining(false).getActionRobot().getColorAt(x, y).getRGB();
   }
 
   /**
@@ -231,7 +260,7 @@ public class Location extends Point {
    * @return the screen containing this point, the primary screen if outside of any screen
    */
   public Screen getScreen() {
-    return Screen.getScreenContaining(this);
+    return getScreenContaining(false);
   }
 
   /**
@@ -260,7 +289,7 @@ public class Location extends Point {
    * @return new location
    */
   public Location copyTo(Screen screen) {
-    Location o = new Location(Screen.getScreenContaining(this).getBounds().getLocation());
+    Location o = new Location(getScreenContaining(false).getBounds().getLocation());
     Location n = new Location(screen.getBounds().getLocation());
     return new Location(n.x + x - o.x, n.y + y - o.y);
   }

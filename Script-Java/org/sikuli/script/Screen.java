@@ -236,38 +236,6 @@ public class Screen extends Region implements EventObserver, ScreenIF {
 
   /**
 	 *
-	 * @param reg a region in global coordinates
-	 * @return the screen, that contains the top left corner of the region.
-	 * Returns primary screen if outside of any screen.
-	 */
-	public static Screen getScreenContaining(Region reg) {
-    for (int i = 0; i < Screen.getNumberScreens(); i++) {
-      Rectangle sb = Screen.getBounds(i);
-      if (sb.contains(reg.getTopLeft())) {
-        return getScreen(i);
-      }
-    }
-    return Screen.getPrimaryScreen();
-  }
-
-  /**
-	 *
-	 * @param loc a location in global coordinates
-	 * @return the screen, that contains the given point.
-	 * Returns primary screen if outside of any screen.
-	 */
-	public static Screen getScreenContaining(Location loc) {
-    for (int i = 0; i < Screen.getNumberScreens(); i++) {
-      Rectangle sb = Screen.getBounds(i);
-      if (sb.contains(loc)) {
-        return getScreen(i);
-      }
-    }
-    return Screen.getPrimaryScreen();
-  }
-
-  /**
-	 *
 	 * @param id
 	 * @return the physical coordinate/size <br />as AWT.Rectangle to avoid mix up with getROI
 	 */
@@ -353,51 +321,6 @@ public class Screen extends Region implements EventObserver, ScreenIF {
 			return (new Location(loc)).copyTo(this);
   }
 
-  /**
-	 * store the last fullscreen image taken on this "physical" screen
-	 * @param simg
-	 */
-	public void setLastScreenImage(ScreenImage simg) {
-    getScreen().lastScreenImage = simg;
-  }
-
-	/**
-	 * get the last fullscreen image taken on this "physical" screen
-	 * @return
-	 */
-	public ScreenImage getLastScreenImage() {
-		return getScreen().lastScreenImage;
-	}
-
-	/**
-	 * stores the image in the current bundle path with a created unique name
-	 *
-	 * @return the absolute file name
-	 */
-	public String getLastScreenImageFile() throws IOException {
-		return getLastScreenImageFile(Settings.BundlePath);
-	}
-
-	/**
-	 * stores the image in the current bundle path with the given name
-	 *
-	 * @param name file name (.png is added if not there)
-	 * @return the absolute file name
-	 */
-	public String getLastScreenImageFile(String name) throws IOException {
-		return getScreen().lastScreenImage.getFile(Settings.BundlePath, name);
-	}
-
-	/**
-	 * stores the image in the given path with the given name
-	 *
-	 * @param name file name (.png is added if not there)
-	 * @return the absolute file name
-	 */
-	public String getLastScreenImageFile(String path, String name) throws IOException {
-		return getScreen().lastScreenImage.getFile(path, name);
-	}
-
 //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Capture - SelectRegion">
@@ -443,6 +366,7 @@ public class Screen extends Region implements EventObserver, ScreenIF {
     ScreenImage simg = robots[curID].captureScreen(rect);
     simg.x += bounds.x;
     simg.y += bounds.y;
+    lastScreenImage = simg;
     Debug.log(2, "Screen.capture: " + rect);
     return simg;
   }
@@ -497,6 +421,7 @@ public class Screen extends Region implements EventObserver, ScreenIF {
       e.printStackTrace();
     }
     ScreenImage ret = prompt.getSelection();
+    lastScreenImage = ret;
     prompt.close();
     return ret;
   }
