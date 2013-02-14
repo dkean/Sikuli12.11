@@ -12,7 +12,7 @@ I am sorry about that, but
 
 **You can download the current working bundles (all beta and work in progress)** 
 
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-10)
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-14)
 - Windows: not yet available
 - Linux: not yet available
 
@@ -72,14 +72,15 @@ I have made up a release information for X-1.0 on launchpad, so you can see the 
 - constantly adding javadocs to all public (and important protected) methods
 - totally revised the ImagePath feature and the usage of ImageLocator (including the usage with Jython import)
 - revising the command line usage to make it equal for ide.jar and script.jar running Sikuli scripts
+- sys.argv is now populated correctly in all cases (IDE, commandline scriptrun + interactive)
 - each physical monitor has only one Screen object, only one Robot for all and better support for multi monitor
-- feature to show monitor configuration
+- feature to show and reset monitor configuration
 - Region: added methods to make it functinally compatible with AWT Rectangle and added more methods to create
 new Regions easily based on existing Regions and Locations
 - click() and similar, click the lastMatch()
 - convenience version of highlight() using last match
 - a new option, to always highlight() a match
-- revise the observe API (Jython callbacks in Java possible with Jython 2.5.3)
+- revised the observe API (next step: Jython callbacks in Java possible with Jython 2.5.3)
 - short version of FindFailed message in Jython and better error messages
 - totally revised the Debug.xxx interface, added user logs with optional timestamp, logging to file seperate for Sikuli and user possible
 
