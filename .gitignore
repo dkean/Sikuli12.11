@@ -4,3 +4,4 @@
 Docs/Script-JythonDocs/build/*
 Targets/build/
 Targets/dist/
+*.*_IGNORE
