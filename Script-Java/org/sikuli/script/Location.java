@@ -135,6 +135,17 @@ public class Location extends Point {
   }
 
   /**
+   * create a region with this point as center and the given size
+   *
+   * @param loc the center point
+   * @param wh the width and height
+   * @return the new region
+   */
+  public Region grow(int wh) {
+    return grow(wh, wh);
+  }
+
+  /**
    * create a minimal symetric region at this point as center with size 3x3
    *
    * @param loc the center point
