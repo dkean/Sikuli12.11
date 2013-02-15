@@ -46,7 +46,7 @@ public class ScreenHighlighter extends OverlayTransparentWindow implements Mouse
     _opened.add(this);
     if (Settings.isLinux()) {
       _double_buffered = true;
-    } else {
+    } else if (Settings.isMac()) {
       _native_transparent = true;
     }
 //		getRootPane().putClientProperty("Window.shadow", Boolean.FALSE);
