@@ -271,7 +271,11 @@ public class Location extends Point {
    * @return the screen containing this point, the primary screen if outside of any screen
    */
   public Screen getScreen() {
-    return getScreenContaining(false);
+    Screen s = getScreenContaining(false);
+    if (s == null) {
+      return Screen.getPrimaryScreen();
+    }
+    return s;
   }
 
   /**
