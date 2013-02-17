@@ -20,7 +20,7 @@ import org.sikuli.system.OSUtil;
 public class Win32Util implements OSUtil {
 
   static {
-    FileManager.loadLibrary("WinUtil");
+    FileManager.loadLibrary("Win32Util");
   }
 
   // compatible to the old switchApp
