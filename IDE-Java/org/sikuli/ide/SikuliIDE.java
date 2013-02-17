@@ -1254,9 +1254,9 @@ public class SikuliIDE extends JFrame {
     _helpMenu.addSeparator();
 
     _helpMenu.add(createMenuItem(_I("menuHelpGuide"),
-            null, new HelpAction(HelpAction.OPEN_GUIDE)));
-    _helpMenu.add(createMenuItem(_I("menuHelpDocumentations"),
             null, new HelpAction(HelpAction.OPEN_DOC)));
+    _helpMenu.add(createMenuItem(_I("menuHelpDocumentations"),
+            null, new HelpAction(HelpAction.OPEN_GUIDE)));
     _helpMenu.add(createMenuItem(_I("menuHelpFAQ"),
             null, new HelpAction(HelpAction.OPEN_FAQ)));
     _helpMenu.add(createMenuItem(_I("menuHelpAsk"),
@@ -1980,6 +1980,7 @@ public class SikuliIDE extends JFrame {
     _searchField.setMargin(new Insets(0, 3, 0, 3));
 
     _searchField.setCancelAction(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         getCurrentCodePane().requestFocus();
         _findHelper.setFailed(false);
