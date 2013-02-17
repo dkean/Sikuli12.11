@@ -45,6 +45,8 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.Settings;
 import org.sikuli.script.SikuliScript;
 import org.sikuli.script.SikuliScriptRunner;
+import org.sikuli.script.Location;
+import org.sikuli.script.Screen;
 
 public class SikuliIDE extends JFrame {
 
@@ -57,7 +59,8 @@ public class SikuliIDE extends JFrame {
   final static int WARNING_DO_NOTHING = 0;
   static boolean _runningSkl = false;
   private static NativeLayer _native;
-  private Dimension _windowSize;
+  private Dimension _windowSize = null;
+  private Point _windowLocation = null;
   private boolean smallScreen = false;
   private int commandBarHeight = 800;
   private CloseableTabbedPane _mainPane;
@@ -231,21 +234,25 @@ public class SikuliIDE extends JFrame {
 
     _native.initIDE(this);
 
+    
     _windowSize = prefs.getIdeSize();
-    if (_windowSize.width == 0) {
-      Rectangle s = getGraphicsConfiguration().getDevice().getDefaultConfiguration().getBounds();
+    _windowLocation = prefs.getIdeLocation();
+    Rectangle s = (new Location(_windowLocation)).getScreen().getRect();
+    if (_windowSize.width == 0 || _windowSize.width > s.width || 
+            (new Location(_windowLocation)).getScreenContaining(false) == null) {
       if (s.width < 1025) {
         _windowSize = new Dimension(1024, 700);
+        _windowLocation = new Point(0, 0);
       } else {
         _windowSize = new Dimension(s.width - 150, s.height - 100);
-        prefs.setIdeLocation(new Point(75, 0));
+        _windowLocation = new Point(75, 0);
       }
     }
     if (_windowSize.getHeight() < commandBarHeight) {
       smallScreen = true;
     }
     setSize(_windowSize);
-    setLocation(prefs.getIdeLocation());
+    setLocation(_windowLocation);
 
     initMenuBars(this);
     final Container c = getContentPane();
@@ -283,8 +290,8 @@ public class SikuliIDE extends JFrame {
     c.add(initStatusbar(), BorderLayout.SOUTH);
     c.doLayout();
 
-    initShortcutKeys();
-    initHotkeys();
+//    initShortcutKeys();
+//    initHotkeys();
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     initWindowListener();
     initTooltip();
@@ -299,6 +306,7 @@ public class SikuliIDE extends JFrame {
     _inited = true;
     getCurrentCodePane().requestFocus();
     setVisible(true);
+    return; // as breakpoint
   }
 
   public static synchronized SikuliIDE getInstance(String args[]) {
