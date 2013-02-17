@@ -122,8 +122,7 @@ public class ScreenHighlighter extends OverlayTransparentWindow implements Mouse
     if (_native_transparent) {
       r = r_;
     } else {
-      r = Region.create(r_);
-      r.setROI(new Rectangle(r_.x - 3, r_.y - 3, r_.w + 6, r_.h + 6));
+      r = r_.grow(3);
       captureScreen(r.x, r.y, r.w, r.h);
     }
     setLocation(r.x, r.y);
