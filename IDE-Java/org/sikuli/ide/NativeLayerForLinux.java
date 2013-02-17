@@ -6,11 +6,12 @@
 package org.sikuli.ide;
 
 public class NativeLayerForLinux implements NativeLayer {
-   public void initApp(){}
 
-   public void initIDE(SikuliIDE ide){
-   }
+  @Override
+  public void initApp() {
+  }
 
+  @Override
+  public void initIDE(SikuliIDE ide) {
+  }
 }
-
-

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-mac-app" default="all" basedir=".">
   <property name="my.sys" value="Win"/>
+  <property name="my.arch" value="32"/>
 	<property name="my.build" location="build/${my.sys}"/>
 	<property name="my.dist" location="dist/${my.sys}"/>
 	<property name="my.util" location="../Ressources/util/${my.sys}"/>
 	<property name="my.cp" location="lib"/>
 	<property name="my.app" location="${my.dist}/SikuliX"/>
-	<property name="my.native" location="../Ressources/natives/${my.sys}/libs"/>
+	<property name="my.native" location="../Ressources/natives/${my.sys}/libs${my.arch}"/>
 
 	<target name="all" depends="make-ide">
 		<delete dir="${my.app}"/>
 
 		<copy includeemptydirs="yes" todir="${my.app}/libs">
-			<fileset dir="Platforms-${my.sys}/libs"/>
+			<fileset dir="Platforms-${my.sys}/libs${my.arch}"/>
 		</copy>
 
 		<copy todir="${my.app}/libs">
