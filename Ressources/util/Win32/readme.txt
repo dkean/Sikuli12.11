@@ -1,5 +1,5 @@
-*** SikuliX-1.0MacBeta ***
---------------------------
+*** SikuliX-1.0Win32Beta ***
+----------------------------
 
 Be aware: 
 - still work in progress - might contain bugs
@@ -11,12 +11,12 @@ Be aware:
 unzip to any location you like
 
 
-*** Currently ONLY usage from command line is possible (no SikuliX.app yet)
+*** Currently ONLY usage from command line is possible (no SikuliX.exe yet)
 
 *** Using the contained command scripts
 - go to the folder containing the installation directory to run the command files
-- use either sikuli-ide (starts the IDE) or sikli-script (interactive or run scripts) this way:
-. sikuli-ide  (cannot be used to run scripts from commandline)
+- use either sikuli-ide.cmd (starts the IDE) or sikli-script.cmd (interactive or run scripts) this way:
+. sikuli-ide  (cannot be used to run scripts from commandline): -h (help)
 . sikuli-script (supported options: -h (help), -i (interactive), -r (run a script))
 
 - if you want to run the command files from any other directory, you have to use
@@ -28,12 +28,12 @@ on the commandline before using the above commands
 - the stuff is compiled with Java 6 latest version
 - it runs on Java 7 and OpenJDK 7
 - it is run with the current default Java version on your machine
-- use "/usr/libexec/java_home -V" to find out, what you have on your machine
 - having more than one Java version on your machine, use option 
-  -j 6 to run with your Java 1.6 (Apple)
-  -j 7 to run with your Java 1.7 (Oracle)
-  -j o to run with OpenJDK 7 (installed in standard place /Library/Java/JavaVirtualMachines)
+  -j 6 to run with your Java 1.6 
+  -j 7 to run with your Java 1.7 
+  -j o to run with OpenJDK 7 
 with the above mentioned command scripts
+- only works, if installed in the standard places in %ProgramFiles% or %ProgramFiles(x86)%
 
 
 *** Using sikuli-script.jar in Java programming with IDE's like Netbeans, Eclipse, ...
