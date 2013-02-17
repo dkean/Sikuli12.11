@@ -55,7 +55,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
   static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
   static Pattern patCaptureBtn = Pattern.compile("(\"__SIKULI-CAPTURE-BUTTON__\")");
   static Pattern patPatternStr = Pattern.compile(
-          "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))*)");
+          "\\b(Pattern\\s*\\(\".*?\"\\)(\\.\\w+\\([^)]*\\))+)");
   static Pattern patRegionStr = Pattern.compile(
           "\\b(Region\\s*\\([\\d\\s,]+\\))");
 
@@ -518,7 +518,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
         body = doc.getText(0, pos);
         begin = 0;
       }
-      Pattern pattern = Pattern.compile(str);
+      Pattern pattern = Pattern.compile(Pattern.quote(str));
       Matcher matcher = pattern.matcher(body);
       ret = continueSearch(matcher, begin, forward);
       if (ret < 0) {
