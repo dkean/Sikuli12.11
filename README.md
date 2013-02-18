@@ -13,10 +13,15 @@ I am sorry about that, but
 **You can download the current working bundles (all beta and work in progress)** 
 
 - Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-14)
-- Windows: not yet available
+- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta.zip (version 2013-February-18)
+ - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
+- Windows 64Bit: not yet available
 - Linux: not yet available
 
 **Unzip to any folder, look into the contained readme.txt and Have Fun ;-)**
+
+**If you have any problems, post on the issues page with a copy of the command line output**<br />
+**You get more valuable debug output using option -d 3 (Mac) or d:3 (Windows)**
 
 Have a look at the JavaDocs of Sikuli Script: https://dl.dropbox.com/u/42895525/SikuliX/javadoc/index.html
 
@@ -25,7 +30,6 @@ Have a look at the JavaDocs of Sikuli Script: https://dl.dropbox.com/u/42895525/
 Be aware
 ---
 - this is work in progress
-- currently there are only sources 
 - no docs on how to build and get working jar's
 - until mentioned, it does not make sense to clone or fork
 - or to post pull requests
