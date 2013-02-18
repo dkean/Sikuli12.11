@@ -1,39 +1,36 @@
 @echo off
 setlocal
+
 rem **** ANT_HOME
 if "%ANT_HOME%" == "" (
   set ANT_HOME=c:\AntHome
 )
+set ARCH=64
+set JAVA_HOME=%ProgramFiles%\Java
+if not "%1"=="-32" goto ARCH64
+shift
+set ARCH=32
+if defined ProgramFiles(x86) set JAVA_HOME=%ProgramFiles(x86)%\Java
+:ARCH64
 
-rem **** JAVA_HOME (JDK)
-set JDKHome=%ProgramFiles%\Java
-if "%1" == "" (
-  if "%JAVA_HOME%" == "" ( 
-    echo *** using latest Java version
-    for /d %%i in ("%JDKHome%\jdk*") do set JAVA_HOME=%%i
-  )
-) ELSE (
-  set VERSION=%1
-)
-if "%VERSION%" == "6" (
-  echo *** using latest Java 6
-  for /d %%i in ("%JDKHome%\jdk1.6*") do set JAVA_HOME=%%i
-)
-if "%VERSION%" == "o" (
-  echo *** using OpenJDK 7
-  for /d %%i in ("%JDKHome%\jdk1.7*") do set JAVA_HOME=%%i
-)
-if "%VERSION%" == "7" (
-  echo *** using latest Java 7
-  for /d %%i in ("%JDKHome%\jdk1.7*") do set JAVA_HOME=%%i
-)
+pushd %JAVA_HOME%
+if "%1"=="-7" goto JAVA7
+for /D %%n in ( jdk1.6* ) do set JAVA_HOME=%JAVA_HOME%\%%n
+goto BUILD
+:JAVA7
+for /D %%n in ( jdk1.7* ) do set JAVA_HOME=%JAVA_HOME%\%%n
+
+:BUILD
+popd
 
 PATH=%JAVA_HOME%\bin;%ANT_HOME%\bin;%PATH%
 
-echo *** working with
+echo *** working with %ARCH% Bit
 set ANT_HOME
 set JAVA_HOME
 
-echo *** running build: build-win-app
-call ant.bat -noclasspath -f build-win-app.xml
+echo *** running build: build-win-app 
+call ant.bat -noclasspath -Darch=%ARCH% -f build-win-app.xml
+
+:FINALLY
 endlocal

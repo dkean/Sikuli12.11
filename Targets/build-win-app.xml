@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-mac-app" default="all" basedir=".">
   <property name="my.sys" value="Win"/>
-  <property name="my.arch" value="32"/>
+  <property name="my.arch" value="${arch}"/>
 	<property name="my.build" location="build/${my.sys}"/>
 	<property name="my.dist" location="dist/${my.sys}"/>
 	<property name="my.util" location="../Ressources/util/${my.sys}"/>
@@ -18,6 +18,7 @@
 
 		<copy todir="${my.app}/libs">
 			<fileset dir="${my.native}" includes="*.dll"/>
+			<fileset dir="${my.native}" includes="*.txt"/>
 		</copy>
 
 		<copy todir="${my.app}/libs/tessdata">
@@ -51,7 +52,7 @@
       <fileset dir="${my.app}"/>
     </copy>
 
-    <zip destfile="${my.beta}/SikuliX-1.0WinBeta.zip" basedir="${my.beta}\SikuliX"></zip>
+    <zip destfile="${my.beta}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}\SikuliX"></zip>
 
 	<!-- unitl App works-->
 
@@ -74,7 +75,7 @@
       <property name="sys" value="${my.sys}"/>
     </ant>
     <ant antfile="build-ide.xml" target="clean" inheritall="no">
-      <property name="sys" value="Mac"/>
+      <property name="sys" value="${my.sys}"/>
     </ant>
   </target>
 </project>
