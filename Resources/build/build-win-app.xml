@@ -1,62 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="build-mac-app" default="all" basedir=".">
+<project name="build-win-app" default="all">
   <property name="my.sys" value="Win"/>
+  <property name="my.appn" value="SikuliX"/>
   <property name="my.arch" value="${arch}"/>
-	<property name="my.build" location="build/${my.sys}"/>
-	<property name="my.dist" location="dist/${my.sys}"/>
-	<property name="my.util" location="../Ressources/util/${my.sys}"/>
-	<property name="my.cp" location="lib"/>
-	<property name="my.app" location="${my.dist}/SikuliX"/>
-	<property name="my.native" location="../Ressources/natives/${my.sys}/libs${my.arch}"/>
 
-	<target name="all" depends="make-ide">
-		<delete dir="${my.app}"/>
 
-		<copy includeemptydirs="yes" todir="${my.app}/libs">
-			<fileset dir="Platforms-${my.sys}/libs${my.arch}"/>
-		</copy>
-
-		<copy todir="${my.app}/libs">
-			<fileset dir="${my.native}" includes="*.dll"/>
-			<fileset dir="${my.native}" includes="*.txt"/>
-		</copy>
-
-		<copy todir="${my.app}/libs/tessdata">
-			<fileset dir="Platforms/tessdata"/>
-		</copy>
-
-		<copy todir="${my.app}">
-			<fileset dir="${my.cp}">
-				<include name="*.jar"/>
-				<exclude name="JXGrabKey.jar"/>
-			</fileset>
-		</copy>
-
-		<copy file="${my.build}/sikuli-script.jar" todir="${my.app}"/>
-		<copy file="${my.build}/sikuli-ide.jar" todir="${my.app}"/>
-
-<!--TODO unitl App works-->
-	<property name="my.beta" location="${user.home}\Documents"/>
-	
-	<copy todir="${my.app}">
-      <fileset file="${my.util}/sikuli-ide.cmd"/>
-      <fileset file="${my.util}/sikuli-script.cmd"/>
-    </copy>
-
-    <copy todir="${my.app}">
-      <fileset file="${my.util}/readme.txt"/>
-    </copy>
-
-    <delete dir ="${my.beta}/SikuliX"/>    
-    <copy todir="${my.beta}/SikuliX">
-      <fileset dir="${my.app}"/>
-    </copy>
-
-    <zip destfile="${my.beta}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}\SikuliX"></zip>
-
-	<!-- unitl App works-->
-
-	</target>
+<!-- FOR ALL SYSTEMS -->
+  <property name="my.res" location="../"/>
+  <property name="my.sres" location="${my.res}/build/${my.sys}"/>
+  <property name="my.ares" location="${my.res}/dist/${my.sys}"/>
+  <property name="my.build" location="${my.res}/../Targets/build/${my.sys}"/>
+  <property name="my.dist" location="${my.res}/../Targets/dist/${my.sys}"/>
+  <property name="my.app" location="${my.dist}/${my.appn}"/>
+  <property name="my.util" location="${my.res}/util/${my.sys}"/>
+  <property name="my.cp" location="${my.res}/java"/>
+  <property name="my.native" location="${my.res}/natives/${my.sys}/libs${my.arch}"/>
 
   <target name="make-ide" depends="make-script">
     <ant antfile="build-ide.xml" inheritall="no">
@@ -77,5 +35,53 @@
     <ant antfile="build-ide.xml" target="clean" inheritall="no">
       <property name="sys" value="${my.sys}"/>
     </ant>
+    <delete dir="${my.app}"/>
   </target>
+<!-- END FOR ALL SYSTEMS -->
+
+  <target name="all" depends="make-ide">
+    <delete dir="${my.app}"/>
+
+    <copy todir="${my.app}/libs">
+      <fileset dir="${my.native}"/>
+    </copy>
+
+    <copy todir="${my.app}/libs/tessdata">
+      <fileset dir="${my.res}/natives/tessdata"/>
+    </copy>
+
+    <copy todir="${my.app}">
+      <fileset dir="${my.cp}">
+        <include name="*.jar"/>
+        <exclude name="JXGrabKey.jar"/>
+      </fileset>
+    </copy>
+
+    <copy file="${my.build}/sikuli-script.jar" todir="${my.app}"/>
+    <copy file="${my.build}/sikuli-ide.jar" todir="${my.app}"/>
+
+<!--TODO until EXE works-->
+    <property name="my.beta" location="${my.dist}/SikuliX"/>
+
+    <delete dir ="${my.beta}/SikuliX"/>    
+  
+    <copy todir="${my.beta}">
+      <fileset file="${my.util}/sikuli-ide.cmd"/>
+      <fileset file="${my.util}/sikuli-script.cmd"/>
+    </copy>
+
+    <copy todir="${my.beta}">
+      <fileset file="${my.util}/readme.txt"/>
+    </copy>
+
+    <copy todir="${my.beta}">
+      <fileset dir="${my.app}"/>
+    </copy>
+
+    <zip destfile="${my.beta}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}\SikuliX"></zip>
+
+  <!-- TODO EXE until App works-->
+
+  </target>
+
 </project>

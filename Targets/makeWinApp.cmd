@@ -30,7 +30,8 @@ set ANT_HOME
 set JAVA_HOME
 
 echo *** running build: build-win-app 
-call ant.bat -noclasspath -Darch=%ARCH% -f build-win-app.xml
+set BASEDIR=../Resources/build
+call ant.bat -noclasspath -Darch=%ARCH% -f %BASEDIR%\build-win-app.xml -Dbasedir=%BASEDIR% -Darch=%ARCH%
 
 :FINALLY
 endlocal

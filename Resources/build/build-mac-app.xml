@@ -70,20 +70,21 @@
 <!--TODO unitl making App works-->
     <property name="my.beta" location="${my.dist}/SikuliX"/>
 
-    <copy todir="${my.app}/Contents/Resources/Java/libs">
+    <delete dir ="${my.beta}"/>    
+
+    <copy todir="${my.beta}/libs">
       <fileset dir="${my.app}/Contents/Frameworks"/>
     </copy>
 
-    <copy todir="${my.app}/Contents/Resources/Java">
+    <copy todir="${my.beta}">
       <fileset file="${my.util}/sikuli-ide"/>
       <fileset file="${my.util}/sikuli-script"/>
     </copy>
 
-    <copy todir="${my.app}/Contents/Resources/Java">
+    <copy todir="${my.beta}">
       <fileset file="${my.util}/readme.txt"/>
     </copy>
 
-    <delete dir ="${my.beta}"/>    
     <copy todir="${my.beta}">
       <fileset dir="${my.app}/Contents/Resources/Java"/>
     </copy>
