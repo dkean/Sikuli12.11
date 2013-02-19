@@ -92,7 +92,9 @@ goto STOPIT
 :JAVA_OK 
 PATH=%SIKULI_HOME%libs;%JAVA%;%PATH%
 echo +++ trying to start Sikuli Script
-"%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -jar "%SIKULI_HOME%sikuli-script.jar" %SPARMS% %SIKULI_USERPARMS%
+rem TODO: running as jar: java.lang.NoClassDefFoundError: org/sikuli/script/SikuliScript
+rem "%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -jar "%SIKULI_HOME%sikuli-script.jar" %SPARMS% %SIKULI_USERPARMS%
+"%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -cp "%SIKULI_HOME%sikuli-script.jar" org.sikuli.script.SikuliScript %SPARMS% %SIKULI_USERPARMS%
 
 GOTO FINALLY
 :STOPIT
