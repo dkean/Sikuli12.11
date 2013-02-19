@@ -32,25 +32,24 @@ if "%%p"=="-f" set LOGFILE=-Dsikuli.Logfile
 if "%%p"=="-u" set USERLOG=-Dsikuli.LogfileUser
 if "%%p"=="-i" set PSTOP=YES
 if "%%p"=="-r" set PSTOP=YES
+if "%%p"=="-i" set SCRIPT=-i
+if "%%p"=="-r" set SCRIPT=-r
 :LOOPCONT
 if "%%p"=="--" set PSTOP=YES
 )
 
 for %%p in ( %* ) do (
 if defined PSTOP1 goto LOOPCONT1
-if "%%p"=="-i" goto LOOPCONT1
-if "%%p"=="-r" goto LOOPCONT1
-SHIFT
-goto LOOPCONT2
+shift
 :LOOPCONT1
-set PSTOP1=YES
-:LOOPCONT2
-set NONE=NULL
+if "%%p"=="-i" set PSTOP1=YES
+if "%%p"=="-r" set PSTOP1=YES
+if "%%p"=="--" set PSTOP1=YES
 )
 
 set PARMS=%PARMS% %DEBUG% %LOGFILE% %USERLOG%
 echo %PARMS%
-set SPARMS=%1 %2 %3 %4 %5 %6 %7 %8 %9
+set SPARMS=%SCRIPT% %1 %2 %3 %4 %5 %6 %7 %8 %9
 echo %SPARMS%
 
 echo +++ using as SIKULI_HOME: %SIKULI_HOME%
@@ -71,10 +70,7 @@ echo +++ this Sikuli version is 64-Bit
 set JAVA6=%PROGRAMS%\Java\jre6\bin
 set JAVA7=%PROGRAMS%\Java\jre7\bin
 
-if "%1"=="-j6" (
-  shift
-  goto JAVA6
-)
+if defined J6 goto JAVA6
 
 IF not EXIST "%JAVA7%" goto JAVA6
 set JAVA=%JAVA7%
@@ -90,10 +86,14 @@ echo +++ Java not found
 goto STOPIT
 
 :JAVA_OK 
+"%JAVA%\java.exe" -version
 PATH=%SIKULI_HOME%libs;%JAVA%;%PATH%
 echo +++ trying to start Sikuli Script
 rem TODO: running as jar: java.lang.NoClassDefFoundError: org/sikuli/script/SikuliScript
-rem "%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -jar "%SIKULI_HOME%sikuli-script.jar" %SPARMS% %SIKULI_USERPARMS%
+if defined J6 goto ONJAVA6
+"%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -jar "%SIKULI_HOME%sikuli-script.jar" %SPARMS% %SIKULI_USERPARMS%
+goto FINALLY
+:ONJAVA6
 "%JAVA%\java.exe" %PARMS% %SIKULI_PARM% -cp "%SIKULI_HOME%sikuli-script.jar" org.sikuli.script.SikuliScript %SPARMS% %SIKULI_USERPARMS%
 
 GOTO FINALLY
