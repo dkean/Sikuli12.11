@@ -290,8 +290,8 @@ public class SikuliIDE extends JFrame {
     c.add(initStatusbar(), BorderLayout.SOUTH);
     c.doLayout();
 
-//    initShortcutKeys();
-//    initHotkeys();
+    initShortcutKeys();
+    initHotkeys();
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     initWindowListener();
     initTooltip();

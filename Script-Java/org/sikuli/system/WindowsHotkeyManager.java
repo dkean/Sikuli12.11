@@ -7,10 +7,10 @@ package org.sikuli.system;
 
 import com.melloware.jintellitype.JIntellitype;
 import java.util.*;
+import org.sikuli.script.Debug;
 import org.sikuli.script.HotkeyEvent;
 import org.sikuli.script.HotkeyListener;
 import org.sikuli.script.HotkeyManager;
-import org.sikuli.script.Debug;
 
 public class WindowsHotkeyManager extends HotkeyManager {
    class HotkeyData {
