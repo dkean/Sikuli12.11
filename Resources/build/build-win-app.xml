@@ -78,7 +78,7 @@
       <fileset dir="${my.app}"/>
     </copy>
 
-    <zip destfile="${my.beta}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}\SikuliX"></zip>
+    <zip destfile="${my.dist}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}"></zip>
 
   <!-- TODO EXE until App works-->
 
