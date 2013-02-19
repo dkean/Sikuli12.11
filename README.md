@@ -12,7 +12,7 @@ I am sorry about that, but
 
 **You can download the current working bundles (all beta and work in progress)** 
 
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-14)
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-19)
 - Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta.zip (version 2013-February-18)
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
 - Windows 64Bit: not yet available
