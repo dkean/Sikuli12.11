@@ -4,4 +4,4 @@
 Docs/Script-JythonDocs/build/*
 Targets/build/
 Targets/dist/
-*.java_IGNORE
+Targets/private/
