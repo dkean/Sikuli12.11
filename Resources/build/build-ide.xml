@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="make-sikuli-ide-jar" default="jar" basedir=".">
+  <property name="my.sikuli" value="ide"/>
+  <property name="my.Sikuli" value="IDE"/>
+  <property name="my.sys" value="${sys}"/>
+  <property name="my.res" location="../"/>
+  <property name="my.sres" location="${my.res}/build/All"/>
+  <property name="my.build" location="${my.res}/../Targets/build/${my.sys}"/>
+  <property name="my.jbuild" location="${my.build}/${my.sikuli}classes"/>
+  <property name="my.cp" location="${my.res}/java"/>
+  <property name="my.jar" value="sikuli-${my.sikuli}.jar"/>
+  <property name="my.src" location="../../${my.Sikuli}-Java"/>
+
+  <property name="my.is${my.sys}" value="YES"/>
+
+  <path id="my.class.path">
+    <pathelement location="${my.res}/jython"/>
+    <pathelement path="${my.cp}/commons-cli.jar"/>
+    <pathelement path="${my.cp}/forms.jar"/>
+    <pathelement path="${my.cp}/json-simple.jar"/>
+    <pathelement path="${my.cp}/junit.jar"/>
+    <pathelement path="${my.cp}/mac-widgets.jar"/>
+    <pathelement path="${my.cp}/swingx-core.jar"/>
+    <pathelement path="${my.cp}/swing-layout.jar"/>
+    <pathelement path="${my.build}/sikuli-script.jar"/>
+  </path>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${my.build}/${my.jar}" manifest="${my.sres}/MANIFEST-${my.sikuli}.MF">
+      <fileset dir="${my.src}">
+        <exclude name="org/"/>
+        <exclude name="resources/"/>
+      </fileset>
+      <fileset  dir="${my.build}" includes="**/*.class"/>
+    </jar>
+  </target>
+
+  <target name="compile" depends="native">
+    <mkdir dir="${my.jbuild}"/>
+    <javac sourcepath="" srcdir="${my.src}" destdir="${my.jbuild}" includeantruntime="no">
+      <classpath refid="my.class.path"/>
+      <include name="**/*.java"/>
+      <exclude name="**/Native*Mac*.java" if="my.isWin"/>
+      <exclude name="**/Native*Linux*.java" if="my.isWin"/>
+      <exclude name="**/Native*Win*.java" if="my.isMac"/>
+      <exclude name="**/Native*Linux*.java" if="my.isMac"/>
+      <exclude name="**/Native*Win*.java" if="my.isLinux"/>
+      <exclude name="**/Native*Mac*.java" if="my.isLinux"/>
+    </javac>
+  </target>
+
+  <target name="native">
+    <echo message="*** setting up native stuff"/>
+    <echo message="*** nothing to do currently - all pre built"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${my.build}"/>
+    <delete file="${my.build}/${my.jar}"/>
+  </target>
+
+  <target name="clean-all">
+    <delete dir="build/Win/sclasses"/>
+    <delete dir="build/Mac/sclasses"/>
+    <delete dir="build/Linux/sclasses"/>
+    <delete file="build/Mac/${my.jar}"/>
+    <delete file="build/Win/${my.jar}"/>
+    <delete file="build/Linux/${my.jar}"/>
+  </target>
+</project>

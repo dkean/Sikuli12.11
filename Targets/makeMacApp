@@ -10,4 +10,5 @@ else
   export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 fi 
 java -version
-ant -f build-mac-app.xml
+basedir=../Resources/build
+ant -f $basedir/build-mac-app.xml -Dbasedir=$basedir
