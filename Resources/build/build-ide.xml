@@ -31,7 +31,7 @@
         <exclude name="org/"/>
         <exclude name="resources/"/>
       </fileset>
-      <fileset  dir="${my.build}" includes="**/*.class"/>
+      <fileset  dir="${my.jbuild}" includes="**/*.class"/>
     </jar>
   </target>
 
