@@ -5,8 +5,9 @@
  */
 package org.sikuli.ide;
 
+import org.sikuli.script.Settings;
+
 public class SikuliIDESettings {
 
-	//TODO synchronize version information
-	public static String SikuliVersion = "X-1.0-RaiMan2012-1";
+	public static final String SikuliVersion = Settings.SikuliVersion;
 }

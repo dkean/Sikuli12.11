@@ -17,7 +17,7 @@ import java.awt.*;
 public class Env {
 
   /**
-   * @deprecated use Settings. ... instaed
+   * @deprecated use Settings.getVersion() instaed
    */
   @Deprecated
   public static String SikuliVersion = Settings.SikuliVersion;

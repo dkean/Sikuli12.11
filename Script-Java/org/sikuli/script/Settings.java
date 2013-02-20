@@ -52,6 +52,9 @@ public class Settings {
   public static String SikuliRepo;
   private static String[] args = new String[0];
 
+ 	public final static String SikuliVersionDefault = "SikuliX-1.0";
+	public static String SikuliVersion = "#sikuliversion#";
+
 	static {
     Properties props = System.getProperties();
     File wd = new File(System.getProperty("user.dir"));
@@ -77,6 +80,9 @@ public class Settings {
 		} else {
 			OcrDataPath = "/usr/local/share";
 		}
+    if ("#sikuliversion#".equals(SikuliVersion)) {
+      SikuliVersion = SikuliVersionDefault;
+    }
 	}
 
 	public static final int ISWINDOWS = 0;
@@ -85,7 +91,6 @@ public class Settings {
 	public static final int ISNOTSUPPORTED = 3;
 	public static final float FOREVER = Float.POSITIVE_INFINITY;
 
-	public final static String SikuliVersion = "X-1.0";
 	public static final int JavaVersion = Integer.parseInt(java.lang.System.getProperty("java.version").substring(2, 3));
 	public static final String JREVersion = java.lang.System.getProperty("java.runtime.version");
 
@@ -224,6 +229,10 @@ public class Settings {
 	public static String getOSVersion() {
 		return System.getProperty("os.version");
 	}
+
+  public static String getVersion() {
+    return SikuliVersion;
+  }
 
 	static String getOSUtilClass() {
 		String pkg = "org.sikuli.system.";

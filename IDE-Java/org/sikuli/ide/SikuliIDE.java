@@ -234,11 +234,11 @@ public class SikuliIDE extends JFrame {
 
     _native.initIDE(this);
 
-    
+
     _windowSize = prefs.getIdeSize();
     _windowLocation = prefs.getIdeLocation();
     Rectangle s = (new Location(_windowLocation)).getScreen().getRect();
-    if (_windowSize.width == 0 || _windowSize.width > s.width || 
+    if (_windowSize.width == 0 || _windowSize.width > s.width ||
             (new Location(_windowLocation)).getScreenContaining(false) == null) {
       if (s.width < 1025) {
         _windowSize = new Dimension(1024, 700);
@@ -322,7 +322,7 @@ public class SikuliIDE extends JFrame {
 
   @Override
   public void setTitle(String title) {
-    super.setTitle("Sikuli " + SikuliIDESettings.SikuliVersion + " - " + title);
+    super.setTitle(SikuliIDESettings.SikuliVersion + " - " + title);
   }
 
   static private void initNativeLayer() {
