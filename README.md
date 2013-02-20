@@ -12,12 +12,9 @@ I am sorry about that, but
 
 **You can download the current working bundles (all beta and work in progress)** 
 
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-19)
- - issue: pref window not closeable 
- - issue: hotkeys not working
-- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta.zip (version 2013-February-19)
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-20)
+- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta.zip (version 2013-February-20)
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
- - issue: pref window not closeable 
 - Windows 64Bit: not yet available
 - Linux: not yet available
 
