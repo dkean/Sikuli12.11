@@ -49,7 +49,9 @@ public class Settings {
 	 * infourl: where to get more information<br />
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
-  public static String SikuliRepo;
+  public static String SikuliRepo = "";
+  public static String[] ServerList = {"https://github.com/RaiMan/Sikuli12.11"};
+
   private static String[] args = new String[0];
 
  	public final static String SikuliVersionDefault = "SikuliX-1.0";
@@ -73,7 +75,6 @@ public class Settings {
         libPath = wd.getAbsolutePath();
       }
     }
-    SikuliRepo = null;
 		if (isWindows()) {
 			OcrDataPath = libPathWin;
 		} else if (isMac()) {

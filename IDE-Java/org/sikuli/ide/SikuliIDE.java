@@ -30,7 +30,7 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.sikuli.ide.EditorKit;
 import org.sikuli.ide.extmanager.ExtensionManagerFrame;
 import org.sikuli.ide.sikuli_test.*;
-import org.sikuli.ide.util.AutoUpdater;
+import org.sikuli.utility.AutoUpdater;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.CommandArgs;
 import org.sikuli.script.Debug;
@@ -297,7 +297,7 @@ public class SikuliIDE extends JFrame {
     initTooltip();
     restoreSession();
 
-    // RaiMan not used		autoCheckUpdate();
+    autoCheckUpdate();
 
     if (_mainPane.getTabCount() == 0) {
       (new FileAction()).doNew(null);
@@ -507,7 +507,7 @@ public class SikuliIDE extends JFrame {
     long last_check = pref.getCheckUpdateTime();
     long now = (new Date()).getTime();
     if (now - last_check > 1000 * 86400) {
-      Debug.log(3, "check update");
+      Debug.log(3, "autocheck update");
       (new HelpAction()).checkUpdate(true);
     }
     pref.setCheckUpdateTime();
@@ -1241,14 +1241,6 @@ public class SikuliIDE extends JFrame {
     int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     _helpMenu.setMnemonic(java.awt.event.KeyEvent.VK_H);
 
-    //<editor-fold defaultstate="collapsed" desc="HelpMenu --- RaiMan not used">
-		/*
-     _helpMenu.add(createMenuItem(_I("menuHelpCheckUpdate"),
-     null, new HelpAction(HelpAction.CHECK_UPDATE)));
-     _helpMenu.addSeparator();
-     */
-    //</editor-fold>
-
     _helpMenu.add(createMenuItem(_I("menuHelpQuickStart"),
             null, new HelpAction(HelpAction.QUICK_START)));
     _helpMenu.addSeparator();
@@ -1263,17 +1255,16 @@ public class SikuliIDE extends JFrame {
             null, new HelpAction(HelpAction.OPEN_ASK)));
     _helpMenu.add(createMenuItem(_I("menuHelpBugReport"),
             null, new HelpAction(HelpAction.OPEN_BUG_REPORT)));
-
-    //<editor-fold defaultstate="collapsed" desc="HelpMenu --- RaiMan not used">
-		/*
-     _helpMenu.add(createMenuItem(_I("menuHelpTranslation"),
-     null, new HelpAction(HelpAction.OPEN_TRANSLATION)));
-     */
-    //</editor-fold>
+    _helpMenu.add(createMenuItem(_I("menuHelpTranslation"),
+            null, new HelpAction(HelpAction.OPEN_TRANSLATION)));
 
     _helpMenu.addSeparator();
     _helpMenu.add(createMenuItem(_I("menuHelpHomepage"),
             null, new HelpAction(HelpAction.OPEN_HOMEPAGE)));
+
+    _helpMenu.addSeparator();
+    _helpMenu.add(createMenuItem(_I("menuHelpCheckUpdate"),
+            null, new HelpAction(HelpAction.CHECK_UPDATE)));
   }
 
   class HelpAction extends MenuAction {
@@ -1297,52 +1288,35 @@ public class SikuliIDE extends JFrame {
     }
 
     public void openQuickStart(ActionEvent ae) {
-      openURL("http://sikuli.org/");
+      FileManager.openURL("http://sikuli.org/");
     }
 
     public void openDoc(ActionEvent ae) {
-      openURL("http://doc.sikuli.org");
+      FileManager.openURL("http://doc.sikuli.org");
     }
 
     public void openTutor(ActionEvent ae) {
-      openURL("http://www.sikuli.org/videos.html");
+      FileManager.openURL("http://www.sikuli.org/videos.html");
     }
 
     public void openFAQ(ActionEvent ae) {
-      openURL("https://answers.launchpad.net/sikuli/+faqs");
+      FileManager.openURL("https://answers.launchpad.net/sikuli/+faqs");
     }
 
     public void openAsk(ActionEvent ae) {
-      openURL("https://answers.launchpad.net/sikuli");
+      FileManager.openURL("https://answers.launchpad.net/sikuli");
     }
 
     public void openBugReport(ActionEvent ae) {
-      openURL("https://bugs.launchpad.net/sikuli/+filebug");
+      FileManager.openURL("https://bugs.launchpad.net/sikuli/+filebug");
     }
 
     public void openTranslation(ActionEvent ae) {
-      openURL("https://translations.launchpad.net/sikuli/sikuli-x/+translations");
+      FileManager.openURL("https://translations.launchpad.net/sikuli/sikuli-x/+translations");
     }
 
     public void openHomepage(ActionEvent ae) {
-      openURL("http://sikuli.org");
-    }
-
-    public boolean checkUpdate(boolean isAutoCheck) {
-      AutoUpdater au = new AutoUpdater();
-      PreferencesUser pref = PreferencesUser.getInstance();
-      Debug.log("Check update");
-      if (au.checkUpdate()) {
-        String ver = au.getVersion();
-        String details = au.getDetails();
-        if (isAutoCheck && pref.getLastSeenUpdate().equals(ver)) {
-          return false;
-        }
-        au.showUpdateFrame(_I("dlgUpdateAvailable", ver), details);
-        PreferencesUser.getInstance().setLastSeenUpdate(ver);
-        return true;
-      }
-      return false;
+      FileManager.openURL("http://sikuli.org");
     }
 
     public void doCheckUpdate(ActionEvent ae) {
@@ -1352,17 +1326,24 @@ public class SikuliIDE extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
       }
     }
-  }
 
-  public static void openURL(String url) {
-    try {
-      URL u = new URL(url);
-      java.awt.Desktop.getDesktop().browse(u.toURI());
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    public boolean checkUpdate(boolean isAutoCheck) {
+      AutoUpdater au = new AutoUpdater();
+      PreferencesUser pref = PreferencesUser.getInstance();
+      Debug.log(3, "being asked to check update");
+      if (au.checkUpdate()) {
+        String ver = au.getVersion();
+        if (isAutoCheck && pref.getLastSeenUpdate().equals(ver)) {
+          return false;
+        }
+        String details = au.getDetails();
+        au.showUpdateFrame(_I("dlgUpdateAvailable", ver), details);
+        PreferencesUser.getInstance().setLastSeenUpdate(ver);
+        return true;
+      }
+      return false;
     }
   }
-  //</editor-fold>
 
   private void initMenuBars(JFrame frame) {
     try {

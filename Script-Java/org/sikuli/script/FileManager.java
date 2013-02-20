@@ -1,5 +1,6 @@
 package org.sikuli.script;
 
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -349,5 +350,14 @@ public class FileManager {
 		}
 		zis.close();
 	}
+
+  public static void openURL(String url) {
+    try {
+      URL u = new URL(url);
+      Desktop.getDesktop().browse(u.toURI());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }
 
 }
