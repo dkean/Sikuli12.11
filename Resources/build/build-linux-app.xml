@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build-win-app" default="all">
-  <property name="my.sys" value="Win"/>
+  <property name="my.sys" value="Linux"/>
   <property name="my.appn" value="SikuliX"/>
   <property name="my.arch" value="${arch}"/>
 
@@ -55,7 +55,7 @@
     <copy todir="${my.app}">
       <fileset dir="${my.cp}">
         <include name="*.jar"/>
-        <exclude name="JXGrabKey.jar"/>
+        <exclude name="jintellitype.jar"/>
       </fileset>
     </copy>
 
@@ -66,8 +66,8 @@
     <property name="my.beta" location="${my.app}"/>
   
     <copy todir="${my.beta}">
-      <fileset file="${my.util}/sikuli-ide.cmd"/>
-      <fileset file="${my.util}/sikuli-script.cmd"/>
+      <fileset file="${my.util}/sikuli-ide"/>
+      <fileset file="${my.util}/sikuli-script"/>
     </copy>
 
     <copy todir="${my.beta}">

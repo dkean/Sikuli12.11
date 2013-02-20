@@ -1,0 +1,28 @@
+#!/bin/sh
+export sversion=SikuliX-1.0
+if [ "$1" = "6" ]; then
+  #echo switching to java 6
+  #TODO 
+  export JAVA_HOME=Location-of-OracleJDK6
+  shift
+elif [ "$1" = "o" ]; then
+  #echo switching to OpenJDK 7
+  #TODO 
+  export JAVA_HOME=Location-of-OpenJDK
+  shift
+else
+  #echo switching to java 7
+  #TODO 
+  export JAVA_HOME=Location-of-OracleJDK6
+fi 
+export beta=$1
+echo +++ Building $sversion on
+#TODO 
+$JAVA_HOME/java -version
+if [ "$beta" != "" ]; then
+  export beta=Beta$beta
+  echo +++ $beta
+fi
+basedir=../Resources/build
+echo +++ TODO not yet working
+#ant -f $basedir/build-linux-app.xml -Dbasedir=$basedir -Dbeta=$beta -Dversion=$sversion
