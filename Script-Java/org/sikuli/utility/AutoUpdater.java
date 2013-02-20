@@ -12,18 +12,30 @@ import java.io.*;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import org.sikuli.script.Settings;
 import org.sikuli.script.Debug;
 import org.sikuli.script.FileManager;
+import org.sikuli.script.Settings;
 
 public class AutoUpdater {
 
   private String version, details;
+  private int beta = 0;
+  private String server = "";
+  public boolean newMajor = false;
+  public boolean newBeta = false;
+  public boolean notAvailable = false;
 
-  public AutoUpdater() {}
+  public String getServer() {
+    return server;
+  }
 
   public String getVersion() {
-    return version;
+    if (newMajor) {
+      return version;
+    } else if (newBeta) {
+      return version + "-Beta" + beta;
+    }
+    return "";
   }
 
   public String getDetails() {
@@ -34,27 +46,53 @@ public class AutoUpdater {
     for (String s : Settings.ServerList) {
       try {
         if (checkUpdate(s)) {
-          if (isNewer(version, Settings.SikuliVersion)) {
-            return true;
+          if ( (isNewer(version, Settings.SikuliVersion) && beta == 0) ||
+               (!isNewer(version, Settings.SikuliVersion) && Settings.SikuliVersionBetaN > 0)
+                  && beta == 0 ) {
+            Debug.log(3, "A new major version is available: " + version);
+            newMajor = true;
+          }
+          if ( (isNewer(version, Settings.SikuliVersion) && beta > 0) ||
+               (!isNewer(version, Settings.SikuliVersion) && beta > Settings.SikuliVersionBetaN)) {
+            Debug.log(3, "A new beta version is available: " + version + "-Beta" + beta);
+            newBeta = true;
           }
         }
       } catch (Exception e) {
-        Debug.error("Can't get version info from " + s + "\n" + e);
+        Debug.log(3, "No version info available at " + s);
+        notAvailable = true;
+      }
+      if (newMajor || newBeta) {
+        return true;
       }
     }
     return false;
   }
 
   private boolean checkUpdate(String s) throws IOException, MalformedURLException {
-    URL url = new URL(s);
+    URL url = new URL(s + "/latestversion");
     url.openConnection();
     URLConnection conn = url.openConnection();
     BufferedReader in = new BufferedReader(
             new InputStreamReader(conn.getInputStream()));
     String line;
     if ((line = in.readLine()) != null) {
-      version = line.trim();
+      String[] vinfo = line.trim().split(" ");
+      version = vinfo[0];
+      if (vinfo.length > 1) {
+        beta = Integer.parseInt(vinfo[1]);
+      }
       details = "";
+      if ((line = in.readLine()) != null) {
+        if (line.startsWith("DOWNLOAD")) {
+          server = line.split(" ")[1];
+          details += "Pls. download at: " + server + "<br />";
+          details += "-------------------------------------------------------------------------";
+          details += "<br /><br />";
+        } else {
+          details += line;
+        }
+      }
       while ((line = in.readLine()) != null) {
         details += line;
       }
@@ -64,34 +102,16 @@ public class AutoUpdater {
   }
 
   private boolean isNewer(String v1, String v2) {
-    int rev1 = getRev(v1);
-    int rev2 = getRev(v2);
-    if (rev1 > 0 && rev2 > 0) {
-      return rev1 > rev2;
-    } else {
-      return v1.compareTo(v2) > 0;
-    }
-  }
-
-  private int getRev(String ver) {
-    if (ver.matches("r\\d+")) {
-      return Integer.parseInt(ver.substring(1));
-    }
-    int r_pos = ver.lastIndexOf("(r");
-    if (r_pos > 0) {
-      int end_pos = ver.lastIndexOf(")");
-      return Integer.parseInt(ver.substring(r_pos + 2, end_pos));
-    }
-    return -1;
+    return v1.compareTo(v2) > 0;
   }
 
   public void showUpdateFrame(String title, String text) {
-    UpdateFrame f = new UpdateFrame(title, text);
+    UpdateFrame f = new UpdateFrame(title, text, server);
   }
 }
 
 class UpdateFrame extends JFrame {
-  public UpdateFrame(String title, String text) {
+  public UpdateFrame(String title, String text, String server) {
     setTitle(title);
     setSize(300, 200);
     setLocationRelativeTo(getRootPane());
@@ -119,9 +139,18 @@ class UpdateFrame extends JFrame {
         UpdateFrame.this.dispose();
       }
     });
+    JButton btnGo = new JButton("download");
+    btnGo.setToolTipText(server);
+    btnGo.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        FileManager.openURL(((JButton) ae.getSource()).getToolTipText());
+        UpdateFrame.this.dispose();
+      }
+    });
     buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
     buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
     buttonPane.add(Box.createHorizontalGlue());
+    buttonPane.add(btnGo);
     buttonPane.add(btnOK);
     buttonPane.add(Box.createHorizontalGlue());
     getRootPane().setDefaultButton(btnOK);

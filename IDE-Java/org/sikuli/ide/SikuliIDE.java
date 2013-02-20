@@ -1322,7 +1322,7 @@ public class SikuliIDE extends JFrame {
     public void doCheckUpdate(ActionEvent ae) {
       if (!checkUpdate(false)) {
         JOptionPane.showMessageDialog(null,
-                _I("msgNoUpdate"), "Sikuli " + SikuliIDESettings.SikuliVersion,
+                _I("msgNoUpdate"), SikuliIDESettings.SikuliVersion,
                 JOptionPane.INFORMATION_MESSAGE);
       }
     }

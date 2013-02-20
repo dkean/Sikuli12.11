@@ -183,7 +183,7 @@ msgid "Sikuli's Homepage"
 msgstr ""
 
 #: dlgUpdateAvailable
-msgid "Sikuli {0} is available!"
+msgid "New version {0} is available!"
 msgstr ""
 
 #: msgNoUpdate

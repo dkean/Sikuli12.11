@@ -50,13 +50,14 @@ public class Settings {
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
   public static String SikuliRepo = "";
-  public static String[] ServerList = {"https://github.com/RaiMan/Sikuli12.11"};
 
   private static String[] args = new String[0];
 
  	public final static String SikuliVersionDefault = "SikuliX-1.0";
- 	public final static String SikuliVersionBeta = "SikuliX-1.0-Beta298";
+  public final static int SikuliVersionBetaN = 298;
+ 	public static String SikuliVersionBeta = SikuliVersionDefault + "-Beta" + SikuliVersionBetaN;
 	public static String SikuliVersion = "#sikuliversion#";
+  public static String[] ServerList = {"https://dl.dropbox.com/u/42895525/SikuliX"};
 
 	static {
     Properties props = System.getProperties();
@@ -82,7 +83,7 @@ public class Settings {
 		} else {
 			OcrDataPath = "/usr/local/share";
 		}
-    if (SikuliVersionBeta != null) {
+    if (SikuliVersionBetaN > 0) {
       SikuliVersion = SikuliVersionBeta;
     } else if ("#sikuliversion#".equals(SikuliVersion)) {
       SikuliVersion = SikuliVersionDefault;
