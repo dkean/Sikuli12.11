@@ -1,19 +1,10 @@
-Sikuli12.11
+SikuliX-1.0 (currently at Beta 303)
 ===========
 
-revised Sikuli X-1.0rc3 (r930)  planned to be released as Sikuli Script X 1.0
+**You can download current working bundles (all beta and work in progress)** 
 
-I have to postpone a generally useable new version to February 2013.
----
-I am sorry about that, but
-- the build of the Windows native stuff is not yet really working
-- not all new features are tested in all aspects
-- multi monitor behavior not yet tested seriously
-
-**You can download the current working bundles (all beta and work in progress)** 
-
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta298.zip
-- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta298.zip
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta303.zip
+- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta303.zip
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
 - Windows 64Bit: not yet available
 - Linux: not yet available
@@ -69,6 +60,7 @@ I have made up a release information for X-1.0 on launchpad, so you can see the 
 - better display of errors in message area
 - revised the extension feature and made it functional again
 - Debug.xxx is available on Jython level (see below)
+- revised AutoUpdate feature and Help->CheckNewVersion (added feature: aware of Beta versions)
 
 **Changes/Fixes to the Scripting API**
 
@@ -78,7 +70,7 @@ I have made up a release information for X-1.0 on launchpad, so you can see the 
 - sys.argv is now populated correctly in all cases (IDE, commandline scriptrun + interactive)
 - each physical monitor has only one Screen object, only one Robot for all and better support for multi monitor
 - feature to show and reset monitor configuration
-- Region: added methods to make it functinally compatible with AWT Rectangle and added more methods to create
+- Region: added methods to make it functionally compatible with AWT Rectangle and added more methods to create
 new Regions easily based on existing Regions and Locations
 - click() and similar, click the lastMatch()
 - convenience version of highlight() using last match
