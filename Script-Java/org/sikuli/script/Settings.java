@@ -53,6 +53,7 @@ public class Settings {
   private static String[] args = new String[0];
 
  	public final static String SikuliVersionDefault = "SikuliX-1.0";
+ 	public final static String SikuliVersionBeta = "SikuliX-1.0-Beta298";
 	public static String SikuliVersion = "#sikuliversion#";
 
 	static {
@@ -80,7 +81,9 @@ public class Settings {
 		} else {
 			OcrDataPath = "/usr/local/share";
 		}
-    if ("#sikuliversion#".equals(SikuliVersion)) {
+    if (SikuliVersionBeta != null) {
+      SikuliVersion = SikuliVersionBeta;
+    } else if ("#sikuliversion#".equals(SikuliVersion)) {
       SikuliVersion = SikuliVersionDefault;
     }
 	}
