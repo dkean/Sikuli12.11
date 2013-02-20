@@ -89,14 +89,14 @@ fi
 
 if [ "$SIKULI_HOME" == "" ]; then
   echo no SIKULI_HOME in environment
-  if [ -e `pwd`/SikuliX ]; then
+  if [ -e "`pwd`/SikuliX" ]; then
     export SIKULI_HOME=`pwd`/SikuliX
   else
     export SIKULI_HOME=`pwd`
   fi 
 fi
 
-if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
+if [ -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
   echo SIKULI_HOME is $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli Script
   echo "running with: $PROPS -Dsikuli.Debug=$DEBUG"

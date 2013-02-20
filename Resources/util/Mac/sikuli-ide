@@ -19,7 +19,7 @@ OPTIONS:
    -u      user logs go to UserLog.txt in working dir
    -c      all output goes to command window synchonously (IDE message area)
 
-if you want to store something in sys.argv for later script runs
+	if you want to store something in sys.argv for later script runs
    --      ends the command script option list - trailing stuff goes to sys.argv
            a string not starting with a hyphen does the same and is passed too
    
@@ -81,14 +81,14 @@ fi
 
 if [ "$SIKULI_HOME" == "" ]; then
   echo no SIKULI_HOME
-  if [ -e `pwd`/SikuliX ]; then
+  if [ -e "`pwd`/SikuliX" ]; then
     export SIKULI_HOME=`pwd`/SikuliX
   else
     export SIKULI_HOME=`pwd`
   fi
 fi
 
-if [ -e $SIKULI_HOME/libs/libVisionProxy.dylib ]; then
+if [ -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
   echo SIKULI_HOME is $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli IDE
   echo "running $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG"
