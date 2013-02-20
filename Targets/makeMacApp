@@ -1,14 +1,23 @@
 #!/bin/sh
+export sversion=SikuliX-1.0
 if [ "$1" = "6" ]; then
-  echo switching to java 6
+  #echo switching to java 6
   export JAVA_HOME=`/usr/libexec/java_home -v 1.6`
+  shift
 elif [ "$1" = "o" ]; then
-  echo switching to OpenJDK 7
+  #echo switching to OpenJDK 7
   export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+  shift
 else
-  echo switching to java 7
+  #echo switching to java 7
   export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 fi 
+export beta=$1
+echo +++ Building $sversion on
 java -version
+if [ "$beta" != "" ]; then
+  export beta=Beta$beta
+  echo +++ $beta
+fi
 basedir=../Resources/build
-ant -f $basedir/build-mac-app.xml -Dbasedir=$basedir
+ant -f $basedir/build-mac-app.xml -Dbasedir=$basedir -Dbeta=$beta -Dversion=$sversion

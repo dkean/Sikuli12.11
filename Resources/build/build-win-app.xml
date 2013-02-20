@@ -6,6 +6,8 @@
 
 
 <!-- FOR ALL SYSTEMS -->
+  <property name="my.version" value="${version}"/>
+  <property name="my.vbeta" value="${beta}"/>
   <property name="my.res" location="../"/>
   <property name="my.sres" location="${my.res}/build/${my.sys}"/>
   <property name="my.ares" location="${my.res}/dist/${my.sys}"/>
@@ -78,7 +80,7 @@
       <fileset dir="${my.app}"/>
     </copy>
 
-    <zip destfile="${my.dist}/SikuliX-1.0Win${my.arch}Beta.zip" basedir="${my.beta}"></zip>
+    <zip destfile="${my.dist}/${my.version}-${my.sys}${my.arch}${my.vbeta}.zip" basedir="${my.beta}"></zip>
 
   <!-- TODO EXE until App works-->
 

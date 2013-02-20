@@ -4,6 +4,8 @@
   <property name="my.appn" value="SikuliX.app"/>
 
 <!-- FOR ALL SYSTEMS -->
+  <property name="my.version" value="${version}"/>
+  <property name="my.vbeta" value="${beta}"/>
   <property name="my.res" location="../"/>
   <property name="my.sres" location="${my.res}/build/${my.sys}"/>
   <property name="my.ares" location="${my.res}/dist/${my.sys}"/>
@@ -96,7 +98,7 @@
     <chmod file="${my.beta}/sikuli-ide" perm="ugo+rx"/>
     <chmod file="${my.beta}/sikuli-script" perm="ugo+rx"/>
 
-    <zip destfile="${my.dist}/SikuliX-1.0MacBeta.zip" basedir="${my.beta}"></zip>
+    <zip destfile="${my.dist}/${my.version}-${my.sys}${my.vbeta}.zip" basedir="${my.beta}"></zip>
 <!--TODO END until making App works-->
   </target>
 
