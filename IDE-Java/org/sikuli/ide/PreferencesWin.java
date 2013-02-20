@@ -611,7 +611,7 @@ public class PreferencesWin extends JFrame {
             "Use CANCEL next time, if nothing was changed!";
     JOptionPane.showMessageDialog(this, warn,
             "--- Preferences have been saved ---", JOptionPane.WARNING_MESSAGE);
-		winPrefMore.dispose();
+		if (winPrefMore != null) winPrefMore.dispose();
     this.dispose();
   }
 
@@ -623,7 +623,7 @@ public class PreferencesWin extends JFrame {
     if (isDirty) {
       resetPrefs();
     }
-		winPrefMore.dispose();
+		if (winPrefMore != null) winPrefMore.dispose();
 	  this.dispose();
   }
 
