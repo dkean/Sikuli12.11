@@ -12,8 +12,8 @@ I am sorry about that, but
 
 **You can download the current working bundles (all beta and work in progress)** 
 
-- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta.zip (version 2013-February-20)
-- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta.zip (version 2013-February-20)
+- Mac: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta298.zip
+- Windows 32Bit: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta298.zip
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
 - Windows 64Bit: not yet available
 - Linux: not yet available
@@ -40,7 +40,6 @@ Content
 -------
 - **Script-Java** --- Java sources for the script run support and Java API (sikuli-script.jar)
 - **IDE-Java** --- Java Sources for the IDE (sikuli-ide.jar)
-- **Lib-Jython** --- sources to support Sikuli Jython scripting
 - **Ressources** --- Java and native stuff needed to build and run the jars
 - **Docs** --- Sikuli Script Jython scripting and the JavaDocs (Java API)
 
