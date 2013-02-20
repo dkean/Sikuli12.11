@@ -30,7 +30,8 @@ public class MacHotkeyManager extends HotkeyManager {
   public boolean _addHotkey(int keyCode, int modifiers, HotkeyListener listener) {
     int ckey = convertToCarbonKey(keyCode);
     int cmod = convertToCarbonModifiers(modifiers);
-    return installGlobalHotkey(keyCode, modifiers, ckey, cmod, listener);
+    boolean ret = installGlobalHotkey(keyCode, modifiers, ckey, cmod, listener);
+    return ret;
   }
 
   @Override
