@@ -3,7 +3,7 @@ SikuliX-1.0 (currently at Beta 303)
 
 **You can download current working bundles** 
 
-- **Mac**:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta303.zip
+- **Mac**:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0MacBeta303.zip
 - **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0Win32Beta303.zip
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
 - **Windows 64Bit**: not yet available
