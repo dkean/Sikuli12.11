@@ -4,6 +4,7 @@ SikuliX-1.0 (currently at Beta 303)
 **You can download current working bundles** 
 
 - **Mac**:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta303.zip
+ - Issue: use Chrome or Firefox to click the above download link. Safari (version 6 on 10.8 at least) seems to have a problem with the file name
 - **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta303.zip
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
 - **Windows 64Bit**: not yet available
