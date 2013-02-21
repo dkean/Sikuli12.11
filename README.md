@@ -3,6 +3,8 @@ SikuliX-1.0 (currently at Beta 303)
 
 **You can download current working bundles** 
 
+**----------- PLEASE ------- look at the contained readme.txt**
+
 - **Mac**:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta303.zip
  - Issue: use Chrome or Firefox to click the above download link. 
