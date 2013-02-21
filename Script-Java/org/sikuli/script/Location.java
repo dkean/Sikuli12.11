@@ -62,10 +62,11 @@ public class Location extends Point {
   }
 
   /**
+	 * Returns null, if outside of any screen<br />
+   * @param verbose true will show error message
+   * subsequent actions will crash
 	 *
 	 * @return the screen, that contains the given point.<br />
-	 * Returns null, if outside of any screen<br />
-   * subsequent actions will crash
 	 */
 	public Screen getScreenContaining(boolean verbose) {
     for (int i = 0; i < Screen.getNumberScreens(); i++) {
