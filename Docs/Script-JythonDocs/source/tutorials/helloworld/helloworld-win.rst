@@ -20,7 +20,7 @@ Using this screenshot, we can tell Sikuli script what to click on.
 
 To simulate a mouse click on the *Start* symbol, we are going to use the
 :py:meth:`click <Region.click>` function. To tell Sikuli how the *Start* symbol look
-like, we need to capture its image on teh screen.
+like, we need to capture its image on the screen.
 
 Sikuli IDE provides two methods to capture screen images. The first method is to
 click on the camera button in the toolbar. This will bring you to the screen

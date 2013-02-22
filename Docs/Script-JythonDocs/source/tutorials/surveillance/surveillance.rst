@@ -53,7 +53,7 @@ After the while loop exits or the wait function returns, we can call
 
 .. sikulicode::
 
-	popup("Obama has updated his message")
+	popup("Obama has updated his status message")
 
 This will display a popup message that looks like below:
 
