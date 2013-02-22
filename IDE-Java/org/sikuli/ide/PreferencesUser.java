@@ -8,11 +8,8 @@ package org.sikuli.ide;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.Date;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.*;
 import org.sikuli.script.Debug;
 
@@ -39,7 +36,7 @@ public class PreferencesUser {
 	static PreferencesUser _instance = null;
 	Preferences pref = Preferences.userNodeForPackage(SikuliIDE.class);
 
-	public static PreferencesUser getInstance() {
+  public static PreferencesUser getInstance() {
 		if (_instance == null) {
 			_instance = new PreferencesUser();
 		}
