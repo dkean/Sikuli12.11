@@ -51,7 +51,8 @@ do
        ARGS=-i
        ;;
     r)
-       ARGS="-r $OPTARG"
+       ARGS=-r 
+       ARGS1="$OPTARG"
        ;;
     ?)
        usage
@@ -100,8 +101,8 @@ if [ -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
   echo SIKULI_HOME is $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli Script
   echo "running with: $PROPS -Dsikuli.Debug=$DEBUG"
-  echo "-jar $SIKULI_HOME/sikuli-script.jar $ARGS $@"
-  java $PROPS -Dsikuli.Debug=$DEBUG -jar $SIKULI_HOME/sikuli-script.jar $ARGS $@
+  echo "-jar $SIKULI_HOME/sikuli-script.jar $ARGS $ARGS1 $@"
+  java $PROPS -Dsikuli.Debug=$DEBUG -jar $SIKULI_HOME/sikuli-script.jar $ARGS "$ARGS1" $@
 else
   echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
 fi
