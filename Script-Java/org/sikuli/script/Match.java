@@ -133,7 +133,7 @@ public class Match extends Region implements Comparable {
    * @return the relative offset to the center
    */
   public Location getTargetOffset() {
-    return (Location.getOffset(getTarget(), getCenter()));
+    return (getCenter().getOffset(getTarget()));
   }
 
   /**

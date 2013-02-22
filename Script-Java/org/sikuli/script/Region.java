@@ -102,7 +102,7 @@ public class Region {
 				w = getVW();
 				h = getVH();
         if (scr == null) {
-          Debug.error("Region (%s, %s) outside any screen - subsequent actions will crash", w, h);
+          Debug.error("Region (%s, %s) outside any screen - subsequent actions might not work as expected", w, h);
         } else {
           scrNew = scr;
         }

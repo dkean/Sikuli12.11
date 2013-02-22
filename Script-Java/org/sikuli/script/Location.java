@@ -13,20 +13,17 @@ import java.awt.Rectangle;
  * A point like AWT.Point using global coordinates, hence modifications might move location out of
  * any screen (not checked as is done with region)
  *
- * @author RaiMan
  */
 public class Location extends Point {
 
   /**
-   *
+   * to allow calculated x and y that might not be integers
    * @param x
    * @param y
-   * @deprecated does not make sense, handle outside
+   * truncated to the integer part
    */
-  @Deprecated
   public Location(float x, float y) {
     super((int) x, (int) y);
-    checkScreen();
   }
 
   /**
@@ -36,7 +33,6 @@ public class Location extends Point {
    */
   public Location(int x, int y) {
     super(x, y);
-    checkScreen();
   }
 
   /**
@@ -45,7 +41,6 @@ public class Location extends Point {
    */
   public Location(Location loc) {
     super(loc.x, loc.y);
-    checkScreen();
   }
 
   /**
@@ -54,11 +49,6 @@ public class Location extends Point {
    */
   public Location(Point point) {
     super(point);
-    checkScreen();
-  }
-
-  private void checkScreen() {
-    getScreenContaining(true);
   }
 
   /**
@@ -77,9 +67,21 @@ public class Location extends Point {
       }
     }
     if (verbose) {
-      Debug.error("Location: outside any screen (%s, %s) - subsequent actions will crash", x, y);
+      Debug.error("Location: outside any screen (%s, %s) - subsequent actions might not work as expected", x, y);
     }
     return null;
+  }
+
+  /**
+   *
+   * @return the screen containing this point, the primary screen if outside of any screen
+   */
+  public Screen getScreen() {
+    Screen s = getScreenContaining(false);
+    if (s == null) {
+      return Screen.getPrimaryScreen();
+    }
+    return s;
   }
 
   /**
@@ -89,7 +91,11 @@ public class Location extends Point {
    * @return a 32-Bit value (Bits 24-31 is alpha, 16-23 is red, 8-15 is green, 0-7 is blue)
    */
   public int getColor() {
-    return getScreenContaining(false).getActionRobot().getColorAt(x, y).getRGB();
+    if (getScreenContaining(true) == null) {
+      return -1;
+    } else {
+      return getScreen().getActionRobot().getColorAt(x, y).getRGB();
+    }
   }
 
   /**
@@ -110,17 +116,6 @@ public class Location extends Point {
    */
   public Location getOffset(Location loc) {
     return (new Location(loc.x - x, loc.y - y));
-  }
-
-  /**
-   * the offset of second point as (x,y) relative to first point
-   *
-   * @param loc1
-   * @param loc2
-   * @return relative offset
-   */
-  public static Location getOffset(Location loc1, Location loc2) {
-    return (new Location(loc2.x - loc1.x, loc2.y - loc1.y));
   }
 
   /**
@@ -268,18 +263,6 @@ public class Location extends Point {
   }
 
   /**
-   *
-   * @return the screen containing this point, the primary screen if outside of any screen
-   */
-  public Screen getScreen() {
-    Screen s = getScreenContaining(false);
-    if (s == null) {
-      return Screen.getPrimaryScreen();
-    }
-    return s;
-  }
-
-  /**
    * new point with same offset to current screen's top left on primary screen
    *
    * @return new location
@@ -305,7 +288,7 @@ public class Location extends Point {
    * @return new location
    */
   public Location copyTo(Screen screen) {
-    Location o = new Location(getScreenContaining(false).getBounds().getLocation());
+    Location o = new Location(getScreen().getBounds().getLocation());
     Location n = new Location(screen.getBounds().getLocation());
     return new Location(n.x + x - o.x, n.y + y - o.y);
   }
