@@ -239,6 +239,7 @@ public class SikuliIDE extends JFrame {
     _windowLocation = prefs.getIdeLocation();
     Rectangle s = (new Location(_windowLocation)).getScreen().getRect();
     if (_windowSize.width == 0 || _windowSize.width > s.width ||
+            _windowSize.height > s.height ||
             (new Location(_windowLocation)).getScreenContaining(false) == null) {
       if (s.width < 1025) {
         _windowSize = new Dimension(1024, 700);
