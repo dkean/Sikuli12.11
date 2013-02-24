@@ -59,6 +59,9 @@ public class ScreenHighlighter extends OverlayTransparentWindow implements Mouse
     setVisible(false);
     _opened.remove(this);
     clean();
+    try {
+      Thread.sleep((int) (Settings.WaitAfterHighlight > 0.3f ? Settings.WaitAfterHighlight*1000-300 : 300));
+    } catch (InterruptedException e) {}
   }
 
   private void closeAfter(float secs) {
@@ -66,9 +69,6 @@ public class ScreenHighlighter extends OverlayTransparentWindow implements Mouse
       Thread.sleep((int) secs * 1000 - 300);
     } catch (InterruptedException e) {}
     close();
-    try {
-      Thread.sleep((int) (Settings.WaitAfterHighlight > 0.3f ? Settings.WaitAfterHighlight*1000-300 : 300));
-    } catch (InterruptedException e) {}
   }
 
   public static void closeAll() {
