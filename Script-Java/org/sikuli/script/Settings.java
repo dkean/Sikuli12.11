@@ -13,6 +13,8 @@ import org.sikuli.system.OSUtil;
 
 public class Settings {
 
+  public static boolean makeJythonRegion = false;
+
 	/**
 	 * Mac: standard place for native libs
 	 */

@@ -209,7 +209,6 @@ def initSikuli():
    dict['METHODCATALOG'] = sys.modules[__name__].__dict__
    dict['SCREEN'] = Screen()
    dict['SCREEN']._exposeAllMethods(__name__)
-   #print "Sikuli is initialized. ", id(dict['SCREEN'])
 
 
 initSikuli()

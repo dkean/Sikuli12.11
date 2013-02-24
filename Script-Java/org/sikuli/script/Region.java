@@ -11,6 +11,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import org.python.core.Py;
+import org.python.core.PyObject;
+import org.python.util.PythonInterpreter;
 
 /**
  * A Region always lies completely inside its parent screen
@@ -56,6 +59,10 @@ public class Region {
   //<editor-fold defaultstate="collapsed" desc="Initialization">
   private boolean isJythonScreen () {
     return ("JythonScreen".equals(scriptingType));
+  }
+
+  private boolean isJythonRegion () {
+    return ("JythonRegion".equals(scriptingType));
   }
 
   public void setScriptingType (String type) {
@@ -162,6 +169,21 @@ public class Region {
     throwException = r.throwException;
     initialize(r.x, r.y, r.w, r.h, r.getScreen());
   }
+
+  private static Region toJythonRegion(Region r) {
+    if (r == null) {
+      return null;
+    }
+    PythonInterpreter interpreter = new PythonInterpreter();
+    interpreter.exec("from sikuli import Region");
+    PyObject regionClass = interpreter.get("Region");
+    PyObject pyRegion = regionClass.__call__(Py.java2py(r));
+    Region reg = (Region) pyRegion.__tojava__(Region.class);
+    Debug.log(2,"Region.toJythonRegion (%s): %s", reg.isJythonRegion(), reg);
+    return reg;
+  }
+
+
   //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Quasi-Constructors to be used in Java">
@@ -181,8 +203,7 @@ public class Region {
    * @return
    */
   public static Region create(int X, int Y, int W, int H) {
-    Region reg = new Region();
-    return reg.initialize(X, Y, W, H, null);
+    return Region.create(X, Y, W, H, null);
   }
 
   /**
@@ -196,7 +217,20 @@ public class Region {
    */
   private static Region create(int X, int Y, int W, int H, Screen scr) {
     Region reg = new Region();
-    return reg.initialize(X, Y, W, H, scr);
+    reg = reg.initialize(X, Y, W, H, scr);
+    StackTraceElement[] callstack = Thread.currentThread().getStackTrace();
+    String showMe = callstack[callstack.length-1].toString();
+    if (showMe.contains("SikuliIDE") || showMe.contains("SikuliScript")) {
+      String scrS = scr != null ? scr.toStringShort() : "N/A";
+      if (Settings.makeJythonRegion) {
+        Debug.log(2, "JythonRegion.create(%d, %d, %d, %d)@%s", X, Y, W, H, scrS);
+        return toJythonRegion(reg);
+      } else {
+        return reg;
+      }
+    } else {
+      return reg;
+    }
   }
 
 	/**
@@ -208,8 +242,7 @@ public class Region {
 	 * @return
 	 */
 	public static Region create(Location loc, int w, int h) {
-    Region reg = new Region();
-    return reg.initialize(loc.x, loc.y, w, h, null);
+    return Region.create(loc.x, loc.y, w, h, null);
 	}
 
   /**
@@ -225,25 +258,28 @@ public class Region {
    * @return the new region
    */
   public static Region create(Location loc, int x, int y, int w, int h) {
-    Region r = new Region();
-    r.x = 0;
-    r.y = 0;
-    r.w = w;
-    r.h = h;
+    int X;
+    int Y;
+    int W = w;
+    int H = h;
     if (x == 0) {
       if (y == 0) {
-        r.setLocation(loc);
+        X = loc.x;
+        Y = loc.y;
       } else {
-        r.setBottomLeft(loc);
+        X = loc.x;
+        Y = loc.y - h;
       }
     } else {
       if (y == 0) {
-        r.setTopRight(loc);
+        X = loc.x - w;
+        Y = loc.y;
       } else {
-        r.setBottomRight(loc);
+        X = loc.x - w;
+        Y = loc.y - h;
       }
     }
-    return r;
+    return Region.create(X, Y, W, H);
   }
 
   /**
@@ -270,13 +306,11 @@ public class Region {
    * @return
    */
   public static Region create(Rectangle r) {
-    Region reg = new Region();
-    return reg.initialize(r.x, r.y, r.width, r.height, null);
+    return Region.create(r.x, r.y, r.width, r.height, null);
   }
 
-  protected static Region create(Rectangle r, ScreenIF parentScreen) {
-    Region reg = new Region();
-    return reg.initialize(r.x, r.y, r.width, r.height, null);
+  protected static Region create(Rectangle r, Screen parentScreen) {
+    return Region.create(r.x, r.y, r.width, r.height, parentScreen);
   }
 
   /**
@@ -286,11 +320,11 @@ public class Region {
    * @return
    */
   public static Region create(Region r) {
-    Region reg = new Region();
+    Region reg = Region.create(r.x, r.y, r.w, r.h, null);
     reg.autoWaitTimeout = r.autoWaitTimeout;
     reg.findFailedResponse = r.findFailedResponse;
     reg.throwException = r.throwException;
-    return reg.initialize(r.x, r.y, r.w, r.h, null);
+    return reg;
   }
 
   /**
@@ -302,7 +336,9 @@ public class Region {
    * @return the new region
    */
   public static Region grow(Location loc, int w, int h) {
-    return Region.create(0, 0, w, h).setCenter(loc);
+    int X = loc.x - (int) w/2;
+    int Y = loc.y - (int) h/2;
+    return Region.create(X, Y, w, h);
   }
 
   /**

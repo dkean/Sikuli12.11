@@ -34,10 +34,12 @@ class Region(JRegion):
 ########################## support for with:
    # override all global sikuli functions by this region's methods.
    def __enter__(self):
+      exclude_list = [ 'ROI' ]
       if DEBUG: print "with: entering *****", self
       self._global_funcs = {}
       dict = sys.modules['__main__'].__dict__
       for name in dir(self):
+         if name in exclude_list: continue
          try:
             if not inspect.ismethod(getattr(self,name)):
                continue
@@ -57,11 +59,11 @@ class Region(JRegion):
          dict[name] = self._global_funcs[name]
          if DEBUG and name == 'checkWith': print "with restore: %s"%(str(dict[name])[1:])
       self._global_funcs = None
-      
+
 ########################## helper to check with
    def checkWith(self):
       print "checkWith: from: ", self
-               
+
 #######################################################################
 #---- SIKULI  PUBLIC  API
 #######################################################################
@@ -90,7 +92,7 @@ class Region(JRegion):
       if isinstance(s, types.StringType):
          s = java.lang.String(s, "utf-8")
       return JRegion.paste(self, target, s)
-      
+
 ######################### the new Region.text() feature (Tesseract 3) returns utf8
    def text(self):
       return JRegion.text(self).encode("utf8")

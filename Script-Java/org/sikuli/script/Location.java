@@ -127,7 +127,7 @@ public class Location extends Point {
    * @return the new region
    */
   public Region grow(int w, int h) {
-    return Region.create(0, 0, w, h).setCenter(this);
+    return Region.grow(this, w, h);
   }
 
   /**
