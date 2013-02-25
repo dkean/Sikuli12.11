@@ -356,6 +356,7 @@ public class SikuliIDE extends JFrame {
         if (action == WARNING_DO_NOTHING) {
           if (quitting) {
             codePane.setDirty(false);
+            if (codePane.isSourceBundleTemp()) FileManager.deleteTempDir(codePane.getSrcBundle());
           }
           if (codePane.getCurrentFilename() == null) {
             continue;
@@ -1632,36 +1633,34 @@ public class SikuliIDE extends JFrame {
         public void run() {
           EditorPane codePane = SikuliIDE.getInstance().getCurrentCodePane();
           File tmpFile;
+          tmpFile = FileManager.createTempFile("py");
+          if (tmpFile == null) {
+            return;
+          }
           try {
-            tmpFile = File.createTempFile("sikuli-tmp", ".py");
-            tmpFile.deleteOnExit();
-            try {
-              BufferedWriter bw = new BufferedWriter(
-                      new OutputStreamWriter(
-                      new FileOutputStream(tmpFile),
-                      "UTF8"));
-              codePane.write(bw);
-              SikuliIDE.getInstance().setVisible(false);
-              _console.clear();
-              resetErrorMark();
-              runPython(tmpFile);
-            } catch (Exception e) {
-              java.util.regex.Pattern p =
-                      java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
-              Matcher matcher = p.matcher(e.toString());
+            BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(
+                    new FileOutputStream(tmpFile),
+                    "UTF8"));
+            codePane.write(bw);
+            SikuliIDE.getInstance().setVisible(false);
+            _console.clear();
+            resetErrorMark();
+            runPython(tmpFile);
+          } catch (Exception e) {
+            java.util.regex.Pattern p =
+                    java.util.regex.Pattern.compile("SystemExit: ([0-9]+)");
+            Matcher matcher = p.matcher(e.toString());
 //TODO error stop I18N
-              if (matcher.find()) {
-                Debug.info(_I("msgExit", matcher.group(1)));
-              } else {
-                //Debug.error(_I("msgStopped"));
-                findErrorSource(e, tmpFile.getAbsolutePath());
-              }
-            } finally {
-              SikuliIDE.getInstance().setVisible(true);
-              _runningThread = null;
+            if (matcher.find()) {
+              Debug.info(_I("msgExit", matcher.group(1)));
+            } else {
+              //Debug.error(_I("msgStopped"));
+              findErrorSource(e, tmpFile.getAbsolutePath());
             }
-          } catch (IOException e) {
-            e.printStackTrace();
+          } finally {
+            SikuliIDE.getInstance().setVisible(true);
+            _runningThread = null;
           }
         }
       };

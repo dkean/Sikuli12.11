@@ -1,6 +1,7 @@
 package org.sikuli.script;
 
 import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -16,8 +17,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.imageio.ImageIO;
 
 public class FileManager {
 
@@ -320,18 +324,74 @@ public class FileManager {
 
 		Random rand = new Random();
 		int randomInt = 1 + rand.nextInt();
-
-		File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + ".sikuli");
+		File tempDir = new File(baseTempPath + File.separator + "sikuli" +
+            (randomInt < 0 ? "" : "-") + randomInt + ".sikuli");
 		if (tempDir.exists() == false) {
 			tempDir.mkdir();
 		}
 
 		tempDir.deleteOnExit();
 
+    Debug.log(2, "FileManager: tempdir create: %s", tempDir);
+
 		return tempDir;
 	}
 
-	public static void unzip(String zip, String path)
+  public static void deleteTempDir(String path) {
+    File fpath = new File(path);
+    String[] files = fpath.list();
+    for (String fname : files) {
+      (new File(fpath, fname)).delete();
+    }
+    fpath.delete();
+    if (fpath.exists()) {
+      Debug.log(2, "FileManager: tempdir delete not possible: %s", fpath);
+    } else {
+      Debug.log(2, "FileManager: tempdir delete: %s", fpath);
+    }
+  }
+
+  public static File createTempFile(String suffix) {
+    return createTempFile(suffix, null);
+  }
+
+  public static File createTempFile(String suffix, String path) {
+    String temp1 = "sikuli-";
+    String temp2 = "." + suffix;
+    File fpath = null;
+    if (path != null) {
+      fpath = new File(path);
+    }
+    try {
+      File temp = File.createTempFile(temp1, temp2, fpath);
+      temp.deleteOnExit();
+      Debug.log(2, "FileManager: tempfile create: %s", temp.getAbsolutePath());
+      return temp;
+    } catch (IOException ex) {
+      Debug.error("FileManager.createTempFile: IOException: %s", fpath + File.pathSeparator + temp1 + "12....56" + temp2);
+      return null;
+    }
+  }
+
+  public static String saveTmpImage(BufferedImage img) {
+    return saveTmpImage(img, null);
+  }
+
+  public static String saveTmpImage(BufferedImage img, String path) {
+    File tempFile;
+    try {
+      tempFile = createTempFile("png", path);
+      if (tempFile != null) {
+        ImageIO.write(img, "png", tempFile);
+        return tempFile.getAbsolutePath();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static void unzip(String zip, String path)
 					throws IOException, FileNotFoundException {
 		final int BUF_SIZE = 2048;
 		FileInputStream fis = new FileInputStream(zip);

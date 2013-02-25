@@ -29,11 +29,13 @@ import org.sikuli.ide.indentation.PythonIndentation;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.SikuliScriptRunner;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 
 public class EditorPane extends JTextPane implements KeyListener, CaretListener {
 
   private File _editingFile;
   private String _srcBundlePath = null;
+  private boolean _srcBundleTemp = false;
   private boolean _dirty = false;
   private EditorCurrentLineHighlighter _highlighter;
   private String _tabString = "   ";
@@ -224,6 +226,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 					return false;
 				}
       }
+      if (_srcBundleTemp) FileManager.deleteTempDir(_srcBundlePath);
       setDirty(false);
     }
     return true;
@@ -623,10 +626,15 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
 
   public String getSrcBundle() {
     if (_srcBundlePath == null) {
-      File tmp = Utils.createTempDir();
+      File tmp = FileManager.createTempDir();
       setSrcBundle(Utils.slashify(tmp.getAbsolutePath(), true));
+      _srcBundleTemp = true;
     }
     return _srcBundlePath;
+  }
+
+  public boolean isSourceBundleTemp() {
+    return _srcBundleTemp;
   }
 
   public String getCurrentShortFilename() {

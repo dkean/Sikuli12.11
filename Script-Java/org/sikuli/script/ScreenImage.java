@@ -66,15 +66,7 @@ public class ScreenImage {
 	 */
 	public String getFile() {
     if (_filename == null) {
-      try {
-        File tmp = File.createTempFile("sikuli-image-", ".png");
-        tmp.deleteOnExit();
-        ImageIO.write(_img, "png", tmp);
-        _filename = tmp.getAbsolutePath();
-      } catch (IOException iOException) {
-        Debug.error("ScreenImage.getFile: IOException", iOException);
-        return null;
-      }
+      _filename = FileManager.saveTmpImage(_img);
     }
     return _filename;
   }

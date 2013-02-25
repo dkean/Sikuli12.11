@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.zip.*;
 import javax.imageio.*;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 import org.sikuli.script.Settings;
 
 public class Utils {
@@ -101,19 +102,6 @@ public class Utils {
 		return Settings.slashify(path, isDirectory);
 	}
 
-	public static String saveTmpImage(BufferedImage img) {
-		File tempFile;
-		try {
-			tempFile = File.createTempFile("sikuli-tmp", ".png");
-			tempFile.deleteOnExit();
-			ImageIO.write(img, "png", tempFile);
-			return tempFile.getAbsolutePath();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public static boolean rename(String oldFile, String newFile) {
 		File old = new File(oldFile);
 		return old.renameTo(new File(newFile));
@@ -193,22 +181,6 @@ public class Utils {
 			return null;
 		}
 		return fullpath;
-	}
-
-	public static File createTempDir() {
-		final String baseTempPath = System.getProperty("java.io.tmpdir");
-
-		Random rand = new Random();
-		int randomInt = 1 + rand.nextInt();
-
-		File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + ".sikuli");
-		if (tempDir.exists() == false) {
-			tempDir.mkdir();
-		}
-
-		tempDir.deleteOnExit();
-
-		return tempDir;
 	}
 
 	/**

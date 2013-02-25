@@ -16,6 +16,7 @@ import javax.swing.*;
 import org.sikuli.script.Location;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 
 class PatternImageButton extends JButton implements ActionListener, Serializable /*, MouseListener*/ {
 
@@ -207,7 +208,7 @@ class PatternImageButton extends JButton implements ActionListener, Serializable
 
 	private String createThumbnail(String imgFname, int maxHeight) {
 		BufferedImage thumb = createThumbnailImage(imgFname, maxHeight);
-		return Utils.saveTmpImage(thumb);
+		return FileManager.saveTmpImage(thumb);
 	}
 
 	private String createThumbnail(String imgFname) {
