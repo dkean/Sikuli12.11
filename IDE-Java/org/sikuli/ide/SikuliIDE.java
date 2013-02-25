@@ -1142,17 +1142,13 @@ public class SikuliIDE extends JFrame {
   private void initViewMenu() throws NoSuchMethodException {
     int scMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     _viewMenu.setMnemonic(java.awt.event.KeyEvent.VK_V);
-    /* RaiMan not used
-     _chkShowUnitTest = new JCheckBoxMenuItem(_I("menuViewUnitTest"));
-     _viewMenu.add(createMenuItem(_chkShowUnitTest,
-     KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, scMask),
-     new ViewAction(ViewAction.UNIT_TEST)));
-     * RaiMan not used */
 
-    JMenuItem chkShowCmdList = new JCheckBoxMenuItem(_I("menuViewCommandList"), true);
-    _viewMenu.add(createMenuItem(chkShowCmdList,
-            KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
-            new ViewAction(ViewAction.CMD_LIST)));
+    if (prefs.getPrefMoreCommandBar()) {
+      JMenuItem chkShowCmdList = new JCheckBoxMenuItem(_I("menuViewCommandList"), true);
+      _viewMenu.add(createMenuItem(chkShowCmdList,
+              KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, scMask),
+              new ViewAction(ViewAction.CMD_LIST)));
+    }
 //TODO Message Area show/hide
 //TODO Message Area clear
 //TODO Message Area bottom/right
