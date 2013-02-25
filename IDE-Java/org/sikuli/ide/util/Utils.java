@@ -124,10 +124,6 @@ public class Utils {
 		}
 	}
 
-	public static String getTimestamp() {
-		return (new Date()).getTime() + "";
-	}
-
 	protected static String getAltFilename(String filename) {
 		int pDot = filename.lastIndexOf('.');
 		int pDash = filename.lastIndexOf('-');
@@ -169,7 +165,7 @@ public class Utils {
 			count++;
 		}
 		if (count >= MAX_ALT_NUM) {
-			f = new File(path, getTimestamp() + ".png");
+			f = new File(path, Settings.getTimestamp() + ".png");
 			Debug.log(msg + f.getName() + " (Utils.saveImage)");
 		}
 		fullpath = f.getAbsolutePath();

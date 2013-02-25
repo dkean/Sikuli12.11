@@ -8,6 +8,7 @@ package org.sikuli.script;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.Properties;
 import org.sikuli.system.OSUtil;
 
@@ -292,5 +293,9 @@ public class Settings {
 
   public static String[] getArgs() {
     return Settings.args;
+  }
+
+  public static String getTimestamp() {
+    return (new Date()).getTime() + "";
   }
 }

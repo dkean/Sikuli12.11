@@ -16,6 +16,8 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.EventSubject;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
+import org.sikuli.script.Settings;
 
 class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable, EventObserver {
 
@@ -124,11 +126,11 @@ class ButtonCapture extends ButtonOnToolbar implements ActionListener, Cloneable
 			if (simg != null) {
 				int naming = PreferencesUser.getInstance().getAutoNamingMethod();
 				if (naming == PreferencesUser.AUTO_NAMING_TIMESTAMP) {
-					filename = Utils.getTimestamp();
+					filename = Settings.getTimestamp();
 				} else if (naming == PreferencesUser.AUTO_NAMING_OCR) {
 //RaiMan not used            filename = NamingPane.getFilenameFromImage(simg.getImage());
 					if (filename == null || filename.length() == 0) {
-						filename = Utils.getTimestamp();
+						filename = Settings.getTimestamp();
 					}
 				} else {
 //RaiMan not used            String hint = NamingPane.getFilenameFromImage(simg.getImage());
