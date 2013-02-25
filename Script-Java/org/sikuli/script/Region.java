@@ -1050,7 +1050,7 @@ public class Region {
 	 * @return the absolute file name
 	 */
 	public String getLastScreenImageFile() throws IOException {
-		return getLastScreenImageFile(Settings.BundlePath);
+		return getLastScreenImageFile(Settings.BundlePath, null);
 	}
 
 	/**

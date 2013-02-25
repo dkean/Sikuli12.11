@@ -100,7 +100,9 @@ public class ScreenImage {
 	 * @throws IOException
 	 */
 	public String getFile(String path, String name) {
-		if (! name.endsWith(".png")) {
+    if (name == null) {
+      name = Settings.getTimestamp() + ".png";
+    } else if (!name.endsWith(".png")) {
 			name += ".png";
 		}
     try {
