@@ -45,6 +45,25 @@ from org.sikuli.script import SikuliScript
 _si = SikuliScript()
 
 ##
+# some support for handling unicode and strings
+#
+## use instead of print if unicode strings present
+# usage: uprint(s1, u1, u2, u3, s3, ...)
+# 
+def uprint(*args):
+    for e in args[:-1]:
+        if isinstance(e, str): print e,
+        else: print e.encode("utf8"),
+    if isinstance(args[-1], str): print args[-1]
+    else: print args[-1].encode("utf8")
+
+##
+# to make an utf8-encoded string from a str object
+#
+def uni(s):
+    return (unicode(s, "utf8"))
+
+##
 # loads a Sikuli extension (.jar) from
 #  1. user's sikuli data path
 #  2. bundle path
