@@ -107,39 +107,6 @@ public class Utils {
 		return old.renameTo(new File(newFile));
 	}
 
-	public static String getName(String filename) {
-		File f = new File(filename);
-		return f.getName();
-	}
-
-	public static boolean exists(String path) {
-		File f = new File(path);
-		return f.exists();
-	}
-
-	public static void mkdir(String path) {
-		File f = new File(path);
-		if (!f.exists()) {
-			f.mkdir();
-		}
-	}
-
-	protected static String getAltFilename(String filename) {
-		int pDot = filename.lastIndexOf('.');
-		int pDash = filename.lastIndexOf('-');
-		int ver = 1;
-		String postfix = filename.substring(pDot);
-		String name;
-		if (pDash >= 0) {
-			name = filename.substring(0, pDash);
-			ver = Integer.parseInt(filename.substring(pDash + 1, pDot));
-			ver++;
-		} else {
-			name = filename.substring(0, pDot);
-		}
-		return name + "-" + ver + postfix;
-	}
-
 	public static String saveImage(BufferedImage img, String filename, String bundlePath) {
 		final int MAX_ALT_NUM = 3;
 		String fullpath = bundlePath;
@@ -155,7 +122,7 @@ public class Utils {
 		String msg = f.getName() + " exists - using ";
 		while (count < MAX_ALT_NUM) {
 			if (f.exists()) {
-				f = new File(path, getAltFilename(f.getName()));
+				f = new File(path, FileManager.getAltFilename(f.getName()));
 			} else {
 				if (count > 0) {
 					Debug.log(msg + f.getName() + " (Utils.saveImage)");
@@ -177,83 +144,6 @@ public class Utils {
 			return null;
 		}
 		return fullpath;
-	}
-
-	/**
-	 * Copy a file *src* to the path *dest* and check if the file name conflicts.
-	 * If a file with the same name exists in that path, rename *src* to an
-	 * alternative name.
-	 */
-	public static File smartCopy(String src, String dest) throws IOException {
-		File fSrc = new File(src);
-		String newName = fSrc.getName();
-		File fDest = new File(dest, newName);
-		if (fSrc.equals(fDest)) {
-			return fDest;
-		}
-		while (fDest.exists()) {
-			newName = getAltFilename(newName);
-			fDest = new File(dest, newName);
-		}
-		xcopy(src, fDest.getAbsolutePath());
-		if (fDest.exists()) {
-			return fDest;
-		}
-		return null;
-	}
-
-	public static void xcopy(String src, String dest) throws IOException {
-		File fSrc = new File(src);
-		File fDest = new File(dest);
-		if (fSrc.getAbsolutePath().equals(fDest.getAbsolutePath())) {
-			return;
-		}
-		if (fSrc.isDirectory()) {
-			if (!fDest.exists()) {
-				fDest.mkdir();
-			}
-			String[] children = fSrc.list();
-			for (String child : children) {
-				xcopy(src + File.separator + child, dest + File.separator + child);
-			}
-		} else {
-			if (fDest.isDirectory()) {
-				dest += File.separator + fSrc.getName();
-			}
-			InputStream in = new FileInputStream(src);
-			OutputStream out = new FileOutputStream(dest);
-
-			// Copy the bits from instream to outstream
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		}
-	}
-
-	public static String convertStreamToString(InputStream is) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-
-		String line;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return sb.toString();
 	}
 
 	public static String convertKeyToText(int code, int mod) {
