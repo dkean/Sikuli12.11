@@ -18,6 +18,7 @@ import org.sikuli.script.ScreenImage;
 import org.sikuli.script.ScreenUnion;
 import org.sikuli.ide.util.Utils;
 import org.sikuli.script.Debug;
+import org.sikuli.script.FileManager;
 
 public class PatternWindow extends JFrame {
 
@@ -196,8 +197,8 @@ public class PatternWindow extends JFrame {
 		if (paneNaming.isDirty()) {
 			String filename = paneNaming.getAbsolutePath();
 			String oldFilename = _imgBtn.getFilename();
-			if (Utils.exists(filename)) {
-				String name = Utils.getName(filename);
+			if (FileManager.exists(filename)) {
+				String name = FileManager.getName(filename);
 				int ret = JOptionPane.showConfirmDialog(
 								_parent,
 								SikuliIDEI18N._I("msgFileExists", name),
@@ -209,7 +210,8 @@ public class PatternWindow extends JFrame {
 				}
 			}
 			try {
-				Utils.xcopy(oldFilename, filename);
+				FileManager.xcopy(oldFilename, filename, null);
+        (new File(oldFilename)).delete();
 				_imgBtn.setFilename(filename);
 			} catch (IOException ioe) {
 				Debug.error("renaming failed: " + oldFilename + " " + filename);
