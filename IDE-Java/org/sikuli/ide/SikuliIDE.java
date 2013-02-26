@@ -424,6 +424,16 @@ public class SikuliIDE extends JFrame {
     setFileTabTitle(fname, tabIndex);
   }
 
+  public String getCurrentFileTabTitle() {
+    String fname = _mainPane.getTitleAt(_mainPane.getSelectedIndex());
+    if (fname.startsWith("*")) {
+      return fname.substring(1);
+    }
+    else {
+      return fname;
+    }
+  }
+
   public void setFileTabTitle(String fname, int tabIndex) {
     if (fname.endsWith("/")) {
       fname = fname.substring(0, fname.length() - 1);
