@@ -46,12 +46,12 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
   final static InputStream SikuliToHtmlConverter =
           SikuliIDE.class.getResourceAsStream("/scripts/sikuli2html.py");
   static String pyConverter =
-          Utils.convertStreamToString(SikuliToHtmlConverter);
+          FileManager.convertStreamToString(SikuliToHtmlConverter);
   //TODO SikuliBundleCleaner implement in Java
   final static InputStream SikuliBundleCleaner =
           SikuliIDE.class.getResourceAsStream("/scripts/clean-dot-sikuli.py");
   static String pyBundleCleaner =
-          Utils.convertStreamToString(SikuliBundleCleaner);
+          FileManager.convertStreamToString(SikuliBundleCleaner);
   int _caret_last_x = -1;
   boolean _can_update_caret_last_x = true;
   static Pattern patPngStr = Pattern.compile("(\"[^\"]+?\\.(?i)png\")");
@@ -582,12 +582,11 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     if (file == null) {
       return null;
     }
-
     String bundlePath = file.getAbsolutePath();
     if (!file.getAbsolutePath().endsWith(".sikuli")) {
       bundlePath += ".sikuli";
     }
-    if (Utils.exists(bundlePath)) {
+    if (FileManager.exists(bundlePath)) {
       int res = JOptionPane.showConfirmDialog(
               null, SikuliIDEI18N._I("msgFileExists", bundlePath),
               SikuliIDEI18N._I("dlgFileExists"), JOptionPane.YES_NO_OPTION);
@@ -595,7 +594,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
         return null;
       }
     }
-    saveAsBundle(bundlePath);
+    saveAsBundle(bundlePath, (SikuliIDE.getInstance().getCurrentFileTabTitle()));
 
     return getCurrentShortFilename();
   }
@@ -676,6 +675,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     if (!PreferencesUser.getInstance().getAtSaveCleanBundle()) {
       return;
     }
+//TODO implement in Java
     PythonInterpreter py = SikuliScriptRunner.getPythonInterpreter();
     Debug.log(2, "Clear source bundle " + bundle);
     py.set("bundle_path", bundle);
@@ -696,12 +696,12 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     setDirty(false);
   }
 
-  private void saveAsBundle(String bundlePath) throws IOException {
+  private void saveAsBundle(String bundlePath, String current) throws IOException {
     bundlePath = Utils.slashify(bundlePath, true);
     if (_srcBundlePath != null) {
-      Utils.xcopy(_srcBundlePath, bundlePath);
+      FileManager.xcopy(_srcBundlePath, bundlePath, current);
     } else {
-      Utils.mkdir(bundlePath);
+      FileManager.mkdir(bundlePath);
     }
     setSrcBundle(bundlePath);
     _editingFile = createSourceFile(bundlePath, ".py");
@@ -726,7 +726,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     String bundlePath = getSrcBundle();
     if (f.exists()) {
       try {
-        File newFile = Utils.smartCopy(filename, bundlePath);
+        File newFile = FileManager.smartCopy(filename, bundlePath);
         return newFile;
       } catch (IOException e) {
         e.printStackTrace();
