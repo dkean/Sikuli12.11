@@ -21,6 +21,9 @@ public class Settings {
 	 */
 	public static final String libPathMac = "/Applications/SikuliX.app/Contents/Frameworks";
   public static String libPath = null;
+  public static String libPathStd = null;
+  private static final String sikhomeEnv = System.getenv("SIKULI_HOME");
+  private static final String sikhomeProp = System.getProperty("sikuli.Home");
 	/**
 	 * Win: standard place for native libs
 	 */
@@ -52,8 +55,7 @@ public class Settings {
 	 * infourl: where to get more information<br />
 	 * jarurl: where to download the jar from (no url: this standard place)<br />
 	 */
-  public static String SikuliRepo = "";
-
+  public static String SikuliRepo;
   private static String[] args = new String[0];
 
  	public final static String SikuliVersionDefault = "SikuliX-1.0";
@@ -64,21 +66,43 @@ public class Settings {
 
 	static {
     Properties props = System.getProperties();
-    File wd = new File(System.getProperty("user.dir"));
-    File wdp = new File(System.getProperty("user.dir")).getParentFile();
-    wd = new File(slashify(wd.getAbsolutePath(), true) + libSub);
-    wdp = new File(slashify(wdp.getAbsolutePath(), true) + libSub);
-    if (wd.exists()) {
-      libPath = wd.getAbsolutePath();
-    } else if (wdp.exists()) {
-      libPath = wdp.getAbsolutePath();
+    if (sikhomeProp != null) {
+      libPath = slashify(sikhomeProp, true) + "libs";
+    } else if (sikhomeEnv != null) {
+      libPath = Settings.slashify(sikhomeEnv, true) + "libs";
     }
+
     if (libPath == null) {
-      wd = new File(slashify(System.getProperty("user.home"), true) + libSub);
+      File wd = new File(System.getProperty("user.dir"));
+      File wdp = new File(System.getProperty("user.dir")).getParentFile();
+      wd = new File(slashify(wd.getAbsolutePath(), true) + libSub);
+      wdp = new File(slashify(wdp.getAbsolutePath(), true) + libSub);
       if (wd.exists()) {
         libPath = wd.getAbsolutePath();
+      } else if (wdp.exists()) {
+        libPath = wdp.getAbsolutePath();
+      }
+      if (libPath == null) {
+        wd = new File(slashify(System.getProperty("user.home"), true) + libSub);
+        if (wd.exists()) {
+          libPath = wd.getAbsolutePath();
+        }
       }
     }
+
+    if (isMac() && libPath == null) {
+        libPath = libPathMac;
+    }
+
+    if (isWindows() && libPath == null) {
+      if ((new File(libPathWin)).exists()) {
+        libPath = libPathWin;
+      } else if ((new File(libPathWin32)).exists()) {
+        libPath = libPathWin32;
+      }
+    }
+
+    SikuliRepo = null;
 		if (isWindows()) {
 			OcrDataPath = libPathWin;
 		} else if (isMac()) {
@@ -90,7 +114,7 @@ public class Settings {
       SikuliVersion = SikuliVersionBeta;
     } else if ("#sikuliversion#".equals(SikuliVersion)) {
       SikuliVersion = SikuliVersionDefault;
-    }
+	}
 	}
 
 	public static final int ISWINDOWS = 0;
@@ -248,8 +272,7 @@ public class Settings {
 			case ISMAC:
 				return pkg + "MacUtil";
 			case ISWINDOWS:
-        pkg = "org.sikuli.script.";
-				return pkg + "Win32Util";
+				return pkg + "WinUtil";
 			case ISLINUX:
 				return pkg + "LinuxUtil";
 			default:
@@ -297,5 +320,5 @@ public class Settings {
 
   public static String getTimestamp() {
     return (new Date()).getTime() + "";
-  }
+}
 }

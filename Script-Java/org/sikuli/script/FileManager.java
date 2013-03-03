@@ -24,41 +24,26 @@ import javax.imageio.ImageIO;
 public class FileManager {
 
   private static File jniDir = null;
-  private static String jarResources;
-  private static String libSource;
-  private static final String sikhomeEnv = System.getenv("SIKULI_HOME");
-  private static final String sikhomeProp = System.getProperty("sikuli.Home");
+  private static String jarResources = Settings.jarResources;
+	private static String libSource = Settings.libSource;
   private static final ArrayList<String> libPaths = new ArrayList<String>();
   private static StringBuffer alreadyLoaded = new StringBuffer("");
-  static final int DOWNLOAD_BUFFER_SIZE = 153600;
+	static final int DOWNLOAD_BUFFER_SIZE = 153600;
 
   static {
-    jarResources = Settings.jarResources;
-    libSource = Settings.libSource;
-    if (sikhomeProp != null) {
-      libPaths.add(Settings.slashify(sikhomeProp, true) + "libs");
-    } else if (sikhomeEnv != null) {
-      libPaths.add(Settings.slashify(sikhomeEnv, true) + "libs");
-    }
-    if (Settings.libPath != null) {
-      libPaths.add(Settings.libPath);
-    }
-    if (Settings.isMac()) {
-      libPaths.add(Settings.libPathMac);
-    }
-    if (Settings.isWindows()) {
-      if (Settings.libPathWin32 != null) {
-        libPaths.add(Settings.libPathWin32);
-      }
-      libPaths.add(Settings.libPathWin);
-    }
+    libPaths.add(Settings.libPath);
   }
 
   /**
-   * System.load() the given library module <br /> from standard places (SikuliX/libs) in the
-   * following order<br /> 1. -Dsikuli.Home=<br /> 2. Environement SIKULI_HOME<br /> 3. current
-   * working dir<br /> 4. parent of current working dir<br /> 5. folder user's home (user.home)<br
-   * /> 6. standard installation places of Sikuli<br />
+   * System.load() the given library module
+   * <br /> from standard places (SikuliX/libs)
+   * in the following order<br />
+   * 1. -Dsikuli.Home=<br />
+   * 2. Environement SIKULI_HOME<br />
+   * 3. current working dir<br />
+   * 4. parent of current working dir<br />
+   * 5. folder user's home (user.home)<br />
+   * 6. standard installation places of Sikuli<br />
    *
    * @param libname
    * @param doLoad = true: load it here
@@ -85,7 +70,7 @@ public class FileManager {
       Debug.error(FileManager.class.getName() + ".loadLibrary: Native library could not be loaded: " + libname);
       if (libFound) {
         Debug.error("Since native library was found, it might be a problems with needed dependent libraries");
-        e.printStackTrace();
+				e.printStackTrace();
       }
       System.exit(1);
     }
@@ -93,15 +78,16 @@ public class FileManager {
   }
 
   /**
-   * extract a JNI library from the classpath <br /> Mac: default is .jnilib (.dylib as fallback)
+   * extract a JNI library from the classpath <br /> Mac: default is .jnilib
+   * (.dylib as fallback)
    *
    * @param libname System.loadLibrary() compatible library name
    * @return the extracted File object
    * @throws IOException
    */
   private static File extractJni(String libname) throws IOException {
-    if (alreadyLoaded.indexOf("*" + libname) < 0) {
-      alreadyLoaded.append("*" + libname);
+    if(alreadyLoaded.indexOf("*"+libname)<0) {
+      alreadyLoaded.append("*"+libname);
     } else {
       return null;
     }
@@ -112,8 +98,8 @@ public class FileManager {
      * if we don't find a .jnilib, try .dylib instead.
      */
     if (!outfile.exists()) {
-      ClassLoader cl = ClassLoader.getSystemClassLoader();
-      URL res = cl.getResource(libSource + mappedlib);
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			URL res = cl.getResource(libSource + mappedlib);
       if (res == null) {
         if (mappedlib.endsWith(".jnilib")) {
           mappedlib = mappedlib.substring(0, mappedlib.length() - 7) + ".dylib";
@@ -138,9 +124,10 @@ public class FileManager {
   }
 
   /**
-   * Gets the working directory to use for jni extraction. <br /> standard locations: <br /> Mac:
-   * "/Applications/Sikuli-IDE.app/Contents/Frameworks" <br /> Windows / Linux & Mac (environment):
-   * %SIKULI_HOME% / $SIKULI_HOME <br /> if not exists: java.io.tmp/tmplib
+   * Gets the working directory to use for jni extraction. <br /> standard
+   * locations: <br /> Mac: "/Applications/Sikuli-IDE.app/Contents/Frameworks"
+   * <br /> Windows / Linux & Mac (environment): %SIKULI_HOME% / $SIKULI_HOME
+   * <br /> if not exists: java.io.tmp/tmplib
    *
    * @return jni working dir
    * @throws IOException if there's a problem creating the dir
@@ -208,53 +195,53 @@ public class FileManager {
     return extractJniResource(resourcename, new File(outputname));
   }
 
-  /**
-   * Assume the list of resources can be found at path/filelist.txt
+	/**
+	 * Assume the list of resources can be found at path/filelist.txt
    *
-   * @return the local path to the extracted resources
-   */
-  public static String extract(String path) throws IOException {
-    ClassLoader cl = ClassLoader.getSystemClassLoader();
-    InputStream in = cl.getResourceAsStream(path + "/filelist.txt");
-    String localPath = System.getProperty("java.io.tmpdir") + "/sikuli/" + path;
-    new File(localPath).mkdirs();
-    Debug.log(4, "extract resources " + path + " to " + localPath);
-    writeFileList(in, path, localPath);
-    return localPath + "/";
-  }
+	 * @return the local path to the extracted resources
+	 */
+	public static String extract(String path) throws IOException {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		InputStream in = cl.getResourceAsStream(path + "/filelist.txt");
+		String localPath = System.getProperty("java.io.tmpdir") + "/sikuli/" + path;
+		new File(localPath).mkdirs();
+		Debug.log(4, "extract resources " + path + " to " + localPath);
+		writeFileList(in, path, localPath);
+		return localPath + "/";
+	}
 
-  private static void writeFileList(InputStream ins, String fromPath, String outPath) throws IOException {
-    ClassLoader cl = ClassLoader.getSystemClassLoader();
-    BufferedReader r = new BufferedReader(new InputStreamReader(ins));
-    String line;
-    while ((line = r.readLine()) != null) {
-      Debug.log(7, "write " + line);
-      if (line.startsWith("./")) {
-        line = line.substring(1);
-      }
-      String fullpath = outPath + line;
-      File outf = new File(fullpath);
-      outf.getParentFile().mkdirs();
-      InputStream in = cl.getResourceAsStream(fromPath + line);
-      if (in != null) {
-        OutputStream out = null;
-        try {
-          out = new FileOutputStream(outf);
-          copy(in, out);
-        } catch (IOException e) {
-          Debug.log("Can't extract " + fromPath + line + ": " + e.getMessage());
-        } finally {
-          if (out != null) {
-            out.close();
-          }
-        }
-      } else {
-        Debug.log("Resource not found: " + fromPath + line);
-      }
-    }
-  }
+	private static void writeFileList(InputStream ins, String fromPath, String outPath) throws IOException {
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		BufferedReader r = new BufferedReader(new InputStreamReader(ins));
+		String line;
+		while ((line = r.readLine()) != null) {
+			Debug.log(7, "write " + line);
+			if (line.startsWith("./")) {
+				line = line.substring(1);
+			}
+			String fullpath = outPath + line;
+			File outf = new File(fullpath);
+			outf.getParentFile().mkdirs();
+			InputStream in = cl.getResourceAsStream(fromPath + line);
+			if (in != null) {
+				OutputStream out = null;
+				try {
+					out = new FileOutputStream(outf);
+					copy(in, out);
+				} catch (IOException e) {
+					Debug.log("Can't extract " + fromPath + line + ": " + e.getMessage());
+				} finally {
+					if (out != null) {
+						out.close();
+					}
+				}
+			} else {
+				Debug.log("Resource not found: " + fromPath + line);
+			}
+		}
+	}
 
-  /**
+	/**
    * copy an InputStream to an OutputStream.
    *
    * @param in InputStream to copy from
@@ -273,61 +260,61 @@ public class FileManager {
     }
   }
 
-  public static String downloadURL(URL url, String localPath) throws IOException {
-    InputStream reader = url.openStream();
-    String[] path = url.getPath().split("/");
-    String filename = path[path.length - 1];
-    File fullpath = new File(localPath, filename);
-    FileOutputStream writer = new FileOutputStream(fullpath);
-    byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
-    int totalBytesRead = 0;
-    int bytesRead = 0;
-    while ((bytesRead = reader.read(buffer)) > 0) {
-      writer.write(buffer, 0, bytesRead);
-      totalBytesRead += bytesRead;
-    }
-    reader.close();
-    writer.close();
-    return fullpath.getAbsolutePath();
-  }
+	public static String downloadURL(URL url, String localPath) throws IOException {
+		InputStream reader = url.openStream();
+		String[] path = url.getPath().split("/");
+		String filename = path[path.length - 1];
+		File fullpath = new File(localPath, filename);
+		FileOutputStream writer = new FileOutputStream(fullpath);
+		byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+		int totalBytesRead = 0;
+		int bytesRead = 0;
+		while ((bytesRead = reader.read(buffer)) > 0) {
+			writer.write(buffer, 0, bytesRead);
+			totalBytesRead += bytesRead;
+		}
+		reader.close();
+		writer.close();
+		return fullpath.getAbsolutePath();
+	}
 
-  public static String unzipSKL(String fileName) {
-    File file;
-    try {
-      file = new File(fileName);
-      if (!file.exists()) {
-        throw new IOException(fileName + ": No such file");
-      }
-      String name = file.getName();
-      name = name.substring(0, name.lastIndexOf('.'));
-      File tmpDir = createTempDir();
-      File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
-      sikuliDir.mkdir();
-      unzip(fileName, sikuliDir.getAbsolutePath());
-      return sikuliDir.getAbsolutePath();
-    } catch (IOException e) {
-      System.err.println(e.getMessage());
-      return null;
-    }
-  }
+	public static String unzipSKL(String fileName) {
+		File file;
+	      try {
+          file = new File(fileName);
+          if (!file.exists()) {
+            throw new IOException(fileName + ": No such file");
+          }
+          String name = file.getName();
+          name = name.substring(0, name.lastIndexOf('.'));
+          File tmpDir = createTempDir();
+          File sikuliDir = new File(tmpDir + File.separator + name + ".sikuli");
+          sikuliDir.mkdir();
+          unzip(fileName, sikuliDir.getAbsolutePath());
+          return sikuliDir.getAbsolutePath();
+				} catch (IOException e) {
+					System.err.println(e.getMessage());
+					return null;
+				}
+	}
 
-  public static File createTempDir() {
-    final String baseTempPath = System.getProperty("java.io.tmpdir");
+	public static File createTempDir() {
+		final String baseTempPath = System.getProperty("java.io.tmpdir");
 
-    Random rand = new Random();
-    int randomInt = 1 + rand.nextInt();
-    File tempDir = new File(baseTempPath + File.separator + "sikuli"
-            + (randomInt < 0 ? "" : "-") + randomInt + ".sikuli");
-    if (tempDir.exists() == false) {
-      tempDir.mkdir();
-    }
+		Random rand = new Random();
+		int randomInt = 1 + rand.nextInt();
 
-    tempDir.deleteOnExit();
+		File tempDir = new File(baseTempPath + File.separator + "tmp-" + randomInt + ".sikuli");
+		if (tempDir.exists() == false) {
+			tempDir.mkdir();
+		}
+
+		tempDir.deleteOnExit();
 
     Debug.log(2, "FileManager: tempdir create: %s", tempDir);
 
-    return tempDir;
-  }
+		return tempDir;
+	}
 
   public static void deleteTempDir(String path) {
     File fpath = new File(path);
@@ -383,25 +370,25 @@ public class FileManager {
     return null;
   }
 
-  public static void unzip(String zip, String path)
-          throws IOException, FileNotFoundException {
-    final int BUF_SIZE = 2048;
-    FileInputStream fis = new FileInputStream(zip);
-    ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
-    ZipEntry entry;
-    while ((entry = zis.getNextEntry()) != null) {
-      int count;
-      byte data[] = new byte[BUF_SIZE];
-      FileOutputStream fos = new FileOutputStream(
-              new File(path, entry.getName()));
-      BufferedOutputStream dest = new BufferedOutputStream(fos, BUF_SIZE);
-      while ((count = zis.read(data, 0, BUF_SIZE)) != -1) {
-        dest.write(data, 0, count);
-      }
-      dest.close();
-    }
-    zis.close();
-  }
+	public static void unzip(String zip, String path)
+					throws IOException, FileNotFoundException {
+		final int BUF_SIZE = 2048;
+		FileInputStream fis = new FileInputStream(zip);
+		ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+		ZipEntry entry;
+		while ((entry = zis.getNextEntry()) != null) {
+			int count;
+			byte data[] = new byte[BUF_SIZE];
+			FileOutputStream fos = new FileOutputStream(
+							new File(path, entry.getName()));
+			BufferedOutputStream dest = new BufferedOutputStream(fos, BUF_SIZE);
+			while ((count = zis.read(data, 0, BUF_SIZE)) != -1) {
+				dest.write(data, 0, count);
+			}
+			dest.close();
+		}
+		zis.close();
+	}
 
   public static void openURL(String url) {
     try {
@@ -409,7 +396,7 @@ public class FileManager {
       Desktop.getDesktop().browse(u.toURI());
     } catch (Exception ex) {
       ex.printStackTrace();
-    }
+}
   }
 
   public static void xcopy(String src, String dest, String current) throws IOException {
