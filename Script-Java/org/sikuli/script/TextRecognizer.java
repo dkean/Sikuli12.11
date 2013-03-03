@@ -32,34 +32,26 @@ public class TextRecognizer {
 
   public void init() {
     String path;
-		File fpath;
-    try {
-			// TESSDATA_PREFIX doesn't contain tessdata/
-			path = Settings.slashify(Settings.OcrDataPath, true);
-			fpath = new File(path, "tessdata");
-			if (!fpath.exists()) {
-				path = FileManager.extract("tessdata");
-				if (path.endsWith("tessdata/")) {
-					path = path.substring(0, path.length() - 9);
-				}
-				Settings.OcrDataPath = path;
-			}
-			Settings.OcrDataPath = path;
+    File fpath;
+    path = Settings.slashify(Settings.OcrDataPath, true);
+    fpath = new File(path, "tessdata");
+    if (!fpath.exists()) {
+      Settings.OcrDataPath = null;
+      Debug.error("TextRecognizer: init: tessdata folder not found at %s", path);
+      Settings.OcrTextRead = false;
+      Settings.OcrTextSearch = false;
+    } else {
       Debug.log(2, "OCR data path: " + path);
-
-      Vision.initOCR(Settings.OcrDataPath);
+      Vision.initOCR(Settings.slashify(Settings.OcrDataPath, true));
       _init_succeeded = true;
-	    Debug.log(2, "TextRecognizer: inited.");
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (Exception e) {
-      e.printStackTrace();
+      Debug.log(2, "TextRecognizer: inited.");
     }
   }
 
   public static TextRecognizer getInstance() {
     if (_instance == null) {
       _instance = new TextRecognizer();
+      if (!_instance._init_succeeded ) _instance = null;
     }
     return _instance;
   }

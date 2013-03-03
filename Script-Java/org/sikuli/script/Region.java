@@ -2775,9 +2775,15 @@ public class Region {
 	public String text() {
 		if (Settings.OcrTextRead) {
 			ScreenImage simg = getScreen().capture(x, y, w, h);
-			String textRead = TextRecognizer.getInstance().recognize(simg);
-			Debug.log(2, "Region.text: #(" + textRead + ")#");
-			return textRead;
+      TextRecognizer tr = TextRecognizer.getInstance();
+      if (tr == null) {
+  			Debug.error("Region.text: text recognition is now switched off");
+  			return "--- no text ---";
+      } else {
+  			String textRead = tr.recognize(simg);
+    		Debug.log(2, "Region.text: #(" + textRead + ")#");
+      	return textRead;
+      }
 		} else {
 			Debug.error("Region.text: text recognition is currently switched off");
 			return "--- no text ---";
@@ -2796,8 +2802,20 @@ public class Region {
 	 * @return a list of matches
 	 */
 	public List<Match> listText() {
-    ScreenImage simg = getScreen().capture(x, y, w, h);
-    return TextRecognizer.getInstance().listText(simg, this);
+		if (Settings.OcrTextRead) {
+      ScreenImage simg = getScreen().capture(x, y, w, h);
+      TextRecognizer tr = TextRecognizer.getInstance();
+      if (tr == null) {
+  			Debug.error("Region.text: text recognition is now switched off");
+  			return null;
+      } else {
+    		Debug.log(2, "Region.listText");
+  			return tr.listText(simg, this);
+      }
+		} else {
+			Debug.error("Region.text: text recognition is currently switched off");
+			return null;
+		}
   }
   //</editor-fold>
 }

@@ -12,7 +12,6 @@ import java.util.Iterator;
 import org.sikuli.script.natives.FindInput;
 import org.sikuli.script.natives.FindResult;
 import org.sikuli.script.natives.FindResults;
-import org.sikuli.script.natives.Mat;
 import org.sikuli.script.natives.OpenCV;
 import org.sikuli.script.natives.TARGET_TYPE;
 import org.sikuli.script.natives.Vision;
@@ -245,7 +244,10 @@ public class Finder implements Iterator<Match> {
 			return target + "???";
 		} else {
 			fin.setTarget(TARGET_TYPE.TEXT, target);
-			TextRecognizer.getInstance();
+			if (TextRecognizer.getInstance() == null) {
+  			Debug.error("Region.find(text): text search is now switched off");
+    		return target + "???";
+      }
 			return target;
 		}
 	}
