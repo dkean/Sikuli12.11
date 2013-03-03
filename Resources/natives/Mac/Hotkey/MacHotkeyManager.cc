@@ -45,8 +45,6 @@ jobject CallbackDataToHotkeyEvent(JNIEnv* env, CallbackData* data){
    return ret;
 }
 
-
-
 void callJavaMethod(JavaVM *jvm, jobject listener, CallbackData* data){
    JNIEnv *env;
    jvm->GetEnv((void**)&env, JNI_VERSION_1_4);

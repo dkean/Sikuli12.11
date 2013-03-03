@@ -19,7 +19,7 @@ public class Settings {
 	/**
 	 * Mac: standard place for native libs
 	 */
-	public static final String libPathMac = "/Applications/SikuliX.app/Contents/Frameworks";
+	public static String libPathMac = "/Applications/SikuliX.app/Contents/libs";
   public static String libPath = null;
   public static String libPathStd = null;
   private static final String sikhomeEnv = System.getenv("SIKULI_HOME");
@@ -91,7 +91,9 @@ public class Settings {
     }
 
     if (isMac() && libPath == null) {
-        libPath = libPathMac;
+      if (!(new File(libPathMac)).exists()) {
+        libPath = slashify("/Applications/" + libSub, true);
+      }
     }
 
     if (isWindows() && libPath == null) {
