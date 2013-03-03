@@ -1,0 +1,120 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>parallel.sikuli</h2> <a href="parallel.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> thread
+
+<span class="cmt"># the threadable find 
+</span><span class="kw">def</span> tfind(parms):
+    <span class="kw">global</span> shouldStop
+    end = time.time()+parms.get(<span class="str">"waittime"</span>, <span class="dig">3</span>)
+    reg = parms.get(<span class="str">"region"</span>, SCREEN)
+    parms[<span class="str">"match"</span>] = None
+    parms[<span class="str">"finished"</span>] = False
+    <span class="kw">while</span> (<span class="kw">not</span> shouldStop) <span class="kw">and</span> time.time()&lt;end:
+        <span class="kw">if</span> reg.exists(parms[<span class="str">"pattern"</span>], <span class="dig">0</span>):
+            parms[<span class="str">"match"</span>] = reg.getLastMatch()
+            <span class="kw">break</span>
+    parms[<span class="str">"finished"</span>] = True
+
+<span class="cmt"># setup a pattern list to be paralleled
+</span>pats = []
+pats.append({<span class="str">"pattern"</span>:<img src="1352549030079.png" />})
+pats.append({<span class="str">"pattern"</span>:<img src="1352551675237.png" />, <span class="str">"waittime"</span>:<span class="dig">10</span>})
+pats.append({<span class="str">"pattern"</span>:<img src="1352551662476.png" />})
+
+<span class="cmt"># start the threads
+</span>shouldStop = False
+<span class="kw">for</span> p <span class="kw">in</span> pats:
+    thread.start_new_thread(tfind, (p,))
+
+<span class="cmt">#wait for termination
+</span>end = time.time()+<span class="dig">5</span>
+<span class="kw">while</span> True:
+    <span class="kw">if</span> time.time() &gt; end:
+        shouldStop = True
+        <span class="kw">print</span> <span class="str">"search stopped"</span>
+        <span class="skw">wait</span>(<span class="dig">2</span>)
+        <span class="kw">break</span>
+    ended = True
+    <span class="kw">for</span> p <span class="kw">in</span> pats:
+        ended = ended <span class="kw">and</span> (p.get(<span class="str">"finished"</span>, False))
+    <span class="kw">if</span> ended:
+        <span class="kw">print</span> <span class="str">"search ended normally"</span>
+        <span class="kw">break</span>
+
+<span class="cmt"># check results
+</span><span class="kw">for</span> p <span class="kw">in</span> pats:
+    <span class="kw">if</span> p[<span class="str">"match"</span>]: p[<span class="str">"match"</span>].highlight(<span class="dig">1</span>)
+    <span class="kw">else</span>: <span class="kw">print</span> <span class="str">"not found:"</span>, p[<span class="str">"pattern"</span>]
+</pre>
+</body>
+</html>
