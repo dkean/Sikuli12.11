@@ -5,3 +5,5 @@ Docs/Script-JythonDocs/build/*
 Targets/build/
 Targets/dist/
 Targets/private/
+/Projects/VisionProxyMac64/build/
+/Projects/VisionProxyMac64/dist/

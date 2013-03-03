@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="84">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../Resources/natives/Vision/TimingBlock.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/cvgui.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/find-result.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/finder.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/imgdb.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/opencv.hpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/pyramid-template-matcher.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/sikuli-debug.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/tessocr.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/vision.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+      <itemPath>../../Resources/natives/Vision/vision.swig</itemPath>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../Resources/natives/Vision/TimingBlock.cc</itemPath>
+      <itemPath>../../Resources/natives/Vision/cvgui.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/finder.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/imgdb.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/pyramid-template-matcher.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/sikuli-debug.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/tessocr.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/vision.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/visionJAVA_wrap.cxx</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>/usr/local/include</pElem>
+            <pElem>/usr/local/include/opencv</pElem>
+            <pElem>/usr/local/include/tesseract</pElem>
+            <pElem>/System/Library/Frameworks/JavaVM.framework/Headers</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.jnilib</output>
+          <linkerLibItems>
+            <linkerOptionItem>-dynamic</linkerOptionItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_core.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_features2d.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_highgui.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_imgproc.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libtesseract.dylib</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+        </cTool>
+        <ccTool>
+          <developmentMode>6</developmentMode>
+          <stripSymbols>true</stripSymbols>
+          <incDir>
+            <pElem>/usr/local/include</pElem>
+            <pElem>/usr/local/include/opencv</pElem>
+            <pElem>/usr/local/include/tesseract</pElem>
+            <pElem>/System/Library/Frameworks/JavaVM.framework/Headers</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.dylib</output>
+          <stripSymbols>true</stripSymbols>
+          <linkerLibItems>
+            <linkerOptionItem>-dynamic</linkerOptionItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_core.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_features2d.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_highgui.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_imgproc.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libopencv_flann.dylib</linkerLibFileItem>
+            <linkerLibFileItem>/usr/local/lib/libtesseract.dylib</linkerLibFileItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>
