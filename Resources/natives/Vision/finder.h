@@ -140,27 +140,27 @@ private:
    Rect _roi;
 };
 
-class FaceFinder : public BaseFinder {
-   
-public:
-   
-   FaceFinder(const char* screen_image_filename);
-   ~FaceFinder();
-   
-   void find();
-   bool hasNext();
-   FindResult next();
-   
-private:
-   
-   CvMemStorage* storage;
-   
-   static CvHaarClassifierCascade* cascade;
-   
-   CvSeq* faces;
-   int face_i;
-   
-};
+//class FaceFinder : public BaseFinder {
+//   
+//public:
+//   
+//   FaceFinder(const char* screen_image_filename);
+//   ~FaceFinder();
+//   
+//   void find();
+//   bool hasNext();
+//   FindResult next();
+//   
+//private:
+//   
+//   CvMemStorage* storage;
+//   
+//   static CvHaarClassifierCascade* cascade;
+//   
+//   CvSeq* faces;
+//   int face_i;
+//   
+//};
 
 
 class ChangeFinder : public BaseFinder {

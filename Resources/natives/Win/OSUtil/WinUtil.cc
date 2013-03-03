@@ -3,7 +3,7 @@
  * Released under the MIT License.
  *
  */
-#include "org_sikuli_script_WinUtil.h"
+#include "org_sikuli_system_WinUtil.h"
 #include "windows.h"
 #include <jawt.h>
 #include <jawt_md.h>
@@ -58,7 +58,7 @@ static BOOL CALLBACK killWindowByPid(HWND handle, long lParam){
 static BOOL CALLBACK killWindowByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
-   if( strstr_i(buf, gAppName) != NULL ){
+   if( strstr_i(buf, gAppName) != 0 ){
       DWORD pid;
       GetWindowThreadProcessId(handle, &pid);
       HANDLE proc = OpenProcess(SYNCHRONIZE|PROCESS_TERMINATE, FALSE, pid);
@@ -77,7 +77,7 @@ static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
    char filename[BUF_SIZE], title[BUF_SIZE] ;
    GetWindowModuleFileName(handle, filename, BUF_SIZE);
    GetWindowText(handle, title, BUF_SIZE);
-   if( strstr_i(filename, gAppName) != NULL || strstr_i(title, gAppName) != NULL){
+   if( strstr_i(filename, gAppName) != 0 || strstr_i(title, gAppName) != 0){
       if(gWinCount == gWinNum){
          SetForegroundWindow(handle);
          GetWindowThreadProcessId(handle, &gPid);
@@ -106,7 +106,7 @@ static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
    //fprintf(stderr,"win: %s\n", buf);
-   if( strstr_i(buf, gAppName) != NULL ){
+   if( strstr_i(buf, gAppName) != 0 ){
       if(gWinCount == gWinNum){
          gFoundHandle = handle;
          return FALSE;
@@ -129,7 +129,7 @@ static BOOL CALLBACK findWindowHandleByPid(HWND handle, long lParam){
    return TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_switchApp__Ljava_lang_String_2I (JNIEnv *env, jobject jobj, jstring jAppName, jint jWinNum){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__Ljava_lang_String_2I (JNIEnv *env, jobject jobj, jstring jAppName, jint jWinNum){
 
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
@@ -137,12 +137,12 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_switchApp__Ljava_lang_Stri
    BOOL result = EnumWindows((WNDENUMPROC)focusWinByAppName, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
    if(result != 0){ // switch failed. open it
-      return Java_org_sikuli_script_WinUtil_openApp(env, jobj, jAppName);
+      return Java_org_sikuli_system_WinUtil_openApp(env, jobj, jAppName);
    }
    return gPid;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_switchApp__II(JNIEnv *env, jobject jobj, jint jPid, jint jWinNum){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__II(JNIEnv *env, jobject jobj, jint jPid, jint jWinNum){
    gPid = jPid;
    gWinNum = jWinNum;
    gWinCount = 0;
@@ -153,7 +153,7 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_switchApp__II(JNIEnv *env,
 }
 
 //returns PID, or 0 if failed.
-JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
    char *appName = (char *)env->GetStringUTFChars(jAppName, NULL);
    int n = strlen(appName);
    char *buf = new char[n+3];
@@ -173,7 +173,7 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_openApp(JNIEnv *env, jobje
    return pi.dwProcessId;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_closeApp__I
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__I
   (JNIEnv *env, jobject jobj, jint jPid){
   
    gPid = jPid;
@@ -183,7 +183,7 @@ JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_closeApp__I
    return 0;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_script_WinUtil_closeApp__Ljava_lang_String_2(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__Ljava_lang_String_2(JNIEnv *env, jobject jobj, jstring jAppName){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    BOOL result = EnumWindows((WNDENUMPROC)killWindowByAppName, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
@@ -295,7 +295,7 @@ void makeClickThrough( HWND windowHandle ){
      LWA_COLORKEY );
 }
 
-JNIEXPORT void JNICALL Java_org_sikuli_script_WinUtil_bringWindowToFront
+JNIEXPORT void JNICALL Java_org_sikuli_system_WinUtil_bringWindowToFront
   (JNIEnv *env, jclass jobj, jobject jwin, jboolean jIgnoreMouse){
    
    HWND hwnd = getHwndFromComponent(jwin, env);
@@ -306,7 +306,7 @@ JNIEXPORT void JNICALL Java_org_sikuli_script_WinUtil_bringWindowToFront
 }
 
 
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_WinUtil_getHwnd__II
+JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__II
   (JNIEnv *env, jclass jobj, jint jPid, jint jWinNum){
    gPid = jPid;
    gWinNum = jWinNum;
@@ -320,7 +320,7 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_script_WinUtil_getHwnd__II
 }
 
 
-JNIEXPORT jlong JNICALL Java_org_sikuli_script_WinUtil_getHwnd__Ljava_lang_String_2I
+JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__Ljava_lang_String_2I
   (JNIEnv *env, jclass jobj, jstring jAppName, jint jWinNum){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
@@ -354,11 +354,11 @@ jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
 }
 
 /*
- * Class:     org_sikuli_script_WinUtil
+ * Class:     org_sikuli_system_WinUtil
  * Method:    getRegion
  * Signature: (JI)Ljava/awt/Rectangle;
  */
-JNIEXPORT jobject JNICALL Java_org_sikuli_script_WinUtil_getRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_system_WinUtil_getRegion
   (JNIEnv *env, jclass jobj, jlong jHwnd, jint jWinNum){
      RECT rect;
      HWND hwnd = (HWND)jHwnd;
@@ -370,11 +370,11 @@ JNIEXPORT jobject JNICALL Java_org_sikuli_script_WinUtil_getRegion
   }
 
 /*
- * Class:     org_sikuli_script_WinUtil
+ * Class:     org_sikuli_system_WinUtil
  * Method:    getFocusedRegion
  * Signature: ()Ljava/awt/Rectangle;
  */
-JNIEXPORT jobject JNICALL Java_org_sikuli_script_WinUtil_getFocusedRegion
+JNIEXPORT jobject JNICALL Java_org_sikuli_system_WinUtil_getFocusedRegion
   (JNIEnv *env, jclass jobj){
      RECT rect;
      HWND hwnd = GetForegroundWindow();

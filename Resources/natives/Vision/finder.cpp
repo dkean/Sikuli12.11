@@ -350,6 +350,7 @@ ChangeFinder::find(IplImage* new_screen_image){
    find(Mat(new_screen_image, false));
 }
 
+#include "opencv2/imgproc/imgproc_c.h"
 void
 ChangeFinder::find(Mat new_screen_image){
 
