@@ -26,7 +26,6 @@ Have a look at the JavaDocs of Sikuli Script: https://dl.dropbox.com/u/42895525/
 Be aware
 ---
 - this is work in progress
-- no docs on how to build and get working jar's
 - until mentioned, it does not make sense to clone or fork
 - or to post pull requests
 
@@ -36,7 +35,8 @@ Content
 -------
 - **Script-Java** --- Java sources for the script run support and Java API (sikuli-script.jar)
 - **IDE-Java** --- Java Sources for the IDE (sikuli-ide.jar)
-- **Ressources** --- Java and native stuff needed to build and run the jars
+- **Ressources** --- Java, native stuff and Ant/command -files needed to build and run the jars
+- **Projects** --- NetBeans projects I use, to build SikuliX
 - **Docs** --- Sikuli Script Jython scripting and the JavaDocs (Java API)
 
 Information on fixes and improvements
@@ -60,12 +60,11 @@ I have made up a release information for X-1.0 on launchpad, so you can see the 
  - scripts with changes are marked in its tab: *myScript
  - new option: autosave before run
  - warning at run (with no autosave) and quit, if unsaved scripts
-- implement alternative for command list in tools menu (as standard + option)
-- add a help topic QuickStart for newcomers
 - better display of errors in message area
 - revised the extension feature and made it functional again
 - Debug.xxx is available on Jython level (see below)
 - revised AutoUpdate feature and Help->CheckNewVersion (added feature: aware of Beta versions)
+- Sikuli script filename issues (e.g. utf-8) are fixed (image file names still need to be ASCII)
 
 **Changes/Fixes to the Scripting API**
 
@@ -80,8 +79,6 @@ new Regions easily based on existing Regions and Locations
 - click() and similar, click the lastMatch()
 - convenience version of highlight() using last match
 - a new option, to always highlight() a match
-- revised the observe API (next step: Jython callbacks in Java possible with Jython 2.5.3)
-- short version of FindFailed message in Jython and better error messages
 - totally revised the Debug.xxx interface, added user logs with optional timestamp, logging to file seperate for Sikuli and user possible
 
 Motivation
