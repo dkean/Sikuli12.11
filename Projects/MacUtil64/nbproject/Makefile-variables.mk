@@ -12,24 +12,24 @@ CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-MacOSX
 CND_ARTIFACT_NAME_Debug=libMacUtil.jnilib
 CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-MacOSX/libMacUtil.jnilib
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-MacOSX/package
-CND_PACKAGE_NAME_Debug=libRaiManSikuli2012-MacUtilMac64.dylib.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/libRaiManSikuli2012-MacUtilMac64.dylib.tar
+CND_PACKAGE_NAME_Debug=libMacUtil64.dylib.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/libMacUtil64.dylib.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-MacOSX
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-MacOSX
 CND_ARTIFACT_NAME_Release=libMacUtil.dylib
 CND_ARTIFACT_PATH_Release=dist/Release/GNU-MacOSX/libMacUtil.dylib
 CND_PACKAGE_DIR_Release=dist/Release/GNU-MacOSX/package
-CND_PACKAGE_NAME_Release=libRaiManSikuli2012-MacUtilMac64.dylib.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/libRaiManSikuli2012-MacUtilMac64.dylib.tar
+CND_PACKAGE_NAME_Release=libMacUtil64.dylib.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/libMacUtil64.dylib.tar
 # Release7 configuration
 CND_PLATFORM_Release7=GNU-MacOSX
 CND_ARTIFACT_DIR_Release7=dist/Release7/GNU-MacOSX
 CND_ARTIFACT_NAME_Release7=libMacUtil.dylib
 CND_ARTIFACT_PATH_Release7=dist/Release7/GNU-MacOSX/libMacUtil.dylib
 CND_PACKAGE_DIR_Release7=dist/Release7/GNU-MacOSX/package
-CND_PACKAGE_NAME_Release7=libRaiManSikuli2012-MacUtilMac64.dylib.tar
-CND_PACKAGE_PATH_Release7=dist/Release7/GNU-MacOSX/package/libRaiManSikuli2012-MacUtilMac64.dylib.tar
+CND_PACKAGE_NAME_Release7=libMacUtil64.dylib.tar
+CND_PACKAGE_PATH_Release7=dist/Release7/GNU-MacOSX/package/libMacUtil64.dylib.tar
 #
 # include compiler specific variables
 #

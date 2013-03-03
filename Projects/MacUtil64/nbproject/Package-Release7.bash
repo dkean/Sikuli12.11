@@ -7,14 +7,14 @@
 # Macros
 TOP=`pwd`
 CND_PLATFORM=GNU-MacOSX
-CND_CONF=Release
+CND_CONF=Release7
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
 OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib
 OUTPUT_BASENAME=libMacUtil.dylib
-PACKAGE_TOP_DIR=libRaiManSikuli2012-MacUtilMac64.dylib/
+PACKAGE_TOP_DIR=libMacUtil64.dylib/
 
 # Functions
 function checkReturnCode
@@ -59,15 +59,15 @@ mkdir -p ${NBTMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory "${NBTMPDIR}/libRaiManSikuli2012-MacUtilMac64.dylib/lib"
+makeDirectory "${NBTMPDIR}/libMacUtil64.dylib/lib"
 copyFileToTmpDir "${OUTPUT_PATH}" "${NBTMPDIR}/${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}" 0644
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libRaiManSikuli2012-MacUtilMac64.dylib.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libMacUtil64.dylib.tar
 cd ${NBTMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libRaiManSikuli2012-MacUtilMac64.dylib.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/package/libMacUtil64.dylib.tar *
 checkReturnCode
 
 # Cleanup
