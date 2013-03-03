@@ -55,7 +55,7 @@
     </exec>
 
     <copy todir="${my.app}/Contents/Frameworks/tessdata">
-      <fileset dir="${my.res}/natives/tessdata"/>
+      <fileset dir="${my.native}/tessdata"/>
     </copy>
 
     <copy todir="${my.app}/Contents/Resources/Java">
@@ -97,6 +97,11 @@
 
     <chmod file="${my.beta}/sikuli-ide" perm="ugo+rx"/>
     <chmod file="${my.beta}/sikuli-script" perm="ugo+rx"/>
+    
+    <delete dir ="/Applications/SikuliX"/>
+    <copy todir="/Applications/SikuliX">
+      <fileset dir="${my.beta}"/>
+    </copy>
 
     <zip destfile="${my.dist}/${my.version}-${my.sys}${my.vbeta}.zip" basedir="${my.beta}"></zip>
 <!--TODO END until making App works-->
