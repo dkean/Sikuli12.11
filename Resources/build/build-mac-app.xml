@@ -51,7 +51,12 @@
 
     <exec executable="${my.util}/change-lib-path.sh">
       <arg path="${my.app}/Contents/Frameworks"/>
-      <arg value="libVision"/>
+      <arg value="libMacHotkeyManager"/>
+    </exec>
+
+    <exec executable="${my.util}/change-lib-path.sh">
+      <arg path="${my.app}/Contents/Frameworks"/>
+      <arg value="libVisionProxy"/>
     </exec>
 
     <copy todir="${my.app}/Contents/Frameworks/tessdata">
