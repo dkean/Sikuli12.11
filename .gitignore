@@ -6,7 +6,6 @@ Targets/build/
 Targets/dist/
 Targets/private/
 Resources/jython/cachedir/
-Resources/java/cachedir/
 /Projects/VisionProxyMac64/build/
 /Projects/VisionProxyMac64/dist/
 /Projects/MacHotkeyManager64/dist/
