@@ -5,5 +5,14 @@ Docs/Script-JythonDocs/build/*
 Targets/build/
 Targets/dist/
 Targets/private/
+Resources/jython/cachedir/
 /Projects/VisionProxyMac64/build/
 /Projects/VisionProxyMac64/dist/
+/Projects/MacHotkeyManager64/dist/
+/Projects/MacHotkeyManager64/build/
+/Projects/Sikuli-Script/nbproject/private/
+/Projects/Sikuli-Script/dist/
+/Projects/Sikuli-Script/build/
+/Projects/Sikuli-Script/cachedir/
+/Projects/RaiManSikuli2012-MacUtilMac64/build/
+/Projects/RaiManSikuli2012-MacUtilMac64/dist/
