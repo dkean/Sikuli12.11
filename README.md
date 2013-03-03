@@ -11,7 +11,8 @@ https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta303.zip
 Safari (version 6 on 10.8 at least) seems to have a problem with the file name and I don't have an easy solution currently.
 - **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta303.zip
  - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
-- **Windows 64Bit**: not yet available
+- **Windows 64Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win64Beta350.zip
+ - natives built with MinGW64, OpenCV 2.4.4, Tesseract 3.02
 - **Linux:** not yet available
 
 **Unzip to wherever you want, look into the contained readme.txt and Have Fun ;-)**
