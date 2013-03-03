@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="84">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>../../Resources/natives/Vision/TimingBlock.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/cvgui.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/find-result.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/finder.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/imgdb.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/opencv.hpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/pyramid-template-matcher.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/sikuli-debug.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/tessocr.h</itemPath>
+      <itemPath>../../Resources/natives/Vision/vision.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>../../Resources/natives/Vision/TimingBlock.cc</itemPath>
+      <itemPath>../../Resources/natives/Vision/cvgui.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/finder.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/imgdb.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/pyramid-template-matcher.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/sikuli-debug.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/tessocr.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/vision.cpp</itemPath>
+      <itemPath>../../Resources/natives/Vision/visionJAVA_wrap.cxx</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT}</output>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+          <incDir>
+            <pElem>C:/msys/src/opencv/modules/core/include</pElem>
+            <pElem>C:/msys/src/opencv/modules/features2d/include</pElem>
+            <pElem>C:/msys/src/opencv/modules/flann/include</pElem>
+            <pElem>C:/msys/src/opencv/modules/highgui/include</pElem>
+            <pElem>C:/msys/src/opencv/modules/imgproc/include</pElem>
+            <pElem>C:/msys/src/tesseract/api</pElem>
+            <pElem>C:/msys/src/tesseract/ccutil</pElem>
+            <pElem>C:/msys/src/tesseract/ccstruct</pElem>
+            <pElem>C:/msys/src/tesseract/ccmain</pElem>
+            <pElem>C:/Program Files/Java/jdk1.6.0_38/include</pElem>
+            <pElem>C:/Program Files/Java/jdk1.6.0_38/include/win32</pElem>
+          </incDir>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT}</output>
+          <linkerAddLib>
+            <pElem>C:/msys/src/opencv/build/bin</pElem>
+            <pElem>C:/MinGW64/bin</pElem>
+            <pElem>C:/msys/local/bin</pElem>
+          </linkerAddLib>
+          <commandLine>-llibopencv_core244 -llibopencv_features2d244 -llibopencv_flann244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3</commandLine>
+        </linkerTool>
+      </compileType>
+    </conf>
+  </confs>
+</configurationDescriptor>
