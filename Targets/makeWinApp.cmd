@@ -41,7 +41,8 @@ if not "%BETA%"=="" (
 )
 
 set BASEDIR=../Resources/build
-call ant.bat -noclasspath -Darch=%ARCH% -f %BASEDIR%\build-win-app.xml -Dbasedir=%BASEDIR% -Darch=%ARCH% -Dbeta=%BETA% -Dversion=%SVERSION%
+@echo on
+call ant.bat -noclasspath -f %BASEDIR%\build-win-app.xml -Darch=%ARCH% -Dbasedir=%BASEDIR% -Darch=%ARCH% -Dbeta=%BETA% -Dversion=%SVERSION%
 
 :FINALLY
 endlocal

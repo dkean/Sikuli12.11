@@ -12,7 +12,7 @@
   <property name="my.sres" location="${my.res}/build/${my.sys}"/>
   <property name="my.ares" location="${my.res}/dist/${my.sys}"/>
   <property name="my.build" location="${my.res}/../Targets/build/${my.sys}"/>
-  <property name="my.dist" location="${my.res}/../Targets/dist/${my.sys}"/>
+  <property name="my.dist" location="${my.res}/../Targets/dist/${my.sys}${arch}"/>
   <property name="my.app" location="${my.dist}/${my.appn}"/>
   <property name="my.util" location="${my.res}/util/${my.sys}"/>
   <property name="my.cp" location="${my.res}/java"/>
@@ -46,10 +46,6 @@
 
     <copy todir="${my.app}/libs">
       <fileset dir="${my.native}"/>
-    </copy>
-
-    <copy todir="${my.app}/libs/tessdata">
-      <fileset dir="${my.res}/natives/tessdata"/>
     </copy>
 
     <copy todir="${my.app}">
