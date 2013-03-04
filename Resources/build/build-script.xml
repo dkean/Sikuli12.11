@@ -23,7 +23,7 @@
   <target name="jar" depends="compile">
     <jar destfile="${my.build}/${my.jar}" manifest="${my.sres}/MANIFEST-script.MF">
       <fileset  dir="${my.jbuild}" includes="**/*.class"></fileset>
-      <fileset dir="${my.res}/jython"/>
+      <fileset dir="${my.res}/jython" excludes="**/*$py.class"/>
     </jar>
   </target>
 
