@@ -1,4 +1,5 @@
 #!/bin/sh
+# echo $0
 # Sikuli settings presets
 DEBUG=1
 CONSOLE="-Dsikuli.console=true"
@@ -80,7 +81,7 @@ if [ "$JAVA" != "X" ]; then
 fi
 
 if [ "$SIKULI_HOME" == "" ]; then
-  echo no SIKULI_HOME
+  echo no SIKULI_HOME specified - looking here  \( `pwd` \)
   if [ -e "`pwd`/SikuliX" ]; then
     export SIKULI_HOME=`pwd`/SikuliX
   else
@@ -88,13 +89,20 @@ if [ "$SIKULI_HOME" == "" ]; then
   fi
 fi
 
-if [ -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
-  echo SIKULI_HOME is $SIKULI_HOME
+if [ ! -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
+  echo SIKULI_HOME not found or seems to be invalid
+  echo trying parent folder of shell script
+  export SIKULI_HOME=`dirname $0`
+  if [ ! -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
+    echo SIKULI_HOME not found or seems to be invalid \( $SIKULI_HOME \)
+    export SIKULI_HOME=INVALID 
+    echo giving up
+  fi
+fi
+if [ "SIKULI_HOME" != "INVALID" ]; then
+  echo using as SIKULI_HOME $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli IDE
   echo "running $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG"
   echo "-jar $SIKULI_HOME/sikuli-ide.jar $*"
   java $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG -jar $SIKULI_HOME/sikuli-ide.jar $@
-else
-  echo SIKULI_HOME seems to be invalid \( $SIKULI_HOME \)
-fi
-  
+fi  
