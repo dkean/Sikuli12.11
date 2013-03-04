@@ -68,6 +68,7 @@
         <include name="*.jar"/>
         <exclude name="JXGrabKey.jar"/>
         <exclude name="jintellitype.jar"/>
+        <exclude name="jython.jar"/>
       </fileset>
     </copy>
 

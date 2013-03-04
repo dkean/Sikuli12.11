@@ -52,6 +52,7 @@
       <fileset dir="${my.cp}">
         <include name="*.jar"/>
         <exclude name="JXGrabKey.jar"/>
+        <exclude name="jython.jar"/>
       </fileset>
     </copy>
 
