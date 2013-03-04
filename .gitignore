@@ -6,7 +6,8 @@ Targets/build/
 Targets/dist/
 Targets/private/
 Resources/jython/cachedir/
-Resources/jython/cachedir/
+Resources/java/cachedir/
+Resources/java/cachedir/packages
 /Projects/VisionProxyMac64/build/
 /Projects/VisionProxyMac64/dist/
 /Projects/MacHotkeyManager64/dist/
@@ -22,3 +23,5 @@ Resources/jython/cachedir/
 /Projects/Sikuli-IDE/nbproject/private/
 /Projects/Sikuli-IDE/dist/
 /Projects/Sikuli-IDE/build/
+/Projects/Sikuli-IDE/cachedir/
+
