@@ -59,7 +59,7 @@ public class Settings {
   private static String[] args = new String[0];
 
  	public final static String SikuliVersionDefault = "SikuliX-1.0";
-  public final static int SikuliVersionBetaN = 303;
+  public final static int SikuliVersionBetaN = 351;
  	public static String SikuliVersionBeta = SikuliVersionDefault + "-Beta" + SikuliVersionBetaN;
 	public static String SikuliVersion = "#sikuliversion#";
   public static String[] ServerList = {"https://dl.dropbox.com/u/42895525/SikuliX"};
