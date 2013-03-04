@@ -12,16 +12,16 @@ CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-MacOSX
 CND_ARTIFACT_NAME_Debug=libVisionProxy.jnilib
 CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-MacOSX/libVisionProxy.jnilib
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-MacOSX/package
-CND_PACKAGE_NAME_Debug=libVisionProxyMac64.dylib.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/libVisionProxyMac64.dylib.tar
+CND_PACKAGE_NAME_Debug=libMacVisionProxy64.dylib.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-MacOSX/package/libMacVisionProxy64.dylib.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-MacOSX
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-MacOSX
 CND_ARTIFACT_NAME_Release=libVisionProxy.dylib
 CND_ARTIFACT_PATH_Release=dist/Release/GNU-MacOSX/libVisionProxy.dylib
 CND_PACKAGE_DIR_Release=dist/Release/GNU-MacOSX/package
-CND_PACKAGE_NAME_Release=libVisionProxyMac64.dylib.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/libVisionProxyMac64.dylib.tar
+CND_PACKAGE_NAME_Release=libMacVisionProxy64.dylib.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-MacOSX/package/libMacVisionProxy64.dylib.tar
 #
 # include compiler specific variables
 #

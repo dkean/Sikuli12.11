@@ -25,3 +25,5 @@ Resources/java/cachedir/packages
 /Projects/Sikuli-IDE/build/
 /Projects/Sikuli-IDE/cachedir/
 
+/Projects/MacVisionProxy64/build/
+/Projects/MacVisionProxy64/dist/
