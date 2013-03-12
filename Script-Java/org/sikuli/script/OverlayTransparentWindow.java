@@ -5,25 +5,105 @@
  */
 package org.sikuli.script;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Window;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class OverlayTransparentWindow extends JFrame {
+public class OverlayTransparentWindow extends JFrame implements EventSubject{
 
 	static Method __setWindowOpacity = null;
+	static Method __setWindowOpaque = null;
 	static Method __isTranslucencySupported = null;
 	static boolean isInit_getMethods = false;
+  private JPanel _panel = null;
+  private Color _col = null;
+  private OverlayTransparentWindow _win = null;
+  private Graphics2D _currG2D = null;
 
-	public OverlayTransparentWindow() {
-		setUndecorated(true);
-		if (Settings.JavaVersion < 7) {
-			dynGetMethod();
-		}
+  private EventObserver _obs;
+
+  public OverlayTransparentWindow() {
+    init(null, null);
+  }
+  
+  public OverlayTransparentWindow(Color col, EventObserver o) {
+    init(col, o);
+  }
+  
+  private void init(Color col, EventObserver o) {
+    setUndecorated(true);
+    setAlwaysOnTop(true);
+    if (Settings.JavaVersion < 7) {
+      dynGetMethod();
+    }
+    if (col != null) {
+      _obs = o;
+      _win = this;
+      if (Settings.JavaVersion < 7) {
+        _col = col;
+        try {
+          if (__setWindowOpaque != null) {
+            __setWindowOpaque.invoke(null, (Window) this, false);
+          } else {
+            Debug.error("J6: TransparentWindow.setOpaque: not initialized");
+          }
+        } catch (Exception e) {
+          Debug.error("J6: TransparentWindow.setOpaque: did not work");
+        }
+        _panel = new javax.swing.JPanel() {
+          @Override
+          protected void paintComponent(Graphics g) {
+            if (g instanceof Graphics2D) {
+              Graphics2D g2d = (Graphics2D) g;
+              _currG2D = g2d;
+              g2d.setColor(_col);
+              g2d.fillRect(0, 0, getWidth(), getHeight());              
+              if (_obs != null) {
+                _obs.update(_win);
+              }
+            } else {
+              super.paintComponent(g);
+            }
+          }
+        };
+        add(_panel);
+        int i = 0;
+      } else {
+        try {
+          Class<?> c = Class.forName("javax.swing.JFrame");
+          Method m = c.getMethod("setBackground", Color.class);
+          m.invoke(this, col);
+        } catch (Exception e) {
+          Debug.error("J7: TransparentWindow.setOpaque: did not work");
+        }
+      }
+    }
+  }
+
+  public JPanel getJPanel() {
+    return _panel;
+  }
+  
+  public Graphics2D getJPanelGraphics() {
+    return _currG2D;
+  }
+  
+		@Override
+	public void addObserver(EventObserver o) {
+		_obs = o;
 	}
 
-	public void _setOpacity(float alpha) {
+  @Override
+  public void notifyObserver() {
+    _obs.update(this);
+  }
+
+ public void setOpacity(float alpha) {
 		if (Settings.JavaVersion > 6) {
 			try {
 				Class<?> c = Class.forName("javax.swing.JFrame");
@@ -67,6 +147,7 @@ public class OverlayTransparentWindow extends JFrame {
 				__isTranslucencySupported = aUC.getMethod("isTranslucencySupported", aUC_TL);
 				if ((Boolean) __isTranslucencySupported.invoke(null, aUC_TL_TL)) {
 					__setWindowOpacity = aUC.getMethod("setWindowOpacity", Window.class, float.class);
+					__setWindowOpaque = aUC.getMethod("setWindowOpaque", Window.class, boolean.class);
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
