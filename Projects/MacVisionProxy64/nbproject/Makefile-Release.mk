@@ -35,14 +35,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/1240717019/TimingBlock.o \
+	${OBJECTDIR}/_ext/1240717019/cvgui.o \
+	${OBJECTDIR}/_ext/1240717019/finder.o \
 	${OBJECTDIR}/_ext/1240717019/imgdb.o \
-	${OBJECTDIR}/_ext/1240717019/vision.o \
+	${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o \
 	${OBJECTDIR}/_ext/1240717019/sikuli-debug.o \
 	${OBJECTDIR}/_ext/1240717019/tessocr.o \
-	${OBJECTDIR}/_ext/1240717019/cvgui.o \
-	${OBJECTDIR}/_ext/1240717019/TimingBlock.o \
-	${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o \
-	${OBJECTDIR}/_ext/1240717019/finder.o \
+	${OBJECTDIR}/_ext/1240717019/vision.o \
 	${OBJECTDIR}/_ext/1240717019/visionJAVA_wrap.o
 
 
@@ -80,17 +80,32 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.dylib: /usr/local/lib/
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.dylib: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -dynamiclib -install_name libVisionProxy.dylib -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.dylib -Wl,-S -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libVisionProxy.dylib ${OBJECTFILES} ${LDLIBSOPTIONS} -dynamiclib -install_name libVisionProxy.dylib -Wl,-S -fPIC
+
+${OBJECTDIR}/_ext/1240717019/TimingBlock.o: ../../Resources/natives/Vision/TimingBlock.cc 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/TimingBlock.o ../../Resources/natives/Vision/TimingBlock.cc
+
+${OBJECTDIR}/_ext/1240717019/cvgui.o: ../../Resources/natives/Vision/cvgui.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/cvgui.o ../../Resources/natives/Vision/cvgui.cpp
+
+${OBJECTDIR}/_ext/1240717019/finder.o: ../../Resources/natives/Vision/finder.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/finder.o ../../Resources/natives/Vision/finder.cpp
 
 ${OBJECTDIR}/_ext/1240717019/imgdb.o: ../../Resources/natives/Vision/imgdb.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/imgdb.o ../../Resources/natives/Vision/imgdb.cpp
 
-${OBJECTDIR}/_ext/1240717019/vision.o: ../../Resources/natives/Vision/vision.cpp 
+${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o: ../../Resources/natives/Vision/pyramid-template-matcher.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/vision.o ../../Resources/natives/Vision/vision.cpp
+	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o ../../Resources/natives/Vision/pyramid-template-matcher.cpp
 
 ${OBJECTDIR}/_ext/1240717019/sikuli-debug.o: ../../Resources/natives/Vision/sikuli-debug.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
@@ -102,25 +117,10 @@ ${OBJECTDIR}/_ext/1240717019/tessocr.o: ../../Resources/natives/Vision/tessocr.c
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/tessocr.o ../../Resources/natives/Vision/tessocr.cpp
 
-${OBJECTDIR}/_ext/1240717019/cvgui.o: ../../Resources/natives/Vision/cvgui.cpp 
+${OBJECTDIR}/_ext/1240717019/vision.o: ../../Resources/natives/Vision/vision.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/cvgui.o ../../Resources/natives/Vision/cvgui.cpp
-
-${OBJECTDIR}/_ext/1240717019/TimingBlock.o: ../../Resources/natives/Vision/TimingBlock.cc 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/TimingBlock.o ../../Resources/natives/Vision/TimingBlock.cc
-
-${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o: ../../Resources/natives/Vision/pyramid-template-matcher.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/pyramid-template-matcher.o ../../Resources/natives/Vision/pyramid-template-matcher.cpp
-
-${OBJECTDIR}/_ext/1240717019/finder.o: ../../Resources/natives/Vision/finder.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/finder.o ../../Resources/natives/Vision/finder.cpp
+	$(COMPILE.cc) -O3 -s -I/usr/local/include -I/usr/local/include/opencv -I/usr/local/include/tesseract -I/System/Library/Frameworks/JavaVM.framework/Headers -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1240717019/vision.o ../../Resources/natives/Vision/vision.cpp
 
 ${OBJECTDIR}/_ext/1240717019/visionJAVA_wrap.o: ../../Resources/natives/Vision/visionJAVA_wrap.cxx 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1240717019
