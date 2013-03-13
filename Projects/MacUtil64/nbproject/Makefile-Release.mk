@@ -60,7 +60,7 @@ LDLIBSOPTIONS=-dynamic
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -framework Cocoa -framework JavaVM -dynamiclib -install_name libMacUtil.dylib -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib -Wl,-S -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib ${OBJECTFILES} ${LDLIBSOPTIONS} -framework Cocoa -framework JavaVM -dynamiclib -install_name libMacUtil.dylib -Wl,-S -fPIC
 
 ${OBJECTDIR}/_ext/1344807628/MacUtil.o: ../../Resources/natives/Mac/OSUtilMac/MacUtil.m 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1344807628

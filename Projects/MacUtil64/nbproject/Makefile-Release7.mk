@@ -62,7 +62,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib: /Library/Java/JavaV
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -framework Cocoa -dynamiclib -install_name libMacUtil.dylib -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libMacUtil.dylib ${OBJECTFILES} ${LDLIBSOPTIONS} -framework Cocoa -dynamiclib -install_name libMacUtil.dylib -fPIC
 
 ${OBJECTDIR}/_ext/1344807628/MacUtil.o: ../../Resources/natives/Mac/OSUtilMac/MacUtil.m 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1344807628
