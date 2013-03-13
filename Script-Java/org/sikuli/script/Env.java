@@ -7,6 +7,7 @@
 package org.sikuli.script;
 
 import java.awt.*;
+import org.sikuli.system.OSUtil;
 
 /**
  * features moved to other classes, details below with the methods
@@ -49,6 +50,11 @@ public class Env {
   @Deprecated
   public static Location getMouseLocation() throws HeadlessException {
     return Region.atMouse();
+  }
+
+  @Deprecated
+  public static OSUtil getOSUtil() {
+    return Settings.getOSUtil();
   }
 
   /**
