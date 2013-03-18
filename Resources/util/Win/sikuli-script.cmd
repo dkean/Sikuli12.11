@@ -7,8 +7,6 @@ if "%1"=="-h" (
   echo     JRE 7 is used if present 
   echo -j6 as 1st parm assure to use JRE6 if JRE7 is present
   echo     either -i or r:...sikuli must be specified
-  echo -i  to start interactive Jython session
-  echo -r  script.sikuli run the Sikuli script script.sikuli 
   echo d:n set debug level to n [1]
   echo -f  logs to SikuliLog.txt in working dir
   echo -u  user logs go to UserLog.txt in working dir
