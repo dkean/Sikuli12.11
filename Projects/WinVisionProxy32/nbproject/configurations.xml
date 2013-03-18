@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="88">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/find-result.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/opencv.hpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.cpp</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/visionJAVA_wrap.cxx</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+      </compileType>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/find-result.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/opencv.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/visionJAVA_wrap.cxx"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>C:/opencv/build/include</pElem>
+            <pElem>C:/MinGW/msys/1.0/local/include/tesseract</pElem>
+            <pElem>C:/Program Files/Java/jdk1.6.0_39/include</pElem>
+            <pElem>C:/Program Files/Java/jdk1.6.0_39/include/win32</pElem>
+          </incDir>
+          <commandLine>-D__BLOB_T_DEFINED</commandLine>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT}</output>
+          <linkerAddLib>
+            <pElem>C:/opencv/build/x86/mingw/bin</pElem>
+            <pElem>C:/MinGW/msys/1.0/local/bin</pElem>
+          </linkerAddLib>
+          <stripSymbols>true</stripSymbols>
+          <commandLine>-llibopencv_core244 -llibopencv_features2d244 -llibopencv_flann244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--subsystem,windows,--kill-at</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/cvgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/find-result.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/finder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/imgdb.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/opencv.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/pyramid-template-matcher.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/visionJAVA_wrap.cxx"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
