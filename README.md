@@ -3,7 +3,7 @@ SikuliX-1.0 (currently at Beta 351)
 
 **You can download current working bundles** 
 
-Beta 351: OpenCV 2.4  -  Tesseract 3.02  -  Jython 2.5.4 
+**Beta 351**: OpenCV 2.4.4  -  Tesseract 3.02  -  Jython 2.5.4 
 
 **----------- PLEASE ------- look at the contained readme.txt**
 
@@ -11,8 +11,8 @@ Beta 351: OpenCV 2.4  -  Tesseract 3.02  -  Jython 2.5.4
 https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta351.zip
  - Issue: use Chrome or Firefox to click the above download link. 
 Safari (version 6 on 10.8 at least) seems to have a problem with the file name and I don't have an easy solution currently.
-- **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta303.zip
- - this is still with OpenCV2.1 and Tessaract 2.04 (switched off in the standard)
+- **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta351.zip
+ - natives built with MinGW
 - **Windows 64Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win64Beta351.zip
  - natives built with MinGW64
 - **Linux:** not yet available
