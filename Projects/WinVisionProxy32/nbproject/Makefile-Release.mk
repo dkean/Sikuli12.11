@@ -68,7 +68,7 @@ LDLIBSOPTIONS=-L/C/opencv/build/x86/mingw/bin -L/C/MinGW/msys/1.0/local/bin
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -llibopencv_core244 -llibopencv_features2d244 -llibopencv_flann244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--subsystem,windows,--kill-at -shared -s
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -llibopencv_core244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--add-stdcall-alias -shared
 
 ${OBJECTDIR}/_ext/1743690777/TimingBlock.o: /C/Users/Raimund\ Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1743690777

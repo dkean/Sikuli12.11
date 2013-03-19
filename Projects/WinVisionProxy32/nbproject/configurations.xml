@@ -187,8 +187,7 @@
             <pElem>C:/opencv/build/x86/mingw/bin</pElem>
             <pElem>C:/MinGW/msys/1.0/local/bin</pElem>
           </linkerAddLib>
-          <stripSymbols>true</stripSymbols>
-          <commandLine>-llibopencv_core244 -llibopencv_features2d244 -llibopencv_flann244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--subsystem,windows,--kill-at</commandLine>
+          <commandLine>-llibopencv_core244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--add-stdcall-alias</commandLine>
         </linkerTool>
       </compileType>
       <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc"
