@@ -1,6 +1,15 @@
 @echo off
 setlocal
 
+if "%1"=="" (
+  echo usage: -32 -7 NNN 
+  echo * are the defaults if omitted
+  echo -32 build 32 Bit version * 64-Bit
+  echo -7 use Java JDK 7 * JDK 6
+  echo NNN Beta version number
+  goto FINALLY
+)
+
 set SVERSION=SikuliX-1.0
 
 rem **** ANT_HOME
