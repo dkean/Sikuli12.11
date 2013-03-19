@@ -14,7 +14,6 @@
       <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/sikuli-debug.h</itemPath>
       <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/tessocr.h</itemPath>
       <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.h</itemPath>
-      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -43,7 +42,6 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
-      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
@@ -145,11 +143,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/visionJAVA_wrap.cxx"
             ex="false"
             tool="1"
@@ -184,10 +177,9 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/VisionProxy.${CND_DLIB_EXT}</output>
           <linkerAddLib>
-            <pElem>C:/opencv/build/x86/mingw/bin</pElem>
             <pElem>C:/MinGW/msys/1.0/local/bin</pElem>
           </linkerAddLib>
-          <commandLine>-llibopencv_core244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--add-stdcall-alias</commandLine>
+          <commandLine>-llibopencv_core244 -llibopencv_highgui244 -llibopencv_imgproc244 -llibtesseract-3 -Wl,--subsystem,windows,--kill-at</commandLine>
         </linkerTool>
       </compileType>
       <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/TimingBlock.cc"
@@ -276,11 +268,6 @@
             flavor2="0">
       </item>
       <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Vision/vision.swig"
             ex="false"
             tool="3"
             flavor2="0">

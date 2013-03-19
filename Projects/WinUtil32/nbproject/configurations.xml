@@ -96,7 +96,7 @@
           <linkerLibItems>
             <linkerOptionItem>/C/Program\ Files/Java/jdk1.6.0_39/lib/jawt.lib</linkerOptionItem>
           </linkerLibItems>
-          <commandLine>-ljawt</commandLine>
+          <commandLine>-ljawt -Wl,--subsystem,windows,--kill-at</commandLine>
         </linkerTool>
       </compileType>
       <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/WinUtil.cc"

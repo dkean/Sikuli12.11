@@ -48,6 +48,8 @@
 MKDIR=mkdir
 CP=cp
 CCADMIN=CCadmin
+RESBASEDIR=../../Resources
+NATIVEDIR=${RESBASEDIR}/natives/Win/libs32
 
 
 # build
@@ -58,6 +60,7 @@ build: .build-post
 
 .build-post: .build-impl
 # Add your post 'build' code here...
+	${CP} ${CND_ARTIFACT_PATH_${CONF}} ${NATIVEDIR}/${CND_ARTIFACT_NAME_${CONF}}
 
 
 # clean
