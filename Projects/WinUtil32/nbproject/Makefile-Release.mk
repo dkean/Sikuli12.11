@@ -60,12 +60,12 @@ LDLIBSOPTIONS=-L/C/Program\ Files/Java/jdk1.6.0_39/jre/bin /C/Program\ Files/Jav
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/WinUtil.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/WinUtil.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -ljawt -Wl,--subsystem,windows,--kill-at -shared
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/WinUtil.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -ljawt -Wl,--subsystem,windows,--kill-at -shared -s
 
 ${OBJECTDIR}/_ext/292282698/WinUtil.o: /C/Users/Raimund\ Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/WinUtil.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/292282698
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D_WIN32_WINNT=0x0500 -I/C/Program\ Files/Java/jdk1.6.0_39/include -I/C/Program\ Files/Java/jdk1.6.0_39/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/292282698/WinUtil.o /C/Users/Raimund\ Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/WinUtil.cc
+	$(COMPILE.cc) -O2 -s -D_WIN32_WINNT=0x0500 -I/C/Program\ Files/Java/jdk1.6.0_39/include -I/C/Program\ Files/Java/jdk1.6.0_39/include/win32  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/292282698/WinUtil.o /C/Users/Raimund\ Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/WinUtil.cc
 
 # Subprojects
 .build-subprojects:

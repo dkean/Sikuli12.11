@@ -4,7 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_script_WinUtil.h</itemPath>
+      <itemPath>C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_system_WinUtil.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -57,7 +57,7 @@
             tool="1"
             flavor2="0">
       </item>
-      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_script_WinUtil.h"
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_system_WinUtil.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -74,11 +74,13 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <stripSymbols>true</stripSymbols>
           <incDir>
             <pElem>C:/Program Files/Java/jdk1.6.0_39/include</pElem>
             <pElem>C:/Program Files/Java/jdk1.6.0_39/include/win32</pElem>
           </incDir>
           <preprocessorList>
+            <Elem></Elem>
             <Elem>_WIN32_WINNT=0x0500</Elem>
           </preprocessorList>
         </ccTool>
@@ -93,6 +95,7 @@
           <linkerAddLib>
             <pElem>C:/Program Files/Java/jdk1.6.0_39/jre/bin</pElem>
           </linkerAddLib>
+          <stripSymbols>true</stripSymbols>
           <linkerLibItems>
             <linkerOptionItem>/C/Program\ Files/Java/jdk1.6.0_39/lib/jawt.lib</linkerOptionItem>
           </linkerLibItems>
@@ -104,7 +107,7 @@
             tool="1"
             flavor2="0">
       </item>
-      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_script_WinUtil.h"
+      <item path="C:/Users/Raimund Hocke/Documents/GitHub/Sikuli12.11/Resources/natives/Win/OSUtil/org_sikuli_system_WinUtil.h"
             ex="false"
             tool="3"
             flavor2="0">

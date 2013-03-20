@@ -50,6 +50,7 @@ CP=cp
 CCADMIN=CCadmin
 RESBASEDIR=../../Resources
 NATIVEDIR=${RESBASEDIR}/natives/Win/libs32
+TESTDIR=${SIKTEST}/libs
 
 
 # build
@@ -61,6 +62,7 @@ build: .build-post
 .build-post: .build-impl
 # Add your post 'build' code here...
 	${CP} ${CND_ARTIFACT_PATH_${CONF}} ${NATIVEDIR}/${CND_ARTIFACT_NAME_${CONF}}
+	${CP} ${CND_ARTIFACT_PATH_${CONF}} "${TESTDIR}/${CND_ARTIFACT_NAME_${CONF}}"
 
 # clean
 clean: .clean-post
