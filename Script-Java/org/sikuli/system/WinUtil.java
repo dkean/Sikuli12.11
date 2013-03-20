@@ -18,7 +18,6 @@ public class WinUtil implements OSUtil {
     FileManager.loadLibrary("WinUtil");
   }
 
-  // compatible to the old switchApp
   @Override
   public int switchApp(String appName) {
     return switchApp(appName, 0);
@@ -61,15 +60,6 @@ public class WinUtil implements OSUtil {
     return _getWindow(hwnd, winNum);
   }
 
-  protected Region _getWindow(long hwnd, int winNum) {
-    Rectangle rect = getRegion(hwnd, winNum);
-    Debug.log("getWindow: " + rect);
-    if (rect != null) {
-      return Region.create(rect);
-    }
-    return null;
-  }
-
   @Override
   public Region getFocusedWindow() {
     Rectangle rect = getFocusedRegion();
@@ -82,11 +72,20 @@ public class WinUtil implements OSUtil {
   @Override
   public native void bringWindowToFront(Window win, boolean ignoreMouse);
 
-  public static native long getHwnd(String appName, int winNum);
+  private static native long getHwnd(String appName, int winNum);
 
-  public static native long getHwnd(int pid, int winNum);
+  private static native long getHwnd(int pid, int winNum);
 
-  public static native Rectangle getRegion(long hwnd, int winNum);
+  private static native Rectangle getRegion(long hwnd, int winNum);
 
-  public static native Rectangle getFocusedRegion();
+  private static native Rectangle getFocusedRegion();
+
+  private Region _getWindow(long hwnd, int winNum) {
+    Rectangle rect = getRegion(hwnd, winNum);
+    Debug.log("getWindow: " + rect);
+    if (rect != null) {
+      return Region.create(rect);
+    }
+    return null;
+  }
 }

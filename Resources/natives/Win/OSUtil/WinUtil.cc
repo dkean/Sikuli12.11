@@ -13,6 +13,10 @@
 using namespace std;
 
 const int BUF_SIZE = 128;
+static const char *gAppName = NULL;
+static DWORD gPid;
+static int gWinNum, gWinCount;
+static HWND gFoundHandle;
 
 static bool strstr_i(char const *haystack, const char *pneedle){
    int count = 0;
@@ -38,10 +42,6 @@ static bool strstr_i(char const *haystack, const char *pneedle){
    return false;
 }
 
-
-static const char *gAppName = NULL;
-static DWORD gPid;
-
 static BOOL CALLBACK killWindowByPid(HWND handle, long lParam){
    DWORD pid;
    GetWindowThreadProcessId(handle, &pid);
@@ -54,8 +54,8 @@ static BOOL CALLBACK killWindowByPid(HWND handle, long lParam){
    return TRUE;
 }
 
-// pre-req: gAppName is set
 static BOOL CALLBACK killWindowByAppName(HWND handle, long lParam){
+// pre-req: gAppName is set
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
    if( strstr_i(buf, gAppName) != 0 ){
@@ -69,11 +69,9 @@ static BOOL CALLBACK killWindowByAppName(HWND handle, long lParam){
    return TRUE;
 }
 
-static int gWinNum, gWinCount;
-
+static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
 // pre-req: gAppName, gWinNum, gWinCount = 0 
 // output: gPid of the found window
-static BOOL CALLBACK focusWinByAppName(HWND handle, long lParam){
    char filename[BUF_SIZE], title[BUF_SIZE] ;
    GetWindowModuleFileName(handle, filename, BUF_SIZE);
    GetWindowText(handle, title, BUF_SIZE);
@@ -101,7 +99,6 @@ static BOOL CALLBACK focusWinByPid(HWND handle, long lParam){
    return TRUE;
 }
 
-static HWND gFoundHandle;
 static BOOL CALLBACK findWindowHandleByAppName(HWND handle, long lParam){
    char buf[BUF_SIZE];
    GetWindowText(handle, buf, BUF_SIZE);
@@ -129,7 +126,8 @@ static BOOL CALLBACK findWindowHandleByPid(HWND handle, long lParam){
    return TRUE;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__Ljava_lang_String_2I (JNIEnv *env, jobject jobj, jstring jAppName, jint jWinNum){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__Ljava_lang_String_2I 
+  (JNIEnv *env, jobject jobj, jstring jAppName, jint jWinNum){
 
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    gWinNum = jWinNum;
@@ -142,7 +140,8 @@ JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__Ljava_lang_Stri
    return gPid;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__II(JNIEnv *env, jobject jobj, jint jPid, jint jWinNum){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__II
+  (JNIEnv *env, jobject jobj, jint jPid, jint jWinNum){
    gPid = jPid;
    gWinNum = jWinNum;
    gWinCount = 0;
@@ -152,8 +151,9 @@ JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_switchApp__II(JNIEnv *env,
    return jPid;
 }
 
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_openApp
+  (JNIEnv *env, jobject jobj, jstring jAppName){
 //returns PID, or 0 if failed.
-JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_openApp(JNIEnv *env, jobject jobj, jstring jAppName){
    char *appName = (char *)env->GetStringUTFChars(jAppName, NULL);
    int n = strlen(appName);
    char *buf = new char[n+3];
@@ -183,7 +183,8 @@ JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__I
    return 0;
 }
 
-JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__Ljava_lang_String_2(JNIEnv *env, jobject jobj, jstring jAppName){
+JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__Ljava_lang_String_2
+  (JNIEnv *env, jobject jobj, jstring jAppName){
    gAppName = env->GetStringUTFChars(jAppName, NULL);
    BOOL result = EnumWindows((WNDENUMPROC)killWindowByAppName, 0);
    env->ReleaseStringUTFChars(jAppName, gAppName);
@@ -191,7 +192,6 @@ JNIEXPORT jint JNICALL Java_org_sikuli_system_WinUtil_closeApp__Ljava_lang_Strin
       return -1;
    return 0;
 }
-
 
 HWND getHwndFromComponent(jobject parent, JNIEnv *env) {
    JAWT awt;
@@ -241,8 +241,7 @@ HWND getHwndFromComponent(jobject parent, JNIEnv *env) {
    return hwnd;
 }
 
-void setLayeredAndTransparent( HWND windowHandle )
-{
+void setLayeredAndTransparent( HWND windowHandle ) {
 HWND hwnd = ( HWND )windowHandle;
 LONG_PTR winLong = GetWindowLongPtr( hwnd, GWL_EXSTYLE );
 // Set layered and transparent
@@ -282,29 +281,22 @@ void setTopMost( HWND windowHandle ){
      SWP_NOACTIVATE | SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE );
 }
 
-
 void makeClickThrough( HWND windowHandle ){
    setTopMost( windowHandle );
    HRESULT hr = SetLayeredWindowAttributes(
      (HWND) windowHandle,
-     RGB(0,0,0),
-     // RGB(255,255,255),
-     100, // full transparency
-     //255, // no transparency
-//     LWA_ALPHA );
-     LWA_COLORKEY );
+     RGB(0,0,0), 150, 
+     LWA_ALPHA );
+//     LWA_COLORKEY );
 }
 
 JNIEXPORT void JNICALL Java_org_sikuli_system_WinUtil_bringWindowToFront
-  (JNIEnv *env, jclass jobj, jobject jwin, jboolean jIgnoreMouse){
-   
+  (JNIEnv *env, jobject jobj, jobject jwin, jboolean jIgnoreMouse){   
    HWND hwnd = getHwndFromComponent(jwin, env);
-   setLayeredAndTransparent(hwnd);
-   //takeWindowOffTaskbar(hwnd);
-   if(jIgnoreMouse)
-      makeClickThrough(hwnd);
+  setLayeredAndTransparent(hwnd);
+  //takeWindowOffTaskbar(hwnd);
+  //if(jIgnoreMouse) makeClickThrough(hwnd);
 }
-
 
 JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__II
   (JNIEnv *env, jclass jobj, jint jPid, jint jWinNum){
@@ -318,7 +310,6 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__II
    return (jlong)gFoundHandle;
   
 }
-
 
 JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__Ljava_lang_String_2I
   (JNIEnv *env, jclass jobj, jstring jAppName, jint jWinNum){
@@ -334,12 +325,9 @@ JNIEXPORT jlong JNICALL Java_org_sikuli_system_WinUtil_getHwnd__Ljava_lang_Strin
    return (jlong)gFoundHandle;
   }
 
-
-#define CLASS_RECTANGLE "java/awt/Rectangle"
-
-//FIXME
 jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
-   jclass jClassRect = env->FindClass(CLASS_RECTANGLE);
+//TODO FIXME?
+   jclass jClassRect = env->FindClass("java/awt/Rectangle");
    jmethodID initMethod = (env)->GetMethodID(jClassRect, "setRect", "(DDDD)V");
    jobject ret = NULL;
    if(initMethod!=NULL){
@@ -353,11 +341,6 @@ jobject convertRectToJRectangle(JNIEnv *env, const RECT& r){
    return ret;
 }
 
-/*
- * Class:     org_sikuli_system_WinUtil
- * Method:    getRegion
- * Signature: (JI)Ljava/awt/Rectangle;
- */
 JNIEXPORT jobject JNICALL Java_org_sikuli_system_WinUtil_getRegion
   (JNIEnv *env, jclass jobj, jlong jHwnd, jint jWinNum){
      RECT rect;
@@ -369,11 +352,6 @@ JNIEXPORT jobject JNICALL Java_org_sikuli_system_WinUtil_getRegion
      return NULL;
   }
 
-/*
- * Class:     org_sikuli_system_WinUtil
- * Method:    getFocusedRegion
- * Signature: ()Ljava/awt/Rectangle;
- */
 JNIEXPORT jobject JNICALL Java_org_sikuli_system_WinUtil_getFocusedRegion
   (JNIEnv *env, jclass jobj){
      RECT rect;
