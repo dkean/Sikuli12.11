@@ -4,8 +4,9 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Sikuli-Guide</name>
+            <explicit-platform explicit-source-supported="true"/>
             <source-roots>
-                <root id="src.guide-source.dir" name="guide-source"/>
+                <root id="src.guide-source.dir" name="guide"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>
