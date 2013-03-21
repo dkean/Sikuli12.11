@@ -32,3 +32,5 @@ Resources/java/cachedir/packages
 /Projects/WinVisionProxy64/dist/
 /Projects/Sikuli-Guide/build/
 /Projects/Sikuli-Guide/dist/
+/Projects/Sikuli-Guide/cachedir/
+/Projects/Sikuli-Guide/nbproject/private/
