@@ -5,6 +5,7 @@ from org.sikuli.script import Pattern
 from org.sikuli.script import Location
 from org.sikuli.script import Region
 from org.sikuli.script import Screen
+from org.sikuli.script import Debug
 
 from org.sikuli.guide import SikuliGuide
 from org.sikuli.guide import Portal
@@ -39,7 +40,11 @@ from org.sikuli.guide.model import GUINode
 
 s = ScreenUnion()
 _g = SikuliGuide(s)
-fc = (255,145,0)
+
+#TODO special Steffen
+specialSteffen = False
+#END TODO special Steffen
+
 
 #######################
 #      Core API       #
@@ -51,11 +56,13 @@ fc = (255,145,0)
 
 def circle(target, **kwargs):
     comp = SikuliGuideCircle()
+#TODO special Steffen
     col = kwargs.pop("back", None)
     if col:
         comp.setColor(col[0], col[1], col[2])
     else:
-        if fc: comp.setColor(fc[0], fc[1], fc[2])
+        if specialSteffen: comp.setColor(255, 145, 0)
+#END TODO special Steffen
     return _addComponentHelper(comp, target, side = 'over', **kwargs)
 
 def rectangle(target, **kwargs):
@@ -88,11 +95,13 @@ def arrow(srcTarget, destTarget, **kwargs):
     comp1 = getComponentFromTarget(srcTarget)
     comp2 = getComponentFromTarget(destTarget)
     comp = SikuliGuideArrow(comp1, comp2)
+#TODO special Steffen
     col = kwargs.pop("front", None)
     if col:
         comp.setColor(col[0], col[1], col[2])
     else:
-        if fc: comp.setColor(fc[0], fc[1], fc[2])
+        if specialSteffen: comp.setColor(255, 145, 0)
+#END TODO special Steffen
     _g.addToFront(comp)
     return comp
 
@@ -127,36 +136,37 @@ def bracket(target, side='left', **kwargs):
     comp = SikuliGuideBracket()
     return _addComponentHelper(comp, target, side = side, **kwargs)
 
-def flag(target, text='    ', side = 'left', **kwargs):
-    comp = SikuliGuideFlag(text)
-    return _addComponentHelper(comp, target, side = side, **kwargs)
+def flag(target, t='    ', **kwargs):
+    comp = SikuliGuideFlag(t)
+    s = kwargs.pop("side", 'left')
+    return _addComponentHelper(comp, target, side = s, **kwargs)
 
-def text(target, txt, fontsize = 16, side = 'bottom', **kwargs):
+def text(target, txt, **kwargs):
     comp = SikuliGuideText(txt)
-    comp.setFontSize(fontsize)
-    return _addComponentHelper(comp, target, side = side , **kwargs)
+    s = kwargs.pop("side", 'bottom')
+    f = kwargs.pop("fontsize", 16)
+    return _addComponentHelper(comp, target, side = s, fontsize = f, **kwargs)
 
-def textcolored(target, txt, front=(255,255,255), back=(242,145,0), 
-    fontsize = 16, side = 'bottom', **kwargs):
-    return text(target, txt, front=(255,255,255), back=(242,145,0), 
-           fontsize = 16, side = 'bottom', **kwargs)
-
-def callout(target, txt, fontsize = 16, side='right', **kwargs):
+def callout(target, txt, **kwargs):
     comp = SikuliGuideCallout( txt)
-    #comp.setFontSize(fontsize)
-    return _addComponentHelper(comp, target, side = side , **kwargs)
-
-def calloutcolored(target, txt, front=(255,255,255), back=(242,145,0), 
-    fontsize = 16, side='right', **kwargs):
-    return callout(target, txt, front=(255,255,255), back=(242,145,0),
-           fontsize = 16, side='right', **kwargs)
+    s = kwargs.pop("side", 'right')
+    f = kwargs.pop("fontsize", 16)
+    return _addComponentHelper(comp, target, side = s, fontsize = f, **kwargs)
 
 def tooltip(target, txt,**kwargs ):
-    return text(target, txt, fontsize = 8,**kwargs)
+    return text(target, txt, fontsize = 8, **kwargs)
 
 def image(target, imgurl, **kwargs):
     comp = SikuliGuideImage(imgurl)
     return _addComponentHelper(comp, target, **kwargs)
+
+#TODO special Steffen
+def textcolored(target, txt, front=(255,255,255), back=(242,145,0), **kwargs):
+    return text(target, txt, front=(255,255,255), back=(242,145,0), **kwargs)
+
+def calloutcolored(target, txt, front=(255,255,255), back=(242,145,0), **kwargs):
+    return callout(target, txt, front=(255,255,255), back=(242,145,0), **kwargs)
+#END TODO special Steffen
 
 #=====================
 # Interactive Elements
@@ -203,7 +213,18 @@ def setDefaultTimeout(timeout):
 
 def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0), 
                         horizontalalignment = 'center', verticalalignment = 'center', 
+                        font = None, fontsize = 0, width = 0,
                         shadow = 'default', front = None, back = None, frame = None, text = None):
+
+    # set the component's colors
+    comp.setColors(front, back, frame, text)
+    
+    # set the component's font
+    comp.setFont(font, fontsize)
+    
+    # set the components width
+    if width > 0: comp.setMaxWidth(width)
+    
     # Margin
     if margin:
         if isinstance(margin, tuple):
@@ -244,6 +265,7 @@ def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0),
         # absolute location wrt a point (specified as (x,y))
         comp.setLocationRelativeToRegion(Region(target[0], target[1],1,1), Layout.RIGHT)
     else:
+        targetComponent = None
         if isinstance(target, str):
             # relative location to a string (image filename)
             targetComponent = anchor(Pattern(target))
@@ -254,9 +276,14 @@ def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0),
             targetComponent.setOpacity(0)
         elif isinstance(target, SikuliGuideComponent):
             targetComponent = target
-        comp.setLocationRelativeToComponent(targetComponent, sideConstant)
+        if targetComponent:
+            comp.setLocationRelativeToComponent(targetComponent, sideConstant)
+        else:
+            Debug.error("GuideComponentSetup: invalid target: ", target)
+            return None
 
     # set shadow, different sizes for different types of components
+#TODO shadow handling
     if shadow == 'default':
         if (isinstance(comp, SikuliGuideCircle) or \
                 isinstance(comp, SikuliGuideRectangle) or \
@@ -265,10 +292,8 @@ def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0),
         elif not (isinstance(comp, SikuliGuideSpotlight)):
             comp.setShadow(10,2)
 
-    # set the component's colors
-    comp.setColors(front, back, frame, text)
-
     # add the component to guide
+    comp.updateComponent()
     _g.addToFront(comp)
     return comp
 
