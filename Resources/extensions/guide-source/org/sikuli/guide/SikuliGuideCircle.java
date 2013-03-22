@@ -4,7 +4,6 @@
 package org.sikuli.guide;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -15,7 +14,7 @@ import java.awt.geom.Ellipse2D;
 import org.sikuli.script.Region;
 
 public class SikuliGuideCircle extends SikuliGuideComponent {
-  
+
   public SikuliGuideCircle(Region region) {
     super();
     if (region != null) {
@@ -30,7 +29,7 @@ public class SikuliGuideCircle extends SikuliGuideComponent {
     super();
     init();
   }
-  
+
   private void init() {
     setColors(null, color, null, null, null);
   }

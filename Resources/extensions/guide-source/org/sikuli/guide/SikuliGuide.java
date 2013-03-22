@@ -142,7 +142,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     startTracking();
     setVisible(true);
     toFront();
-    
+
     //<editor-fold defaultstate="collapsed" desc="deal with interactive search elements">
     if (search != null) {
       search.setVisible(true);
