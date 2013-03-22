@@ -1,55 +1,65 @@
 /**
- * 
+ *
  */
 package org.sikuli.guide;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JLabel;
 
 import javax.swing.JTextPane;
 
-import org.sikuli.script.Debug;
+class HTMLTextPane extends JTextPane {
 
-class HTMLTextPane extends JTextPane{
-   static final int DEFAULT_MAXIMUM_WIDTH = 300;
-   
-   int maximum_width;
-   String text;
-   public Dimension preferredDimension;
-   public HTMLTextPane(){
-      maximum_width = DEFAULT_MAXIMUM_WIDTH;         
-      setContentType("text/html");
-      setBackground(Color.yellow);
-//      setMaximumSize(new Dimension(500,Integer.MAX_VALUE));
-   }
-         
-   @Override
-   public void setText(String text){  
-      this.text = text;
-      String htmltxt = "<html><font size=5>"+text+"</font></html>";
-      
-      super.setText(htmltxt);
-      
-      JTextPane tp = new JTextPane();
-      tp.setText(htmltxt);
+  int maximum_width;
+  String text;
+  public Dimension preferredDimension;
+  SikuliGuideComponent comp = null;
+  String htmltxt;
 
-      if (getPreferredSize().getWidth() > maximum_width){
-         
-         htmltxt = "<html><div width='"+maximum_width+"'><font size=5>"+text+"</font></div></html>";
-         super.setText(htmltxt);
+  public HTMLTextPane(SikuliGuideComponent comp) {
+    this.comp = comp;
+    maximum_width = comp.maxWidth - 10;
+    init();
+  }
+
+  public HTMLTextPane() {
+    maximum_width = 400;
+    init();
+  }
+
+  private void init() {
+    setContentType("text/html");
+  }
+
+  @Override
+  public void setText(String text) {
+    this.text = text;
+    if (comp != null) {
+      maximum_width = comp.maxWidth - 2 * comp.PADDING_X;
+      htmltxt = "<html><div style='" + comp.getStyleString() + "'>"
+              + text + "</div></html>";
+    } else {
+      htmltxt = "<html><font size=5>"+text+"</font></html>";
+    }
+    super.setText(htmltxt);
+    JTextPane tp = new JTextPane();
+    tp.setText(htmltxt);
+    if (getPreferredSize().getWidth() > maximum_width) {
+      // hack to limit the width of the text to width
+      if (comp != null) {
+        htmltxt = "<html><div style='width:" + maximum_width + ";" + comp.getStyleString() + "'>"
+                  + text + "</div></html>";
+      } else {
+        htmltxt = "<html><div width='"+maximum_width+"'><font size=5>"+text+"</font></div></html>";
       }
-      
-      setSize(getPreferredSize());
-   }
-      
-   
-   @Override
-   public String getText(){
-      return this.text;
-   }
-   
-   void setMaximumWidth(int maximum_width){
-      this.maximum_width = maximum_width;
-      setText(this.text);      
-   }
+      super.setText(htmltxt);
+    }
+    setSize(getPreferredSize());
+  }
+
+  @Override
+  public String getText() {
+    return this.text;
+  }
+
 }

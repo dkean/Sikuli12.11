@@ -1,10 +1,10 @@
 /**
- * 
+ *
  */
 package org.sikuli.guide;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -12,94 +12,54 @@ import javax.swing.JLabel;
 
 public class SikuliGuideText extends SikuliGuideComponent {
 
-   static final int SHADOW_SIZE = 10;
-   static final int DEFAULT_MAXIMUM_WIDTH = 300;
+  JLabel label;
 
-   String text;
-   JLabel label;
-   public SikuliGuideText(String text){         
-      super();
-      this.text = text;
+  public SikuliGuideText(String text) {
+    super();
+    init(text);
+  }
 
-      label = new JLabel();
-      add(label);
+  private void init(String text) {
+    this.text = text;
+    label = new JLabel();
+    add(label);
+    fontSize = 12;
+    label.setFont(new Font("SansSerif", Font.PLAIN, 36));
+    updateComponent();
+  }
 
-      setMaximumWidth(DEFAULT_MAXIMUM_WIDTH);
-      updateLabel();      
-   }
-
-   public void setMaximumWidth(int max_width){
-      this.max_width = max_width;
-      updateLabel();
-      updateSize();
-   }
-      
-   public void setText(String text){
-      this.text = text;
-      updateLabel();
-   }
-   
-   public String getText(){
-      return text;
-   }
-   void updateLabel(){
-
-      String htmltxt = 
-         "<html><div style='" + getStyleString() + "'>"
-         + text + "</div></html>";
-      label.setText(htmltxt);
-
-      Dimension size = label.getPreferredSize();
-      if (size.width > max_width){
-         // hack to limit the width of the text to width
-         htmltxt = 
-            "<html><div style='width:" + max_width + ";" + getStyleString() + "'>"
+  @Override
+  public void updateComponent() {
+    String htmltxt = "<html><div style='" + getStyleString() + "'>"
             + text + "</div></html>";
-         label.setText(htmltxt);
-      }
-      updateSize();
-   }
+    label.setText(htmltxt);
+    Dimension size = label.getPreferredSize();
+    if (size.width > maxWidth) {
+      // hack to limit the width of the text to width
+      htmltxt = "<html><div style='width:" + maxWidth + ";" + getStyleString() + "'>"
+                + text + "</div></html>";
+      label.setText(htmltxt);
+      size = label.getPreferredSize();
+    }
+    label.setSize(size);
+    setActualSize(size);
+  }
 
-   void updateSize(){
-      Dimension size = label.getPreferredSize();
-      label.setSize(size);
-      setActualSize(size);
-   }
+  @Override
+  public void paintComponent(Graphics g) {
+    Dimension originalSize = label.getPreferredSize();
+    Dimension actualSize = getActualSize();
+    float scalex = 1f * actualSize.width / originalSize.width;
+    float scaley = 1f * actualSize.height / originalSize.height;
+    ((Graphics2D) g).scale(scalex, scaley);
+    super.paintComponent(g);
+  }
+//TODO make text editable??
+  TextPropertyEditor ed = null;
 
-
-   int fontSize = 12;
-   int max_width = Integer.MAX_VALUE;
-   String getStyleString(){
-      //return "font-size:"+fontSize+"px;color:white;background-color:#333333;padding:3px";
-      //return "font-size:"+fontSize+"px;color:black;background-color:#FFF1A8;padding:3px";
-      return "font-size:"+fontSize+"px;color:black;background-color:#FFFF00;padding:3px";
-   }
-
-   public void setFontSize(int i) {
-      fontSize = i;
-      updateLabel();
-   }
-   
-   public void paintComponent(Graphics g){
-      
-      Dimension originalSize = label.getPreferredSize();
-      Dimension actualSize = getActualSize();
-      
-      float scalex = 1f * actualSize.width / originalSize.width;
-      float scaley = 1f * actualSize.height / originalSize.height;      
-      ((Graphics2D) g).scale(scalex, scaley);
-      super.paintComponent(g);
-   }
-
-   
-   TextPropertyEditor ed = null;
-   public void setEditable(boolean editable){
-      if (editable){
-         
-      }else{
-         
- //        this.getParent().remove(ed);
-         
-      }
-   }
+  public void setEditable(boolean editable) {
+    if (editable) {
+    } else {
+    }
+  }
 }
