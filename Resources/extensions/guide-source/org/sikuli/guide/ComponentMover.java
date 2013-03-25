@@ -1,4 +1,4 @@
-package org.sikuli.guide.util;
+package org.sikuli.guide;
 
 
 import java.awt.Component;

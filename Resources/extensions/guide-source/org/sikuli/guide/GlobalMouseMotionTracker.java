@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sikuli.guide;
 
@@ -9,17 +9,16 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.Location;
 
 public class GlobalMouseMotionTracker implements ActionListener {
 
-   
+
    final static int IDLE_COUNT_THRESHOLD = 200;
-   
+
    // this keeps track of how many times the cursor stays stationary
-   int idle_count;  
+   int idle_count;
 
    Location lastLocation = null;
 
@@ -31,7 +30,7 @@ public class GlobalMouseMotionTracker implements ActionListener {
       return _instance;
    }
 
-   ArrayList<GlobalMouseMotionListener> listeners 
+   ArrayList<GlobalMouseMotionListener> listeners
    = new ArrayList<GlobalMouseMotionListener>();
 
    public void addListener(GlobalMouseMotionListener listener){
@@ -45,19 +44,19 @@ public class GlobalMouseMotionTracker implements ActionListener {
 
    public void start(){
       timer.start();
-      //Debug.info("[GlobalMouseMotionTracker] started");      
+      //Debug.info("[GlobalMouseMotionTracker] started");
    }
 
    public void stop(){
       timer.stop();
-      //Debug.info("[GlobalMouseMotionTracker] stopped");      
+      //Debug.info("[GlobalMouseMotionTracker] stopped");
    }
-   
+
    @Override
    public void actionPerformed(ActionEvent arg) {
 
       Location newLocation = Env.getMouseLocation();
-      //Debug.info("Mouse loction: " + newLocation);               
+      //Debug.info("Mouse loction: " + newLocation);
 
 
       if (lastLocation != null){
@@ -70,14 +69,14 @@ public class GlobalMouseMotionTracker implements ActionListener {
             }
 
             idle_count = 0;
-            
-           
+
+
 
          }else{
             idle_count++;
          }
 
-         //Debug.info("idle: "  + idle_count);            
+         //Debug.info("idle: "  + idle_count);
          if (idle_count > IDLE_COUNT_THRESHOLD){
             for (GlobalMouseMotionListener listener : listeners){
                listener.globalMouseIdled(newLocation.x,newLocation.y);
@@ -85,9 +84,9 @@ public class GlobalMouseMotionTracker implements ActionListener {
             idle_count = 0;
          }
 
-         
+
       }
-      
+
       lastLocation = newLocation;
    }
 }

@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Env;
 import org.sikuli.script.OS;

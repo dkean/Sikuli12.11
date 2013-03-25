@@ -54,12 +54,13 @@ public class SikuliGuideText extends SikuliGuideComponent {
     ((Graphics2D) g).scale(scalex, scaley);
     super.paintComponent(g);
   }
-//TODO make text editable??
-  TextPropertyEditor ed = null;
 
-  public void setEditable(boolean editable) {
-    if (editable) {
-    } else {
-    }
-  }
+  //<editor-fold defaultstate="collapsed" desc="TODO make text editable??">
+  /*  TextPropertyEditor ed = null;
+   *
+   * public void setEditable(boolean editable) {
+   * if (editable) {
+   * } else {
+   * }
+   * }*/  //</editor-fold>
 }

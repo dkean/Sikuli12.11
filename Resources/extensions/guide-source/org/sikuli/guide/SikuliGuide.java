@@ -15,19 +15,14 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.sikuli.guide.SikuliGuideAnchor.AnchorListener;
-import org.sikuli.guide.SikuliGuideComponent.Layout;
 import org.sikuli.guide.Transition.TransitionListener;
-import org.sikuli.script.Debug;
 import org.sikuli.script.EventObserver;
 import org.sikuli.script.EventSubject;
-import org.sikuli.script.FindFailed;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.OverlayTransparentWindow;
 import org.sikuli.script.Settings;
-
 
 public class SikuliGuide extends OverlayTransparentWindow implements EventObserver {
 
@@ -42,6 +37,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   public void setDebug() {
     _debug = true;
   }
+
   Robot robot;
   Region _region;
   JPanel content = null;
@@ -50,8 +46,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   ArrayList<Tracker> trackers = new ArrayList<Tracker>();
   Transition triggeredTransition;
   ClickableWindow clickableWindow = null;
-  SearchDialog search = null;
-  Beam beam = null;
+  SikuliGuideBeam beam = null;
 
   public SikuliGuide() {
     super(new Color(0.1f, 0f, 0f, 0.1f), null);
@@ -134,8 +129,8 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   public String showNow() {
     String cmd = "Next";
     if (content.getComponentCount() == 0
-            && transitions.isEmpty()
-            && search == null) {
+            && transitions.isEmpty() ) {
+            //&& search == null) {
       return cmd;
     }
     startAnimation();
@@ -144,25 +139,24 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     toFront();
 
     //<editor-fold defaultstate="collapsed" desc="deal with interactive search elements">
-    if (search != null) {
-      search.setVisible(true);
-      search.requestFocus();
-      synchronized (this) {
-        try {
-          wait();
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-      search.dispose();
-      search.setVisible(false);
-      String key = search.getSelectedKey();
-      search = null;
-      reset();
-      focusBelow();
-      return key;
-    }
-    //</editor-fold>
+    /*    if (search != null) {
+     * search.setVisible(true);
+     * search.requestFocus();
+     * synchronized (this) {
+     * try {
+     * wait();
+     * } catch (InterruptedException e) {
+     * e.printStackTrace();
+     * }
+     * }
+     * search.dispose();
+     * search.setVisible(false);
+     * String key = search.getSelectedKey();
+     * search = null;
+     * reset();
+     * focusBelow();
+     * return key;
+     * }*/    //</editor-fold>
 
     if (transitions.isEmpty()) {
       // if no transition is added, use the default timeout transition
@@ -211,7 +205,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   }
 
   public void addComponent(SikuliGuideComponent comp, int index) {
-    if (comp instanceof Clickable) {
+    if (comp instanceof SikuliGuideClickable) {
       // add to the guide window
       content.add(comp, 0);
       if (clickableWindow == null) {
@@ -224,7 +218,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
           }
         });
       }
-      clickableWindow.addClickable((Clickable) comp);
+      clickableWindow.addClickable((SikuliGuideClickable) comp);
       addTransition(clickableWindow);
       return;
     }
@@ -277,22 +271,35 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     return ret;
   }
 
-  public void addSearchDialog() {
-    search = new SearchDialog(this, "Enter the search string:");
-    //search = new GUISearchDialog(this);
-    search.setLocationRelativeTo(null);
-    search.setAlwaysOnTop(true);
-  }
+//<editor-fold defaultstate="collapsed" desc="TODO not used: searchDialog">
+  //  SearchDialog search = null;
 
-  public void setSearchDialog(SearchDialog search) {
-    this.search = search;
-  }
+  /*  public void addSearchDialog() {
+   * search = new SearchDialog(this, "Enter the search string:");
+   * //search = new GUISearchDialog(this);
+   * search.setLocationRelativeTo(null);
+   * search.setAlwaysOnTop(true);
+   * }
+   *
+   * public void setSearchDialog(SearchDialog search) {
+   * this.search = search;
+   * }
+   *
+   * public void addSearchEntry(String key, Region region) {
+   * if (search == null) {
+   * addSearchDialog();
+   * }
+   * search.addEntry(key, region);
+   * }*/
+  //</editor-fold>
 
-  public void addSearchEntry(String key, Region region) {
-    if (search == null) {
-      addSearchDialog();
+  boolean hasSpotlight() {
+    for (Component comp : content.getComponents()) {
+      if (comp instanceof SikuliGuideSpotlight) {
+        return true;
+      }
     }
-    search.addEntry(key, region);
+    return false;
   }
 
   public void updateSpotlights(ArrayList<Region> regions) {
@@ -326,33 +333,6 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     }
   }
 
-  //<editor-fold defaultstate="collapsed" desc="TODO commented out">
-  //   public SikuliGuideSpotlight addSpotlight(Region region){
-  //      return addSpotlight(region, SikuliGuideSpotlight.RECTANGLE);
-  //   }
-  //   public SikuliGuideSpotlight addSpotlight(Region region, int style){
-  //      //      Rectangle rect = new Rectangle(region.getRect());
-  //      //      rect.translate(-_region.x, -_region.y);
-  //      //
-  //
-  //      SikuliGuideSpotlight spotlight = new SikuliGuideSpotlight(this,region);
-  //      spotlight.setShape(style);
-  //      addComponent(spotlight);
-  //      //_spotlights.add(spotlight);
-  //
-  //      // if there's any spotlight added, darken the
-  //      // background
-  //      //setBackground(new Color(0f,0f,0f,0.2f));
-  //      //content.setBackground(new Color(0f,0f,0f,0.2f));
-  //
-  //      return spotlight;
-  //   }
-  //   public void addRectangle(Region region){
-  //      Rectangle rect = new Rectangle(region.getRect());
-  //      rect.translate(-_region.x, -_region.y);
-  //      addAnnotation(new AnnotationRectangle(rect));
-  //   }
-  //</editor-fold>
   public void setDarken(boolean darken) {
 //TODO check against transparency
     if (darken) {
@@ -365,12 +345,20 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   }
 
   public SikuliGuideComponent addBeam(Region r) {
-    beam = new Beam(this, r);
+    beam = new SikuliGuideBeam(this, r);
     SikuliGuideAnchor anchor = new SikuliGuideAnchor(r);
     addTransition(beam);
     return anchor;
   }
 
+//<editor-fold defaultstate="collapsed" desc="TODO not used: addMagnet">
+  /*  public void addMagnifier(Region region) {
+   * Magnifier mag = new Magnifier(this, region);
+   * content.add(mag);
+   * }*/
+  //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="TODO not used: setDialog">
   public void setDialog(String message) {
     TransitionDialog dialog = new TransitionDialog();
     dialog.setText(message);
@@ -382,13 +370,14 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     transition = dialog_;
   }
 
+  //</editor-fold>
+
   public void stopAnimation() {
     for (Component co : content.getComponents()) {
 
-      if (co instanceof Magnifier) {
-        ((Magnifier) co).start();
-      }
-
+      /*      if (co instanceof Magnifier) {
+       * ((Magnifier) co).start();
+       * }*/
       if (co instanceof SikuliGuideComponent) {
         ((SikuliGuideComponent) co).stopAnimation();
       }
@@ -398,28 +387,13 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   public void startAnimation() {
     for (Component co : content.getComponents()) {
 
-      if (co instanceof Magnifier) {
-        ((Magnifier) co).start();
-      }
-
+      /*      if (co instanceof Magnifier) {
+       * ((Magnifier) co).start();
+       * }*/
       if (co instanceof SikuliGuideComponent) {
         ((SikuliGuideComponent) co).startAnimation();
       }
     }
-  }
-
-  boolean hasSpotlight() {
-    for (Component comp : content.getComponents()) {
-      if (comp instanceof SikuliGuideSpotlight) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public void addMagnifier(Region region) {
-    Magnifier mag = new Magnifier(this, region);
-    content.add(mag);
   }
 
   public void addTransition(Transition t) {
@@ -506,64 +480,63 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     abstract void patternAnchored();
   }
 
-  public void playStepOnWebpage(Step step, Region leftmarker, Region rightmarker) {
-
-    //Point screenshotOrigin = new Point(614,166);
-
-    int originalWidth = step.getScreenImage().getWidth();
-    int originalHeight = step.getScreenImage().getHeight();
-
-    int displayWidth = rightmarker.x + rightmarker.w - leftmarker.x;
-    float scale = 1.0f * displayWidth / originalWidth;
-    Debug.info("scale:" + scale);
-    int displayHeight = (int) (originalHeight * scale);
-
-    int originX = leftmarker.x;
-    int originY = leftmarker.y - displayHeight;
-    Point screenshotOrigin = new Point(originX, originY);
-
-    //scale = 1.0f;
-    //Point screenshotOrigin = new Point(715,192);
-    //Point screenshotOrigin = new Point(953,257);//
-
-    Debug.info("Step size:" + step.getView().getSize());
-    //Dimension displaySize = new Dimension(480,363);
-    //float scale = 480f/640f;
-
-    Screen s = new Screen();
-    for (Part part : step.getParts()) {
-
-      Point targetOrigin = part.getTargetOrigin();
-
-      Point screenOrigin = new Point();
-      screenOrigin.x = screenshotOrigin.x + (int) (targetOrigin.x * scale);
-      screenOrigin.y = screenshotOrigin.y + (int) (targetOrigin.y * scale);
-
-      part.setAnchorScreenLocation(screenOrigin);
-    }
-
-    playStep(step, scale);
-  }
-
-  public void playStep(Step step) {
-    playStep(step, 1.0f);
-  }
-
-  public void play(ArrayList<SklStepModel> steps) {
-    for (SklStepModel step : steps) {
-      String ret = playStep(step);
-      if (ret == null) {
-        continue;
-      }
-
-      if (ret.equals("Exit")) {
-        return;
-      }
-    }
-
-  }
-
-  //<editor-fold defaultstate="collapsed" desc="TODO commented out">
+//<editor-fold defaultstate="collapsed" desc="TODO not used: play steps">
+  /*  public void playStepOnWebpage(Step step, Region leftmarker, Region rightmarker) {
+   *
+   * //Point screenshotOrigin = new Point(614,166);
+   *
+   * int originalWidth = step.getScreenImage().getWidth();
+   * int originalHeight = step.getScreenImage().getHeight();
+   *
+   * int displayWidth = rightmarker.x + rightmarker.w - leftmarker.x;
+   * float scale = 1.0f * displayWidth / originalWidth;
+   * Debug.info("scale:" + scale);
+   * int displayHeight = (int) (originalHeight * scale);
+   *
+   * int originX = leftmarker.x;
+   * int originY = leftmarker.y - displayHeight;
+   * Point screenshotOrigin = new Point(originX, originY);
+   *
+   * //scale = 1.0f;
+   * //Point screenshotOrigin = new Point(715,192);
+   * //Point screenshotOrigin = new Point(953,257);//
+   *
+   * Debug.info("Step size:" + step.getView().getSize());
+   * //Dimension displaySize = new Dimension(480,363);
+   * //float scale = 480f/640f;
+   *
+   * Screen s = new Screen();
+   * for (Part part : step.getParts()) {
+   *
+   * Point targetOrigin = part.getTargetOrigin();
+   *
+   * Point screenOrigin = new Point();
+   * screenOrigin.x = screenshotOrigin.x + (int) (targetOrigin.x * scale);
+   * screenOrigin.y = screenshotOrigin.y + (int) (targetOrigin.y * scale);
+   *
+   * part.setAnchorScreenLocation(screenOrigin);
+   * }
+   *
+   * playStep(step, scale);
+   * }
+   *
+   * public void playStep(Step step) {
+   * playStep(step, 1.0f);
+   * }
+   *
+   * public void play(ArrayList<SklStepModel> steps) {
+   * for (SklStepModel step : steps) {
+   * String ret = playStep(step);
+   * if (ret == null) {
+   * continue;
+   * }
+   *
+   * if (ret.equals("Exit")) {
+   * return;
+   * }
+   * }
+   *
+   * }*/
   //   public void playStepList(SklStepListModel stepListModel){
   //      for (Enumeration<?> e = stepListModel.elements() ; e.hasMoreElements() ;) {
   //          SklStepModel eachStepModel = (SklStepModel) e.nextElement();
@@ -577,158 +550,158 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   //       }
   //
   //   }
-  //</editor-fold>
-  public String playStep(SklStepModel step_) {
+  /*  public String playStep(SklStepModel step_) {
+   *
+   * SklStepModel step = null;
+   * try {
+   * step = (SklStepModel) step_.clone();
+   * } catch (CloneNotSupportedException e1) {
+   * e1.printStackTrace();
+   * }
+   *
+   * for (SklModel model : step.getModels()) {
+   * model.setOpacity(0f);
+   * SklView view = SklViewFactory.createView(model);
+   * addToFront(view);
+   * }
+   *
+   *
+   * SikuliGuideButton btn = new SikuliGuideButton("Exit");
+   * btn.setActualLocation(10, 50);
+   * addToFront(btn);
+   *
+   * SikuliGuideButton skip = new SikuliGuideButton("Skip");
+   * skip.setActualLocation(90, 50);
+   * addToFront(skip);
+   *
+   * // do these to allow static elements to be drawn
+   * setVisible(true);
+   * toFront();
+   *
+   * step.startTracking(this);
+   * step.startAnimation();
+   *
+   * String ret = showNow();
+   * Debug.info("[SikuliGuide.playStep] ret = " + ret);
+   *
+   * return ret;
+   * }
+   *
+   * public void playStep(Step step, final float scale) {
+   *
+   *
+   * SikuliGuideImage screenshot = new SikuliGuideImage(step.getScreenImage());
+   * screenshot.setLocationRelativeToRegion(new Screen(), Layout.INSIDE);
+   * //      screenshot.setOpacity(0);
+   * //      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.1f,0.9f));
+   * //      // TODO replace these with a Pause animation
+   * //      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
+   * //      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
+   * //      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,1,0));
+   * //      addToFront(screenshot);
+   *
+   * for (final Part part : step.getParts()) {
+   *
+   * Pattern pattern = part.getTargetPattern();
+   *
+   * BufferedImage patternImage = null;
+   * try {
+   * patternImage = pattern.getImage();
+   * } catch (Exception e) {
+   * }
+   *
+   * final SikuliGuideAnchor anchor = new SikuliGuideAnchor(pattern);
+   * anchor.setEditable(true);
+   * anchor.setOpacity(1f);
+   * anchor.setAnimateAnchoring(true);
+   *
+   * Point anchorLocation = new Point(part.getTargetOrigin());
+   * Point screenshotLocation = screenshot.getActualLocation();
+   * anchorLocation.translate(screenshotLocation.x, screenshotLocation.y);
+   * anchor.setActualLocation(anchorLocation);
+   *
+   * SikuliGuideClickable clickable = new SikuliGuideClickable(null);
+   * clickable.setLocationRelativeToComponent(anchor, Layout.OVER);
+   * addToFront(clickable);
+   *
+   * // add an image to visualize the target pattern
+   * final SikuliGuideImage sklImage = new SikuliGuideImage(patternImage);
+   * sklImage.setLocationRelativeToComponent(anchor, Layout.OVER);
+   *
+   * anchor.addListener(new AnchorListener() {
+   * @Override
+   * public void anchored() {
+   * sklImage.removeFromLeader();
+   * sklImage.setVisible(false);
+   * repaint();
+   *
+   *
+   * for (SikuliGuideComponent comp : anchor.getFollowers()) {
+   * if (comp instanceof SikuliGuideText || comp instanceof SikuliGuideFlag) {
+   * comp.popin();
+   * }
+   * }
+   *
+   * anchor.popin();
+   * }
+   *
+   * @Override
+   * public void found(SikuliGuideAnchor source) {
+   * }
+   * });
+   *
+   * addToFront(sklImage);
+   * addToFront(anchor);
+   *
+   * Point o = part.getTargetOrigin();
+   * Point p = anchor.getActualLocation();
+   *
+   * for (SikuliGuideComponent compo : part.getAnnotationComponents()) {
+   *
+   * SikuliGuideComponent comp = (SikuliGuideComponent) compo.clone();
+   *
+   * Point loc = comp.getActualLocation();
+   * loc.x = (int) ((int) (loc.x - o.x) * scale) + p.x;
+   * loc.y = (int) ((int) (loc.y - o.y) * scale) + p.y;
+   *
+   * comp.setActualLocation(loc);
+   * comp.setLocationRelativeToComponent(anchor);
+   * comp.setActualSize((int) (comp.getActualWidth() * scale), (int) (comp.getActualHeight() * scale));
+   *
+   * addToFront(comp);
+   *
+   * comp.popout();
+   *
+   * }
+   *
+   * anchor.popout();
+   *
+   * }
+   *
+   * SikuliGuideButton btn = new SikuliGuideButton("Exit");
+   * btn.setActualLocation(50, 50);
+   * addToFront(btn);
+   *
+   * showNow();
+   *
+   * }
+   *
+   * public void playSteps(ArrayList<Step> steps) throws FindFailed {
+   *
+   * Screen s = new Screen();
+   *
+   * for (Step step : steps) {
+   * SikuliGuideButton btn = new SikuliGuideButton("Next");
+   * btn.setLocation(s.getTopRight().left(200).below(50));
+   *
+   *
+   * addToFront(btn);
+   *
+   * step.setTransition(getTransition());
+   *
+   * playStep(step, 1.0f);
+   * }
+   *
+   * }*///</editor-fold>
 
-    SklStepModel step = null;
-    try {
-      step = (SklStepModel) step_.clone();
-    } catch (CloneNotSupportedException e1) {
-      e1.printStackTrace();
-    }
-
-    for (SklModel model : step.getModels()) {
-      model.setOpacity(0f);
-      SklView view = SklViewFactory.createView(model);
-      addToFront(view);
-    }
-
-
-    SikuliGuideButton btn = new SikuliGuideButton("Exit");
-    btn.setActualLocation(10, 50);
-    addToFront(btn);
-
-    SikuliGuideButton skip = new SikuliGuideButton("Skip");
-    skip.setActualLocation(90, 50);
-    addToFront(skip);
-
-    // do these to allow static elements to be drawn
-    setVisible(true);
-    toFront();
-
-    step.startTracking(this);
-    step.startAnimation();
-
-    String ret = showNow();
-    Debug.info("[SikuliGuide.playStep] ret = " + ret);
-
-    return ret;
-  }
-
-  public void playStep(Step step, final float scale) {
-
-
-    SikuliGuideImage screenshot = new SikuliGuideImage(step.getScreenImage());
-    screenshot.setLocationRelativeToRegion(new Screen(), Layout.INSIDE);
-//      screenshot.setOpacity(0);
-//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.1f,0.9f));
-//      // TODO replace these with a Pause animation
-//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
-//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,0.9f,0.9f));
-//      screenshot.addAnimation(AnimationFactory.createOpacityAnimation(screenshot,1,0));
-//      addToFront(screenshot);
-
-    for (final Part part : step.getParts()) {
-
-      Pattern pattern = part.getTargetPattern();
-
-      BufferedImage patternImage = null;
-      try {
-        patternImage = pattern.getImage();
-      } catch (Exception e) {
-      }
-
-      final SikuliGuideAnchor anchor = new SikuliGuideAnchor(pattern);
-      anchor.setEditable(true);
-      anchor.setOpacity(1f);
-      anchor.setAnimateAnchoring(true);
-
-      Point anchorLocation = new Point(part.getTargetOrigin());
-      Point screenshotLocation = screenshot.getActualLocation();
-      anchorLocation.translate(screenshotLocation.x, screenshotLocation.y);
-      anchor.setActualLocation(anchorLocation);
-
-      Clickable clickable = new Clickable(null);
-      clickable.setLocationRelativeToComponent(anchor, Layout.OVER);
-      addToFront(clickable);
-
-      // add an image to visualize the target pattern
-      final SikuliGuideImage sklImage = new SikuliGuideImage(patternImage);
-      sklImage.setLocationRelativeToComponent(anchor, Layout.OVER);
-
-      anchor.addListener(new AnchorListener() {
-        @Override
-        public void anchored() {
-          sklImage.removeFromLeader();
-          sklImage.setVisible(false);
-          repaint();
-
-
-          for (SikuliGuideComponent comp : anchor.getFollowers()) {
-            if (comp instanceof SikuliGuideText || comp instanceof SikuliGuideFlag) {
-              comp.popin();
-            }
-          }
-
-          anchor.popin();
-        }
-
-        @Override
-        public void found(SikuliGuideAnchor source) {
-        }
-      });
-
-      addToFront(sklImage);
-      addToFront(anchor);
-
-      Point o = part.getTargetOrigin();
-      Point p = anchor.getActualLocation();
-
-      for (SikuliGuideComponent compo : part.getAnnotationComponents()) {
-
-        SikuliGuideComponent comp = (SikuliGuideComponent) compo.clone();
-
-        Point loc = comp.getActualLocation();
-        loc.x = (int) ((int) (loc.x - o.x) * scale) + p.x;
-        loc.y = (int) ((int) (loc.y - o.y) * scale) + p.y;
-
-        comp.setActualLocation(loc);
-        comp.setLocationRelativeToComponent(anchor);
-        comp.setActualSize((int) (comp.getActualWidth() * scale), (int) (comp.getActualHeight() * scale));
-
-        addToFront(comp);
-
-        comp.popout();
-
-      }
-
-      anchor.popout();
-
-    }
-
-    SikuliGuideButton btn = new SikuliGuideButton("Exit");
-    btn.setActualLocation(50, 50);
-    addToFront(btn);
-
-    showNow();
-
-  }
-
-  public void playSteps(ArrayList<Step> steps) throws FindFailed {
-
-    Screen s = new Screen();
-
-    for (Step step : steps) {
-      SikuliGuideButton btn = new SikuliGuideButton("Next");
-      btn.setLocation(s.getTopRight().left(200).below(50));
-
-
-      addToFront(btn);
-
-      step.setTransition(getTransition());
-
-      playStep(step, 1.0f);
-    }
-
-  }
 }

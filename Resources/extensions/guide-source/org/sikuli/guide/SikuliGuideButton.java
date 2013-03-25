@@ -12,7 +12,7 @@ import java.awt.geom.RoundRectangle2D;
 import javax.swing.JLabel;
 import org.sikuli.script.Region;
 
-public class SikuliGuideButton extends Clickable {
+public class SikuliGuideButton extends SikuliGuideClickable {
 
   Font f = new Font("sansserif", Font.BOLD, 18);
   JLabel label;

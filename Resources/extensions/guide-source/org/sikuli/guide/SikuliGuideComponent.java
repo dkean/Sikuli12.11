@@ -20,7 +20,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JComponent;
 
-import org.sikuli.guide.util.ComponentMover;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
@@ -28,7 +27,6 @@ public class SikuliGuideComponent extends JComponent
         implements Cloneable {
 
   public enum Layout {
-
     TOP,
     BOTTOM,
     LEFT,
@@ -39,18 +37,8 @@ public class SikuliGuideComponent extends JComponent
     ORIGIN,
     CENTER
   };
-  public final static int TOP = 0;
-  public final static int LEFT = 1;
-  public final static int RIGHT = 2;
-  public final static int BOTTOM = 3;
-  public final static int INSIDE = 4;
-  public final static int CENTER = 5;
-  public final static int OVER = 6;
-  public final static int ORIGIN = 7;
-  public final static int FOLLOWERS = 8;
 
   private boolean hasChanged = false;
-
   public int PADDING_X = 5;
   public int PADDING_Y = 5;
 
@@ -67,6 +55,7 @@ public class SikuliGuideComponent extends JComponent
   public static int defStroke = 3;
   int stroke;
 
+  //<editor-fold defaultstate="collapsed" desc="Setters/Getters">
   public void setColors(Color all, Color front, Color back, Color frame, Color text) {
     if (all != null) {
       color = all;
@@ -155,7 +144,7 @@ public class SikuliGuideComponent extends JComponent
   String getStyleString() {
     String s = "font-size:" + fontSize + "px;color:#" + getColorHex(colorText)
             + ";background-color:#" + getColorHex(colorBack) + ";padding:3px";
-    if (! font.isEmpty()) {
+    if (!font.isEmpty()) {
       s = "font:" + font + ";" + s;
     }
     return s;
@@ -180,6 +169,7 @@ public class SikuliGuideComponent extends JComponent
       updateComponent();
     }
   }
+  //</editor-fold>
 
   public SikuliGuideComponent() {
     super();
@@ -325,7 +315,6 @@ public class SikuliGuideComponent extends JComponent
     super.setLocation(paintX, paintY);
     updateAllFollowers();
   }
-  //</editor-fold>
 
   class Margin {
 
@@ -350,9 +339,9 @@ public class SikuliGuideComponent extends JComponent
     this.offsetx = offsetx;
     this.offsety = offsety;
   }
-
   // TODO: fix this
   float zoomLevel = 1.0f;
+
   public void setZoomLevel(float zoomLevel) {
 
     if (true) {
@@ -402,9 +391,9 @@ public class SikuliGuideComponent extends JComponent
 
 
   }
-
   // this allows the component to be dragged to another location on the screen
   ComponentMover cm;
+
   public void setMovable(boolean movable) {
     if (movable) {
       cm.registerComponent(this);
@@ -412,8 +401,11 @@ public class SikuliGuideComponent extends JComponent
       cm.deregisterComponent(this);
     }
   }
-
   float opacity = 1.0f;
+
+  //</editor-fold>
+
+  //<editor-fold defaultstate="collapsed" desc="Painting">
   public void setOpacity(float opacity) {
     if (opacity > 0) {
       setVisible(true);
@@ -424,20 +416,20 @@ public class SikuliGuideComponent extends JComponent
     for (SikuliGuideComponent sklComp : getFollowers()) {
       sklComp.setOpacity(opacity);
     }
-//      if (shadowRenderer != null){
-//         shadowRenderer.createShadowImage();
-//      }
+    //      if (shadowRenderer != null){
+    //         shadowRenderer.createShadowImage();
+    //      }
     Rectangle r = getBounds();
     if (getTopLevelAncestor() != null) //getTopLevelAncestor().repaint(r.x,r.y,r.width,r.height);
-    // for some reason the whole thing needs to be repainted otherwise the
-    // shadow of other compoments looks weird
+      // for some reason the whole thing needs to be repainted otherwise the
+      // shadow of other compoments looks weird
     {
       getTopLevelAncestor().repaint();
     }
-//   public void changeOpacityTo(float targetOpacity){
-//      OpacityAnimator anim = new OpacityAnimator(this, opacity,targetOpacity);
-//      anim.start();
-//   }
+    //   public void changeOpacityTo(float targetOpacity){
+    //      OpacityAnimator anim = new OpacityAnimator(this, opacity,targetOpacity);
+    //      anim.start();
+    //   }
   }
 
   public void updateComponent() {
@@ -460,6 +452,7 @@ public class SikuliGuideComponent extends JComponent
     ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
     g2d.drawImage(image, 0, 0, null, null);
   }
+  //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Shadow">
   ShadowRenderer shadowRenderer;
@@ -492,12 +485,10 @@ public class SikuliGuideComponent extends JComponent
   boolean animationRunning = false;
 
   class AnimationSequence {
-
     Queue<NewAnimator> queue = new LinkedBlockingQueue<NewAnimator>();
 
     private void startNextAnimation() {
       if (queue.peek() != null) {
-
         NewAnimator anim = queue.remove();
         anim.start();
         anim.setListener(new AnimationListener() {
@@ -518,6 +509,7 @@ public class SikuliGuideComponent extends JComponent
       startNextAnimation();
     }
   }
+
   AnimationSequence animationSequence = new AnimationSequence();
 
   AnimationFactory getAnimationFactory() {
@@ -739,11 +731,14 @@ public class SikuliGuideComponent extends JComponent
   }
 
   class AutoLayoutBySide extends AutoLayout {
+
     Layout side;
+
     AutoLayoutBySide(SikuliGuideComponent targetComponent, Layout side) {
       super(targetComponent);
       this.side = side;
     }
+
     @Override
     void update() {
       if (side == Layout.FOLLOWERS) {
@@ -833,7 +828,9 @@ public class SikuliGuideComponent extends JComponent
       super.update();
     }
   }
+//</editor-fold>
 
+  //<editor-fold defaultstate="collapsed" desc="Position">
   public void setLocationRelativeToComponent(SikuliGuideComponent comp, Layout side) {
     if (autolayout != null) {
       autolayout.stop();
@@ -1052,6 +1049,7 @@ public class SikuliGuideComponent extends JComponent
   ////      updateAllFollowers();
   //   }
   //</editor-fold>
+
   public ArrayList<SikuliGuideComponent> getFollowers() {
     return followers;
   }

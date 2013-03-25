@@ -22,25 +22,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import org.sikuli.script.EventObserver;
 import org.sikuli.script.EventSubject;
+import org.sikuli.script.Settings;
 
-public class Beam extends OverlayTransparentWindow
+public class SikuliGuideBeam extends OverlayTransparentWindow
         implements Transition, GlobalMouseMotionListener, EventObserver {
 
   SikuliGuide guide;
 
-  public Beam(SikuliGuide guide, Region target) {
+  public SikuliGuideBeam(SikuliGuide guide, Region target) {
     super(new Color(1f, 0f, 0f, 0.7f), null);
     super.addObserver(this);
     this.guide = guide;
     this.target = target;
 
-/*
-    setBackground(null);
-    // when opaque is set to false, the content seems to get cleared properly
-    // this is tested on both Windows and Mac
-    Env.getOSUtil().setWindowOpaque(this, false);
-    setOpacity(0.7f);
-*/
+    /*
+     setBackground(null);
+     // when opaque is set to false, the content seems to get cleared properly
+     // this is tested on both Windows and Mac
+     Env.getOSUtil().setWindowOpaque(this, false);
+     setOpacity(0.7f);
+     */
   }
   public Point current = null;
   public Point to = null;
@@ -207,12 +208,16 @@ public class Beam extends OverlayTransparentWindow
 
   @Override
   public void toFront() {
-    if (Env.getOS() == OS.MAC) {
+    if ( Settings.isMac() || Settings.isWindows() ) {
       // this call is necessary to allow clicks to go through the window (ignoreMouse == true)
-      Env.getOSUtil().bringWindowToFront(this, true);
+      if (Settings.JavaVersion < 7) {
+          Settings.getOSUtil().bringWindowToFront(this, true);
+      } else {
+      }
     }
     super.toFront();
   }
+
   GlobalMouseMotionTracker mouseTracker;
   TransitionListener listener;
 

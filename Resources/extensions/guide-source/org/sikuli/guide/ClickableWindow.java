@@ -27,8 +27,8 @@ public class ClickableWindow extends OverlayTransparentWindow
 
   SikuliGuide guide;
   JPanel jp = null;
-  ArrayList<Clickable> clickables = new ArrayList<Clickable>();
-  private Clickable lastClicked;
+  ArrayList<SikuliGuideClickable> clickables = new ArrayList<SikuliGuideClickable>();
+  private SikuliGuideClickable lastClicked;
   private Rectangle maxR;
   Point clickLocation;
   GlobalMouseMotionTracker mouseTracker;
@@ -72,15 +72,15 @@ public class ClickableWindow extends OverlayTransparentWindow
     super.toFront();
   }
 
-  public void addClickable(Clickable c) {
+  public void addClickable(SikuliGuideClickable c) {
     clickables.add(c);
-    Clickable c1 = new Clickable(null);
+    SikuliGuideClickable c1 = new SikuliGuideClickable(null);
     c1.setLocationRelativeToComponent(c, Layout.OVER);
     jp.add(c1);
   }
 
   public void addClickableRegion(Region region, String name) {
-    Clickable c = new Clickable(region);
+    SikuliGuideClickable c = new SikuliGuideClickable(region);
     c.setName(name);
     addClickable(c);
   }
@@ -90,7 +90,7 @@ public class ClickableWindow extends OverlayTransparentWindow
     Debug.log("[ClickableWindow] clicked on " + e.getX() + "," + e.getY());
     Point p = e.getPoint();
     lastClicked = null;
-    for (Clickable c : clickables) {
+    for (SikuliGuideClickable c : clickables) {
       if (c.getActualBounds().contains(p)) {
         lastClicked = c;
         p.x -= c.getX();
@@ -130,7 +130,7 @@ public class ClickableWindow extends OverlayTransparentWindow
     this.token = token;
     maxR = clickables.get(0).getBounds();
     if (clickables.size() > 1) {
-      for (Clickable c : clickables.subList(1, clickables.size())) {
+      for (SikuliGuideClickable c : clickables.subList(1, clickables.size())) {
         maxR = maxR.union(c.getActualBounds());
       }
     }
@@ -143,8 +143,8 @@ public class ClickableWindow extends OverlayTransparentWindow
   @Override
   public void globalMouseMoved(int x, int y) {
     Point p = new Point(x, y);
-    Clickable cc = null;
-    for (Clickable c : clickables) {
+    SikuliGuideClickable cc = null;
+    for (SikuliGuideClickable c : clickables) {
       if (c.getBounds().contains(p)) {
         c.setMouseOver(true);
         cc = c;
@@ -165,11 +165,11 @@ public class ClickableWindow extends OverlayTransparentWindow
   public void globalMouseIdled(int x, int y) {
   }
 
-  public Clickable getLastClicked() {
+  public SikuliGuideClickable getLastClicked() {
     return lastClicked;
   }
 
-  public ArrayList<Clickable> getClickables() {
+  public ArrayList<SikuliGuideClickable> getClickables() {
     return clickables;
   }
 

@@ -10,7 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import org.sikuli.script.Region;
 
-public class Clickable extends SikuliGuideComponent {
+public class SikuliGuideClickable extends SikuliGuideComponent {
 
   Color normalColor = new Color(1.0f, 1.0f, 0, 0.1f);
   Color mouseOverColor = new Color(1.0f, 0, 0, 0.1f);
@@ -20,7 +20,7 @@ public class Clickable extends SikuliGuideComponent {
   boolean mouseOverVisible = false;
   boolean mouseOver;
 
-  public Clickable(Region region) {
+  public SikuliGuideClickable(Region region) {
     this.region = region;
     if (region != null) {
       this.setActualBounds(region.getRect());
@@ -29,7 +29,7 @@ public class Clickable extends SikuliGuideComponent {
   }
   Point clickPoint = null;
 
-  public Clickable() {
+  public SikuliGuideClickable() {
   }
 
   @Override

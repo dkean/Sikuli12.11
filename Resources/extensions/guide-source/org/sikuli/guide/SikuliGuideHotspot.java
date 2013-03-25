@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import org.sikuli.script.Debug;
 import org.sikuli.script.Region;
 
-public class Hotspot extends Clickable {
+public class SikuliGuideHotspot extends SikuliGuideClickable {
 
   Font f = new Font("sansserif", Font.BOLD, 18);
   JLabel label;
@@ -25,7 +25,7 @@ public class Hotspot extends Clickable {
   JLabel symbol;
   SikuliGuideCircle circle;
 
-  public Hotspot(Region region, SikuliGuideComponent text, SikuliGuide g) {
+  public SikuliGuideHotspot(Region region, SikuliGuideComponent text, SikuliGuide g) {
     super(region);
     guide = g;
     spotlight = new SikuliGuideSpotlight(region);
