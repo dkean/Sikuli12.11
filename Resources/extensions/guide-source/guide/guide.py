@@ -8,31 +8,30 @@ from org.sikuli.script import Screen
 from org.sikuli.script import Debug
 
 from org.sikuli.guide import SikuliGuide
-from org.sikuli.guide import Portal
 
 from org.sikuli.guide import SikuliGuideComponent
 from org.sikuli.guide.SikuliGuideComponent import Layout
 
-from org.sikuli.guide import SikuliGuideFlag
-from org.sikuli.guide import SikuliGuideBracket
-from org.sikuli.guide import SikuliGuideText
-from org.sikuli.guide import SikuliGuideSpotlight
-from org.sikuli.guide import SikuliGuideCircle
-from org.sikuli.guide import SikuliGuideRectangle
-from org.sikuli.guide import SikuliGuideArrow
-from org.sikuli.guide import SikuliGuideCallout
-from org.sikuli.guide import SikuliGuideButton
-from org.sikuli.guide import SikuliGuideImage
-from org.sikuli.guide import Clickable
-from org.sikuli.guide import Hotspot
-from org.sikuli.guide import SikuliGuideArea
 from org.sikuli.guide import SikuliGuideAnchor
-from org.sikuli.guide import Magnet
-
-
-from org.sikuli.guide import TransitionDialog
+from org.sikuli.guide import SikuliGuideArea
+from org.sikuli.guide import SikuliGuideArrow
+from org.sikuli.guide import SikuliGuideBracket
+from org.sikuli.guide import SikuliGuideButton
+from org.sikuli.guide import SikuliGuideCallout
+from org.sikuli.guide import SikuliGuideCircle
+from org.sikuli.guide import SikuliGuideClickable
+from org.sikuli.guide import SikuliGuideFlag
+from org.sikuli.guide import SikuliGuideHotspot
+from org.sikuli.guide import SikuliGuideImage
+from org.sikuli.guide import SikuliGuideMagnet
+from org.sikuli.guide import SikuliGuideRectangle
+from org.sikuli.guide import SikuliGuideSpotlight
+from org.sikuli.guide import SikuliGuideText
 
 """
+RaiMan: currently not used
+from org.sikuli.guide import Portal
+from org.sikuli.guide import TransitionDialog
 from org.sikuli.guide import TreeSearchDialog
 from org.sikuli.guide.model import GUIModel
 from org.sikuli.guide.model import GUINode
@@ -76,15 +75,6 @@ def spotlight(target, shape = 'circle', **kwargs):
     elif shape == 'circle':
         comp.setShape(SikuliGuideSpotlight.CIRCLE)
     return _addComponentHelper(comp, target, side = 'over', **kwargs)
-
-def clickable(target, name = "", **kwargs):
-    comp = Clickable(None)
-    comp.setName(name)
-    return _addComponentHelper(comp, target, side = 'over', **kwargs)
-
-def button(target, name, side = 'bottom', **kwargs):
-    comp = SikuliGuideButton(name)
-    return _addComponentHelper(comp, target, side = side, **kwargs)
 
 def arrow(srcTarget, destTarget, **kwargs):
     def getComponentFromTarget(target):
@@ -172,6 +162,22 @@ def calloutcolored(target, txt, front=(255,255,255), back=(242,145,0), **kwargs)
 # Interactive Elements
 #=====================
 
+def clickable(target, name = "", **kwargs):
+    comp = SikuliGuideClickable(None)
+    comp.setName(name)
+    return _addComponentHelper(comp, target, side = 'over', **kwargs)
+
+def button(target, name, side = 'bottom', **kwargs):
+    comp = SikuliGuideButton(name)
+    return _addComponentHelper(comp, target, side = side, **kwargs)
+
+def addCloseButton(a):
+    button(a,"Close", side="left", offset = (200,0))
+def addNextButton(a):
+    button(a,"Next",side="left", offset = (60,0))
+def addPreviousButton(a):
+    button(a,"Previous", side ="left", offset = (0,0))
+
 def hotspot(target, message, side = 'right'):
     # TODO allow hotspot's positions to be automatically updated
     r = _getRegionFromTarget(target)
@@ -181,12 +187,12 @@ def hotspot(target, message, side = 'right'):
     r1.w += 20
     _setLocationRelativeToRegion(txtcomp,r1,side)
     txtcomp.setShadow(10,2)
-    comp = Hotspot(r, txtcomp, _g)
+    comp = SikuliGuideHotspot(r, txtcomp, _g)
     _g.addToFront(comp)
     return comp
 
 #=====================
-# Transition Elements
+# Show the Elements
 #=====================
 
 def show(arg = None, timeout = 5):
@@ -206,6 +212,71 @@ def show(arg = None, timeout = 5):
 
 def setDefaultTimeout(timeout):
     _g.setDefaultTimeout(timeout)
+
+# showing steps, that are defined in a list of functions
+def _show_steps(steps, timeout = None):
+    # only keep callables
+    steps = filter(lambda x: callable(x), steps)
+    print steps
+    n = len(steps)
+    i = 0
+    while True:
+        step = steps[i]
+        step()
+        msg = "Step %d of %d" % (i+1, n)
+        a = rectangle(Region(100,100,0,0))
+        text((10,50), msg, fontsize = 10)
+        if n == 1: # only one step
+            addCloseButton(a)
+        elif i == 0: # first step
+            addNextButton(a)
+            addCloseButton(a)
+        elif i < n - 1: # between
+            addPreviousButton(a)
+            addNextButton(a)
+            addCloseButton(a)
+        elif i == n - 1: # final step
+            addPreviousButton(a)
+            addCloseButton(a)
+        ret = _g.showNow()
+        if (ret == "Previous" and i > 0):
+            i = i - 1
+        elif (ret == "Next" and i < n - 1):
+            i = i + 1
+        elif (ret == None and i < n - 1): # timeout
+            i = i + 1
+        elif (ret == "Close"):
+            return
+        else:
+            # some other transitions happened
+            if (i < n - 1):
+                i = i + 1
+            else:
+                return
+
+#########################
+# Cursor Enhancement    #
+#########################
+
+def beam(target):
+    r = s.getRegionFromPSRM(target)
+    c = _g.addBeam(r)
+    return c
+
+def magnet(arg):
+    m = Magnet(_g)
+    def addTarget(x):
+        if (isinstance(x, Pattern)):
+            pattern = x
+        elif (isinstance(x, str)):
+            pattern = Pattern(x)
+        m.addTarget(pattern)
+    if isinstance(arg, list) or isinstance(arg, tuple):
+        for x in arg:
+            addTarget(x)
+    else:
+        addTarget(x)
+    _g.addTransition(m)
 
 ####################
 # Helper functions #
@@ -298,6 +369,44 @@ def _addComponentHelper(comp, target, side = 'best', margin = 0, offset = (0,0),
     return comp
 
 
+def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,0,0,0), \
+                                 horizontalalignment = 'center', \
+                                 verticalalignment = 'center'):
+    r = Region(r_)
+    # Offset
+    (dx,dy) = offset
+    r.x += dx
+    r.y += dy
+    # Side
+    if (side == 'right'):
+        comp.setLocationRelativeToRegion(r, Layout.RIGHT);
+    elif (side == 'top'):
+        comp.setLocationRelativeToRegion(r, Layout.TOP);
+    elif (side == 'bottom'):
+        comp.setLocationRelativeToRegion(r, Layout.BOTTOM);
+    elif (side == 'left'):
+        comp.setLocationRelativeToRegion(r, Layout.LEFT);
+    elif (side == 'inside'):
+        comp.setLocationRelativeToRegion(r, Layout.INSIDE);
+    # Alignment
+    if (horizontalalignment == 'left'):
+        comp.setHorizontalAlignmentWithRegion(r,0.0)
+    elif (horizontalalignment == 'right'):
+        comp.setHorizontalAlignmentWithRegion(r,1.0)
+    if (verticalalignment == 'top'):
+        comp.setVerticalAlignmentWithRegion(r,0.0)
+    elif (verticalalignment == 'bottom'):
+        comp.setVerticalAlignmentWithRegion(r,1.0)
+
+def _getRegionFromTarget(target):
+    if isinstance(target, SikuliGuideComponent):
+        return Region(target.getBounds())
+    else:
+        return s.getRegionFromPSRM(target)
+
+"""
+# RaiMan currently not used
+#
 def _addSideComponentToTarget(comp, target, **kwargs):
     r = _getRegionFromTarget(target)
     _setLocationRelativeToRegion(comp,r,**kwargs)
@@ -323,125 +432,25 @@ def _addAraeComponentToTarget(comp_func, target, **kwargs):
     _g.addComponent(comp)
     return comp
 
-def _getRegionFromTarget(target):
-    if isinstance(target, SikuliGuideComponent):
-        return Region(target.getBounds())
-    else:
-        return s.getRegionFromPSRM(target)
-
-def _setLocationRelativeToRegion(comp, r_, side='left', offset=(0,0), expand=(0,0,0,0), \
-                                 horizontalalignment = 'center', \
-                                 verticalalignment = 'center'):
+def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0))
     r = Region(r_)
-
     # Offset
     (dx,dy) = offset
     r.x += dx
     r.y += dy
-
-
-    # Side
-    if (side == 'right'):
-        comp.setLocationRelativeToRegion(r, Layout.RIGHT);
-    elif (side == 'top'):
-        comp.setLocationRelativeToRegion(r, Layout.TOP);
-    elif (side == 'bottom'):
-        comp.setLocationRelativeToRegion(r, Layout.BOTTOM);
-    elif (side == 'left'):
-        comp.setLocationRelativeToRegion(r, Layout.LEFT);
-    elif (side == 'inside'):
-        comp.setLocationRelativeToRegion(r, Layout.INSIDE);
-
-
-    # Alignment
-    if (horizontalalignment == 'left'):
-        comp.setHorizontalAlignmentWithRegion(r,0.0)
-    elif (horizontalalignment == 'right'):
-        comp.setHorizontalAlignmentWithRegion(r,1.0)
-
-    if (verticalalignment == 'top'):
-        comp.setVerticalAlignmentWithRegion(r,0.0)
-    elif (verticalalignment == 'bottom'):
-        comp.setVerticalAlignmentWithRegion(r,1.0)
-
-def _adjustRegion(r_, offset = (0,0), expand=(0,0,0,0)):
-
-    r = Region(r_)
-
-    # Offset
-    (dx,dy) = offset
-    r.x += dx
-    r.y += dy
-
     # Expansion
     if isinstance(expand, tuple):
         (dt,dl,db,dr) = expand
     else:
         (dt,dl,db,dr) = (expand,expand,expand,expand)
-
     r.x -= dl
     r.y -= dt
     r.w = r.w + dl + dr
     r.h = r.h + dt + db
-
     return r
 
-
-
-def addCloseButton(a):
-    button(a,"Close", side="left", offset = (200,0))
-def addNextButton(a):
-    button(a,"Next",side="left", offset = (60,0))
-def addPreviousButton(a):
-    button(a,"Previous", side ="left", offset = (0,0))
-
-# functions for showing
-def _show_steps(steps, timeout = None):
-
-    # only keep callables
-    steps = filter(lambda x: callable(x), steps)
-    print steps
-    n = len(steps)
-    i = 0
-
-    while True:
-        step = steps[i]
-        step()
-
-        msg = "Step %d of %d" % (i+1, n)
-        a = rectangle(Region(100,100,0,0))
-        text((10,50), msg, fontsize = 10)
-
-        if n == 1: # only one step
-            addCloseButton(a)
-        elif i == 0: # first step
-            addNextButton(a)
-            addCloseButton(a)
-        elif i < n - 1: # between
-            addPreviousButton(a)
-            addNextButton(a)
-            addCloseButton(a)
-        elif i == n - 1: # final step
-            addPreviousButton(a)
-            addCloseButton(a)
-
-        ret = _g.showNow()
-
-        if (ret == "Previous" and i > 0):
-            i = i - 1
-        elif (ret == "Next" and i < n - 1):
-            i = i + 1
-        elif (ret == None and i < n - 1): # timeout
-            i = i + 1
-        elif (ret == "Close"):
-            return
-        else:
-            # some other transitions happened
-            if (i < n - 1):
-                i = i + 1
-            else:
-                return
-
+# RaiMan: seems not to be used anymore
+#
 # functions for showing
 def _show_steps_old(steps, timeout = None):
 
@@ -491,35 +500,7 @@ def _show_steps_old(steps, timeout = None):
         else:
             return
 
-
-#########################
-# Cursor Enhancement    #
-#########################
-
-def beam(target):
-    r = s.getRegionFromPSRM(target)
-    c = _g.addBeam(r)
-    return c
-
-def magnet(arg):
-    m = Magnet(_g)
-
-    def addTarget(x):
-        if (isinstance(x, Pattern)):
-            pattern = x
-        elif (isinstance(x, str)):
-            pattern = Pattern(x)
-        m.addTarget(pattern)
-
-    if isinstance(arg, list) or isinstance(arg, tuple):
-        for x in arg:
-            addTarget(x)
-    else:
-        addTarget(x)
-
-    _g.addTransition(m)
-
-"""
+RaiMan: Temporarily switched off
 #########################
 # Experimental Features #
 #########################
