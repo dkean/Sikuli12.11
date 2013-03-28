@@ -16,8 +16,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.sikuli.guide.Transition.TransitionListener;
+import org.sikuli.script.Debug;
 import org.sikuli.script.EventObserver;
 import org.sikuli.script.EventSubject;
+import org.sikuli.script.Location;
 import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
@@ -133,7 +135,7 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
             //&& search == null) {
       return cmd;
     }
-    startAnimation();
+//    startAnimation();
     startTracking();
     setVisible(true);
     toFront();
@@ -422,31 +424,31 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
     }
   }
 
+
+//<editor-fold defaultstate="collapsed" desc="global tracking support - not used currently">
   public void addTracker(Pattern pattern, SikuliGuideAnchor anchor) {
     Tracker tracker = null;
 
-//      // find a tracker already assigned to this pattern
-//      for (Tracker t : trackers){
-//         if (t.isAlreadyTracking(pattern,r)){
-//            tracker = t;
-//            break;
-//         }
-//      }
+    //      // find a tracker already assigned to this pattern
+    //      for (Tracker t : trackers){
+    //         if (t.isAlreadyTracking(pattern,r)){
+    //            tracker = t;
+    //            break;
+    //         }
+    //      }
 
-//      if (tracker == null){
+    //      if (tracker == null){
     tracker = new Tracker(this, pattern, null);
     trackers.add(tracker);
-//      }
+    //      }
     BufferedImage img;
     try {
       img = pattern.getImage();
       anchor.setActualSize(img.getWidth(), img.getHeight());
       tracker.setAnchor(anchor);
-
     } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
   public void addTracker(Pattern pattern, Region r, SikuliGuideComponent c) {
@@ -479,6 +481,9 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
   abstract class TrackerAdapter {
     abstract void patternAnchored();
   }
+
+
+  //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="TODO not used: play steps">
   /*  public void playStepOnWebpage(Step step, Region leftmarker, Region rightmarker) {
@@ -704,4 +709,86 @@ public class SikuliGuide extends OverlayTransparentWindow implements EventObserv
    *
    * }*///</editor-fold>
 
+  public SikuliGuideComponent rectangle() {
+    SikuliGuideComponent gc = new SikuliGuideRectangle();
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent circle() {
+    SikuliGuideComponent gc = new SikuliGuideCircle();
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent text(String text) {
+    SikuliGuideComponent gc = new SikuliGuideText(text);
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent flag(String text) {
+    SikuliGuideComponent gc = new SikuliGuideFlag(text);
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent callout(String text) {
+    SikuliGuideComponent gc = new SikuliGuideCallout(text);
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent button(String name) {
+    SikuliGuideComponent gc = new SikuliGuideButton(name);
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent bracket() {
+    SikuliGuideComponent gc = new SikuliGuideBracket();
+    gc.setGuide(this);
+    addToFront(gc);
+    return gc;
+  }
+
+  public SikuliGuideComponent image(Object img) {
+    SikuliGuideComponent gc = null;
+    if (img instanceof String) {
+      gc = new SikuliGuideImage((String) img);
+    } else if (img instanceof BufferedImage) {
+      gc = new SikuliGuideImage((BufferedImage) img);
+    }
+    if (gc != null) {
+      gc.setGuide(this);
+      addToFront(gc);
+    } else {
+      Debug.log(2, "Guide.image: invalid argument");
+    }
+    return gc;
+  }
+
+  public SikuliGuideComponent arrow(Object from, Object to) {
+    SikuliGuideComponent gc = null;
+    if (from instanceof Region) {
+      gc = new SikuliGuideArrow(((Region) from).getCenter(), ((Region) to).getCenter());
+    } else if (from instanceof Point || from instanceof Location) {
+      gc = new SikuliGuideArrow((Point) from, (Point) to);
+    } else if (from instanceof SikuliGuideComponent) {
+      gc = new SikuliGuideArrow((SikuliGuideComponent) from, (SikuliGuideComponent) to);
+    }
+    if (gc != null) {
+      gc.setGuide(this);
+      addToFront(gc);
+    } else {
+      Debug.log(2, "Guide.arrow: invalid arguments");
+    }
+    return gc;
+  }
 }

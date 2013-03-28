@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sikuli.guide;
 
@@ -16,37 +16,43 @@ import javax.swing.JLabel;
 import org.sikuli.script.Region;
 
 public class SikuliGuideBracket extends SikuliGuideComponent{
-
-
-   // which direction this element is pointing
    public final static int DIRECTION_EAST = 1;
    public final static int DIRECTION_WEST = 2;
    public final static int DIRECTION_SOUTH = 3;
    public final static int DIRECTION_NORTH = 4;
+   int direction;
 
+   public int PADDING_X = 2;
+   public int PADDING_Y = 2;
+   public int SHADOW_SIZE = 2;
 
-   String text;
+   int thickness = 10;
+   int margin = 5;
+
    JLabel label;
    int length;
-   public SikuliGuideBracket(){         
+
+   boolean entrance = false;
+
+   public SikuliGuideBracket(){
       super();
-      this.length = 30;
       init();
    }
-   
-   static final int PADDING_X = 2;
-   static final int PADDING_Y = 2;
-   static final int SHADOW_SIZE = 2;
 
-   int direction;
-   boolean entrance = true;
-   void init(){
-      
-            
-      setDirection(DIRECTION_EAST);
+   private void init(){
+      this.length = 30;
+      colorFront = Color.RED;
+      stroke = 3;
+      setLayout(Layout.LEFT);
    }
 
-   public void setLocationRelativeToRegion(Region region, Layout side) {
+   @Override
+   public void updateComponent() {
+      setLocationRelativeToRegion(getTarget(), layout);
+   }
+
+   @Override
+   public SikuliGuideComponent setLocationRelativeToRegion(Region region, Layout side) {
       if (side == Layout.TOP){
          setActualSize(region.w,thickness);
          setDirection(DIRECTION_SOUTH);
@@ -59,23 +65,22 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
       } else if (side == Layout.RIGHT){
          setActualSize(thickness,region.h);
          setDirection(DIRECTION_WEST);
-      }      
-      
+      }
+
       if (side == Layout.LEFT || side == Layout.RIGHT){
          length = region.h;
       }else{
          length = region.w;
       }
-      
-      super.setLocationRelativeToRegion(region,side);
+      return super.setLocationRelativeToRegion(region,side);
    }
-   
-   public void startAnimation(){
 
+   @Override
+   public void startAnimation(){
       // TODO: move this somewhere else
       // this should only be called first time animation
       // is started
-      // Why called here? Because ... 
+      // Why called here? Because ...
       // we want the location to be decided
          if (direction == DIRECTION_EAST){
             setEntranceAnimation(createSlidingAnimator(-20,0));
@@ -86,28 +91,20 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
          } else if (direction == DIRECTION_NORTH){
             setEntranceAnimation(createSlidingAnimator(0,20));
          }
-
-      
       super.startAnimation();
    }
-   
 
-   int thickness = 10; 
-   int margin = 5;
-   
    public void setDirection(int direction){
-      this.direction = direction;  
+      this.direction = direction;
    }
 
+   @Override
    public void paintComponent(Graphics g){
       super.paintComponent(g);
       Graphics2D g2d = (Graphics2D) g;
-
-      Stroke pen = new BasicStroke(3.0F);
+      Stroke pen = new BasicStroke(stroke);
       g2d.setStroke(pen);
-      g2d.setColor(Color.red);
-      
-      
+      g2d.setColor(colorFront);
       GeneralPath polyline = new GeneralPath();
       polyline.moveTo(0,0);
       polyline.lineTo(5,5);
@@ -116,12 +113,8 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
       polyline.lineTo(5,length/2+6);
       polyline.lineTo(5,length-5);
       polyline.lineTo(0,length);
-      
-      
       AffineTransform rat = new AffineTransform();
-      
       if (direction == DIRECTION_EAST){
-          // need to translate the rotated shape so that it can be in the visible bounds
          rat.translate(thickness,length);
          rat.rotate(Math.PI);
       } else if (direction == DIRECTION_SOUTH){
@@ -131,10 +124,7 @@ public class SikuliGuideBracket extends SikuliGuideComponent{
          rat.translate(length,0);
          rat.rotate(Math.PI/2);
       }
-      g2d.transform(rat);        
-             
+      g2d.transform(rat);
       g2d.draw(polyline);
    }
-
-
 }

@@ -5,7 +5,6 @@ package org.sikuli.guide;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -19,18 +18,14 @@ import org.sikuli.script.Region;
 public class SikuliGuideCallout extends SikuliGuideComponent {
 
   static final int TRIANGLE_SIZE = 20;
-
   static int defMaxWidth = 400;
-  static int defFontSize = 18;
+  static int defFontSize = 14;
   static String defFont = "Verdana";
-
   HTMLTextPane textArea;
   RoundedBox rbox;
   Triangle triangle;
-
   int dx = 0;
   int dy = 0;
-  Layout currentSide = null;
 
   public SikuliGuideCallout(String text) {
     super();
@@ -38,10 +33,10 @@ public class SikuliGuideCallout extends SikuliGuideComponent {
   }
 
   void init(String text) {
+    layout = Layout.RIGHT;
     maxWidth = defMaxWidth;
-    font = defFont;
+    fontName = defFont;
     fontSize = defFontSize;
-    setColors(null, null, Color.YELLOW, null, null);
     this.text = text;
     textArea = new HTMLTextPane(this);
     rbox = new RoundedBox(textArea.getBounds());
@@ -49,7 +44,9 @@ public class SikuliGuideCallout extends SikuliGuideComponent {
     add(rbox);
     triangle = new Triangle();
     add(triangle);
-    updateComponent();
+    targetRegion = null;
+    setColors(null, Color.YELLOW, Color.YELLOW, null, null);
+    makeComponent();
   }
 
   @Override
@@ -59,46 +56,45 @@ public class SikuliGuideCallout extends SikuliGuideComponent {
     Rectangle rect = textArea.getBounds();
     rect.grow(PADDING_X, PADDING_Y);
     rbox.setBounds(rect);
-    Layout trl = Layout.LEFT;
-    if (currentSide == Layout.TOP) {
-      trl = Layout.BOTTOM;
-    } else if (currentSide == Layout.BOTTOM) {
-      trl = Layout.TOP;
-    } else if (currentSide == Layout.LEFT) {
-      trl = Layout.RIGHT;
-    }
-    triangle.setLocationRelativeToComponent(rbox, trl);
-    Rectangle bounds = rbox.getBounds();
-    bounds.add(triangle.getBounds());
-    setActualBounds(bounds);
+    makeComponent();
     triangle.setForeground(colorBack);
     rbox.setForeground(colorBack);
+    if (targetRegion != null) {
+      super.setLocationRelativeToRegion(targetRegion, layout);
+    }
   }
 
   @Override
-  public void setLocationRelativeToRegion(Region region, Layout side) {
-    updateComponent();
-    if (side != currentSide) {
-      currentSide = side;
-      if (side == Layout.TOP) {
-        triangle.setLocationRelativeToComponent(rbox, Layout.BOTTOM);
-      } else if (side == Layout.BOTTOM) {
-        dy = TRIANGLE_SIZE;
-        triangle.rotate(Math.PI);
-        triangle.setLocationRelativeToComponent(rbox, Layout.TOP);
-      } else if (side == Layout.LEFT) {
-        triangle.rotate(-Math.PI / 2);
-        triangle.setLocationRelativeToComponent(rbox, Layout.RIGHT);
-      } else if (side == Layout.RIGHT) {
-        dx = TRIANGLE_SIZE;
-        triangle.rotate(Math.PI / 2);
-        triangle.setLocationRelativeToComponent(rbox, Layout.LEFT);
-      }
-      Rectangle bounds = rbox.getBounds();
-      bounds.add(triangle.getBounds());
-      setActualBounds(bounds);
+  public SikuliGuideComponent setLocationRelativeToRegion(Region region, Layout side) {
+    if (side != layout) {
+      layout = side;
+      updateComponent();
     }
-    super.setLocationRelativeToRegion(region, side);
+    targetRegion = region;
+    return super.setLocationRelativeToRegion(targetRegion, side);
+  }
+
+  private void makeComponent() {
+    if (layout == Layout.TOP) {
+      triangle.rotate(0);
+      dx = 0; dy = 0;
+      triangle.setLocationRelativeToComponent(rbox, Layout.BOTTOM);
+    } else if (layout == Layout.BOTTOM) {
+      dx = 0; dy = TRIANGLE_SIZE;
+      triangle.rotate(Math.PI);
+      triangle.setLocationRelativeToComponent(rbox, Layout.TOP);
+    } else if (layout == Layout.LEFT) {
+      dx = 0; dy = 0;
+      triangle.rotate(-Math.PI / 2);
+      triangle.setLocationRelativeToComponent(rbox, Layout.RIGHT);
+    } else if (layout == Layout.RIGHT) {
+      dx = TRIANGLE_SIZE; dy = 0;
+      triangle.rotate(Math.PI / 2);
+      triangle.setLocationRelativeToComponent(rbox, Layout.LEFT);
+    }
+    Rectangle bounds = rbox.getBounds();
+    bounds.add(triangle.getBounds());
+    setActualBounds(bounds);
   }
 
   @Override
@@ -108,20 +104,25 @@ public class SikuliGuideCallout extends SikuliGuideComponent {
   }
 
   class Triangle extends SikuliGuideComponent {
+
     GeneralPath gp;
 
     public Triangle() {
       super();
+      init();
+    }
+
+    private void init() {
       gp = new GeneralPath();
       gp.moveTo(TRIANGLE_SIZE * 0.45, 0);
       gp.lineTo(TRIANGLE_SIZE * 0.5, TRIANGLE_SIZE);
       gp.lineTo(TRIANGLE_SIZE * 0.85, 0);
       gp.closePath();
-
       setActualSize(new Dimension(TRIANGLE_SIZE, TRIANGLE_SIZE));
     }
 
     public void rotate(double radius) {
+      init();
       AffineTransform rat = new AffineTransform();
       rat.rotate(radius, TRIANGLE_SIZE / 2, TRIANGLE_SIZE / 2);
       gp.transform(rat);

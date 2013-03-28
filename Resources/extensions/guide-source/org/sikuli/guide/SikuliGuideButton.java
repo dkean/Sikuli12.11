@@ -15,7 +15,7 @@ import org.sikuli.script.Region;
 public class SikuliGuideButton extends SikuliGuideClickable {
 
   Font f = new Font("sansserif", Font.BOLD, 18);
-  JLabel label;
+  JLabel label = null;
 
   public SikuliGuideButton(String name) {
     super(new Region(0, 0, 0, 0));
@@ -23,41 +23,54 @@ public class SikuliGuideButton extends SikuliGuideClickable {
   }
 
   private void init(String name) {
+    PADDING_X = PADDING_Y = 10;
+    fontSize = 18;
     setName(name);
-    normalColor = Color.magenta;
+    setColors(null, null, null, null, Color.WHITE);
     mouseOverColor = new Color(0.3f, 0.3f, 0.3f);
+    layout = Layout.BOTTOM;
   }
 
   @Override
   public void setName(String name) {
-    super.setName(name);
-    this.label = new JLabel(name);
-    label.setFont(f);
-    label.setForeground(Color.white);
-    add(label);
+    if (label == null) {
+      super.setName(name);
+      this.label = new JLabel(name);
+      add(label);
+    }
+    label.setFont(new Font("sansserif", Font.BOLD, fontSize));
+    label.setForeground(colorText);
     Dimension s = label.getPreferredSize();
-    label.setLocation(5, 5);
+    label.setLocation((int) (PADDING_X/2), (int) (PADDING_Y/2));
     label.setSize(s);
-    s.height += 10;
-    s.width += 10;
+    s.height += PADDING_Y;
+    s.width += PADDING_X;
     setActualSize(s);
+  }
+
+  @Override
+  public void updateComponent() {
+    setName(name);
+    setLocationRelative(layout);
   }
 
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2d = (Graphics2D) g;
+    Color cb = null;
     if (isMouseOver()) {
-      g2d.setColor(mouseOverColor);
+      cb = mouseOverColor;
     } else {
-      g2d.setColor(normalColor);
+      cb = colorFront;
     }
-    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(0, 0, getActualWidth() - 1, getActualHeight() - 1, 10, 10);
+    g2d.setColor(cb);
+    RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(0, 0, getActualWidth() - 1, getActualHeight() - 1, PADDING_X, PADDING_Y);
     g2d.fill(roundedRectangle);
-    g2d.setColor(Color.white);
+    g2d.setColor(cb);
     g2d.draw(roundedRectangle);
-    roundedRectangle = new RoundRectangle2D.Float(1, 1, getActualWidth() - 3, getActualHeight() - 3, 10, 10);
-    g2d.setColor(Color.black);
+    roundedRectangle = new RoundRectangle2D.Float(1, 1, getActualWidth() - 3, getActualHeight() - 3, PADDING_X, PADDING_Y);
+    g2d.setColor(colorFrame);
     g2d.draw(roundedRectangle);
     label.paintComponents(g);
   }

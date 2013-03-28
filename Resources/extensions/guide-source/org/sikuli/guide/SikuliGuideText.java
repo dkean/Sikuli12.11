@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JLabel;
+import org.sikuli.script.Region;
 
 public class SikuliGuideText extends SikuliGuideComponent {
 

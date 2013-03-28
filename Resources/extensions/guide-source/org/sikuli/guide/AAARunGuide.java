@@ -17,7 +17,7 @@ import java.io.File;
 public class AAARunGuide {
   public static BufferedImage b = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
   private static SikuliGuide g = new SikuliGuide();
-  private static SikuliGuideComponent ggc;
+  private static SikuliGuideComponent g1, g2, g3;
 
   static SikuliGuideComponent.Layout LO = SikuliGuideComponent.Layout.OVER;
   static SikuliGuideComponent.Layout LT = SikuliGuideComponent.Layout.TOP;
@@ -28,8 +28,41 @@ public class AAARunGuide {
   static String images = "/Users/rhocke/Dropbox/Public/SikuliX/Guide/test.sikuli";
 
   public static void main(String[] args) throws FindFailed {
-    //gTest(s);
-    animTest(s);
+    //runTest(s);
+    runTestImage(s);
+  }
+
+  public static void runTestImage(Screen s) throws FindFailed {
+    String img = getImage("nbbtns1");
+    s.find(img);
+    s.hover();
+    Region r1 = Region.create(s.getLastMatch());
+//    g.image(img).setTarget(r1.above(10).above(10)).setLayout(LB).setScale(0);
+    g1 = g.button("OK").setTarget(img);//.setLayout(LB);
+    g.callout("hallo").setTarget(img).setLayout(LL).setColor(Color.WHITE).setTextColor(Color.BLUE).setFontSize(24);
+    //    g.button("Cancel").setTarget(g1).setLayout(LB);
+    String ret = g.showNow(20);
+    System.out.println("GuideTest: " + ret);
+  }
+
+  public static void runTest(Screen s) throws FindFailed {
+    s.hover(getImage("nbbtns1"));
+    Region r1 = Region.create(s.getLastMatch());
+    Region r2 = s.getCenter().grow(100);
+    g.rectangle().setTarget(r1).setStroke(10).setColor(Color.YELLOW);
+    //g.text("ein Text").setTarget(r1).setLayout(LB).setFontSize(16).setColor(Color.RED).setTextColor(Color.WHITE);
+    g.flag("hallo hallo").setLayout(LT).setTarget(r1).setColors(null, Color.DARK_GRAY, null, null, Color.WHITE);
+    g2 = g.callout("hallo").setTarget(r1).setFontSize(16).setLayout(LR).setColor(Color.GREEN);
+    //gCo(getImage("nbbtns1"), "hallo", 16, LB);
+    g1 = g.button("OK").setTarget(r1.below(100)).setLayout(LB).setFontSize(72);
+    g.circle().setTarget(g1).setColor(Color.YELLOW);
+//    g.rectangle().setTarget(r2);
+    g1 = g.image(getImage("nbbtns1")).setTarget(r2).setLayout(LO).setScale(0);
+    g2 = g.bracket().setTarget(g1).setLayout(LB).setColor(Color.GREEN);
+    g.text("a bracket").setTarget(g2).setLayout(LB);
+    g.arrow(r1, g1.getRegion()).setColor(Color.BLUE);
+    String ret = g.showNow(20);
+    System.out.println("GuideTest: " + ret);
   }
 
   public static String getImage(String img, String dir) {
@@ -43,93 +76,12 @@ public class AAARunGuide {
     return  getImage(img, null);
   }
 
-  public static void animTest(Screen s) throws FindFailed {
-    s.hover(getImage("nbbtns1"));
-    Region r1 = Region.create(s.getLastMatch());
-    gCo(r1, "hallo", 16, LR);
-    gCo(getImage("nbbtns1"), "hallo", 16, LB);
-    gB(r1.below(100), "ClickMe", LB);
-    String ret = g.showNow(20);
-    System.out.println("GuideTest: " + ret);
-  }
-
-  public static void gTest(Screen s) throws FindFailed {
-    Region r1 = s.getCenter().grow(200);
-    Region r2 = r1.grow(100);
-
-    gR(r1);
-    gCo(r1, "Ein langer Text", 0, LB);
-    gCo(r1, "Ein langer Text", 0, LT);
-    gC(r2);
-    gCo(r1, "Ein sehr sehr langer langer langer Text", 36, LR);
-    gT(r2, "Ein Text", 36, LB);
-    gB(r2, "ClickMe", LL);
-    Point f = ggc.getRegion().getCenter();
-    Point t = r2.getTopRight();
-    gAr(f, t);
-
-    String ret = g.showNow(20);
-    System.out.println("GuideTest: " + ret);
-  }
-
-  private static void gR(Region t) {
-    SikuliGuideRectangle gc = new SikuliGuideRectangle(t);
-    gc.setLocationRelativeToRegion(t, LO);
-    g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static void gC(Region t) {
-    SikuliGuideCircle gc = new SikuliGuideCircle(t);
-    gc.setLocationRelativeToRegion(t, LO);
-    g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static void gB(Region t, String name, SikuliGuideComponent.Layout l) {
-    SikuliGuideButton gc = new SikuliGuideButton(name);
-    gc.setLocationRelativeToRegion(t, l);
-    g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static void gT(Region t, String text, int fSize, SikuliGuideComponent.Layout l) {
-    SikuliGuideText gc = new SikuliGuideText(text);
-    gc.setFontSize(fSize);
-    gc.setLocationRelativeToRegion(t, l);
-    gc.updateComponent();
-    g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static void gCo(Region t, String text, int fSize, SikuliGuideComponent.Layout l) {
+  private static SikuliGuideComponent gCo(String image, String text, int fSize, SikuliGuideComponent.Layout l) {
     SikuliGuideCallout gc = new SikuliGuideCallout(text);
     gc.setFontSize(fSize);
-    gc.setColors(null, null, Color.BLUE, null, null);
-    gc.setLocationRelativeToRegion(t, l);
-    g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static void gCo(String image, String text, int fSize, SikuliGuideComponent.Layout l) {
-    SikuliGuideCallout gc = new SikuliGuideCallout(text);
-    gc.setFontSize(fSize);
-    gc.setColors(null, null, Color.BLUE, null, null);
     SikuliGuideComponent ga = new SikuliGuideAnchor(new Pattern(image));
     gc.setLocationRelativeToComponent(ga, l);
     g.addToFront(gc);
-    ggc = gc;
-  }
-
-  private static SikuliGuideComponent gAn(Pattern p) {
-    SikuliGuideAnchor c = new SikuliGuideAnchor(p);
-    g.addToFront(c);
-    return c;
-  }
-
-  private static void gAr(Point from, Point to) {
-    SikuliGuideArrow gc = new SikuliGuideArrow(from, to);
-    g.addToFront(gc);
-    ggc = gc;
+    return gc;
   }
 }

@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.JComponent;
 
 import org.sikuli.script.Debug;
+import org.sikuli.script.Pattern;
 import org.sikuli.script.Region;
 
 public class SikuliGuideComponent extends JComponent
@@ -35,12 +36,45 @@ public class SikuliGuideComponent extends JComponent
     INSIDE,
     OVER,
     ORIGIN,
-    CENTER
+    CENTER,
+    AROUND
   };
 
-  private boolean hasChanged = false;
-  public int PADDING_X = 5;
-  public int PADDING_Y = 5;
+  public boolean hasChanged = false;
+  public int PADDING_X = 4;
+  public int PADDING_Y = 4;
+
+  //<editor-fold defaultstate="collapsed" desc="Setters/Getters">
+  Region targetRegion = null;
+  SikuliGuideComponent targetComponent = null;
+  Pattern targetPattern = null;
+  SikuliGuide currentGuide = null;
+
+  public void setGuide(SikuliGuide g) {
+    currentGuide = g;
+  }
+
+  public Region getTarget() {
+    if (targetRegion != null) {
+      return targetRegion;
+    }
+    return getRegion();
+  }
+
+  public SikuliGuideComponent setScale(float scale) {
+    return this;
+  }
+
+  public Layout layout = Layout.OVER;
+  public Layout currentLayout = layout;
+
+  public SikuliGuideComponent setLayout(Layout lo) {
+    currentLayout = layout;
+    layout = lo;
+    setLocationRelative(lo);
+    updateComponent();
+    return this;
+  }
 
   public static Color defColor = Color.RED;
   Color color;
@@ -52,11 +86,7 @@ public class SikuliGuideComponent extends JComponent
   Color colorFrame;
   public static Color defColorText = Color.BLACK;
   Color colorText;
-  public static int defStroke = 3;
-  int stroke;
-
-  //<editor-fold defaultstate="collapsed" desc="Setters/Getters">
-  public void setColors(Color all, Color front, Color back, Color frame, Color text) {
+  public SikuliGuideComponent setColors(Color all, Color front, Color back, Color frame, Color text) {
     if (all != null) {
       color = all;
     }
@@ -74,6 +104,8 @@ public class SikuliGuideComponent extends JComponent
     if (text != null) {
       colorText = text;
     }
+    updateComponent();
+    return this;
   }
 
   /**
@@ -84,7 +116,7 @@ public class SikuliGuideComponent extends JComponent
    * @param frame
    * @param text
    */
-  public void setColors(int[] front, int[] back, int[] frame, int[] text) {
+  public SikuliGuideComponent setColors(int[] front, int[] back, int[] frame, int[] text) {
     Color cf = null;
     Color cb = null;
     Color cr = null;
@@ -102,14 +134,44 @@ public class SikuliGuideComponent extends JComponent
       ct = new Color(text[0], text[1], text[2]);
     }
     setColors(null, cf, cb, cr, ct);
+    updateComponent();
+    return this;
   }
 
-  public void setColor(Color color) {
-    setColors(null, color, null, null, null);
+  /**
+   * set the front and back color
+   * @param color
+   */
+  public SikuliGuideComponent setColor(Color color) {
+    setColors(null, color, color, null, null);
+    return this;
   }
 
-  public void setColor(int r, int g, int b) {
+  /**
+   * set the front and back color as (r, g, b) integer array
+   * @param color
+   */
+  public SikuliGuideComponent setColor(int r, int g, int b) {
     setColor(new Color(r, g, b));
+    return this;
+  }
+
+  /**
+   * set the text color
+   * @param color
+   */
+  public SikuliGuideComponent setTextColor(Color color) {
+    setColors(null, null, null, null, color);
+    return this;
+  }
+
+  /**
+   * set text color as (r, g, b) integer array
+   * @param color
+   */
+  public SikuliGuideComponent setTextColor(int r, int g, int b) {
+    setTextColor(new Color(r, g, b));
+    return this;
   }
 
   public static String getColorHex(Color col) {
@@ -117,14 +179,22 @@ public class SikuliGuideComponent extends JComponent
     return rgb.substring(2, rgb.length()).toUpperCase();
   }
 
+  public static int defStroke = 3;
+  int stroke;
+
+  public SikuliGuideComponent setStroke(int stk) {
+    stroke = stk;
+    return this;
+  }
+
   public static String defFont = "";
-  String font = "";
+  String fontName = "";
   public static int defFontSize = 0;
   int fontSize = 0;
 
-  public void setFont(String font, int fontSize) {
-    if (font != null && !this.font.isEmpty()) {
-      this.font = font;
+  public SikuliGuideComponent setFont(String font, int fontSize) {
+    if (font != null && !this.fontName.isEmpty()) {
+      this.fontName = font;
       hasChanged = true;
     }
     if (fontSize > 0 && this.fontSize > 0) {
@@ -132,20 +202,22 @@ public class SikuliGuideComponent extends JComponent
       hasChanged = true;
     }
     if (hasChanged) {
-      updateComponent();
       hasChanged = false;
+      updateComponent();
     }
+    return this;
   }
 
-  public void setFontSize(int i) {
+  public SikuliGuideComponent setFontSize(int i) {
     setFont(null, i);
+    return this;
   }
 
   String getStyleString() {
     String s = "font-size:" + fontSize + "px;color:#" + getColorHex(colorText)
             + ";background-color:#" + getColorHex(colorBack) + ";padding:3px";
-    if (!font.isEmpty()) {
-      s = "font:" + font + ";" + s;
+    if (!fontName.isEmpty()) {
+      s = "font:" + fontName + ";" + s;
     }
     return s;
   }
@@ -153,8 +225,9 @@ public class SikuliGuideComponent extends JComponent
   static int defMaxWidth = 300;
   int maxWidth;
 
-  public void setMaxWidth(int w) {
+  public SikuliGuideComponent setMaxWidth(int w) {
     maxWidth = w;
+    return this;
   }
 
   String text = "";
@@ -163,11 +236,12 @@ public class SikuliGuideComponent extends JComponent
     return text;
   }
 
-  public void setText(String text) {
+  public SikuliGuideComponent setText(String text) {
     if (!this.text.isEmpty()) {
       this.text = text;
       updateComponent();
     }
+    return this;
   }
   //</editor-fold>
 
@@ -187,7 +261,7 @@ public class SikuliGuideComponent extends JComponent
     colorFrame = defColorFrame;
     colorText = defColorText;
     stroke = defStroke;
-    font = defFont;
+    fontName = defFont;
     fontSize = defFontSize;
     maxWidth = defMaxWidth;
   }
@@ -244,7 +318,6 @@ public class SikuliGuideComponent extends JComponent
 
   public void setActualBounds(Rectangle actualBounds) {
     this.actualBounds = (Rectangle) actualBounds.clone();
-
     Rectangle paintBounds = (Rectangle) actualBounds.clone();
     if (hasShadow()) {
       paintBounds.x -= (shadowSize - shadowOffset);
@@ -252,7 +325,6 @@ public class SikuliGuideComponent extends JComponent
       paintBounds.width += (2 * shadowSize);
       paintBounds.height += (2 * shadowSize);
     }
-
     super.setBounds(paintBounds);
     updateAllFollowers();
   }
@@ -586,10 +658,6 @@ public class SikuliGuideComponent extends JComponent
     Point dest = new Point(dest_x, dest_y);
     return new MoveAnimator(this, src, dest);
   }
-  //   public SikuliGuideAnimator createCirclingAnimator(int radius) {
-  //      return new CircleAnimator(this, radius);
-  //      return nu
-  //   }
 
   public void resizeTo(Dimension targetSize) {
     //ResizeAnimator anim = new ResizeAnimator(this, getActualSize(),targetSize);
@@ -605,11 +673,6 @@ public class SikuliGuideComponent extends JComponent
     NewAnimator anim = AnimationFactory.createCenteredMoveAnimation(this, getActualLocation(), targetLocation);
     anim.setListener(listener);
     anim.start();
-  }
-
-  public void popupOLD() {
-//      PopupAnimator anim = new PopupAnimator();
-//      anim.start();
   }
 
   public void popin() {
@@ -629,6 +692,7 @@ public class SikuliGuideComponent extends JComponent
     NewAnimator anim = AnimationFactory.createCenteredResizeToAnimation(this, targetSize);
     anim.start();
   }
+
   SikuliGuideAnimator entrance_anim;
   SikuliGuideAnimator emphasis_anim;
 
@@ -652,10 +716,11 @@ public class SikuliGuideComponent extends JComponent
     emphasis_anim = anim;
   }
 
+  AnimationListener animationListener;
+
   public void addAnimationListener(AnimationListener listener) {
     animationListener = listener;
   }
-  AnimationListener animationListener;
 
   public void animationCompleted() {
     if (animationListener != null) {
@@ -731,7 +796,6 @@ public class SikuliGuideComponent extends JComponent
   }
 
   class AutoLayoutBySide extends AutoLayout {
-
     Layout side;
 
     AutoLayoutBySide(SikuliGuideComponent targetComponent, Layout side) {
@@ -831,6 +895,34 @@ public class SikuliGuideComponent extends JComponent
 //</editor-fold>
 
   //<editor-fold defaultstate="collapsed" desc="Position">
+  public <RCPS> SikuliGuideComponent setTarget(RCPS target) {
+    if (target instanceof Region) {
+      targetRegion = (Region) target;
+    } else if (target instanceof SikuliGuideComponent) {
+      targetComponent = (SikuliGuideComponent) target;
+    } else if (target instanceof Pattern) {
+      targetPattern = (Pattern) target;
+    } else if (target instanceof String) {
+      targetPattern = new Pattern((String) target);
+    }
+    if (targetPattern != null) {
+      targetComponent = new SikuliGuideAnchor(targetPattern);
+      currentGuide.addToFront(targetComponent);
+      setLayout(layout);
+    }
+    updateComponent();
+    return this;
+  }
+
+  public SikuliGuideComponent setLocationRelative(Layout side) {
+    if (targetRegion != null) {
+      setLocationRelativeToRegion(targetRegion, side);
+    } else if (targetComponent != null) {
+      setLocationRelativeToComponent(targetComponent, side);
+    }
+    return this;
+  }
+
   public void setLocationRelativeToComponent(SikuliGuideComponent comp, Layout side) {
     if (autolayout != null) {
       autolayout.stop();
@@ -874,7 +966,7 @@ public class SikuliGuideComponent extends JComponent
     }
   }
 
-  public void setLocationRelativeToRegion(Region region, Layout side) {
+  public SikuliGuideComponent setLocationRelativeToRegion(Region region, Layout side) {
     if (margin != null) {
       Region rectWithSpacing = new Region(region);
       rectWithSpacing.x -= margin.left;
@@ -902,25 +994,20 @@ public class SikuliGuideComponent extends JComponent
     } else if (side == Layout.ORIGIN) {
       setActualLocation(region.x, region.y);
     }
+    return this;
   }
 
   public void setHorizontalAlignmentWithRegion(Region region, float f) {
-
     int x0 = region.x;
     int x1 = region.x + region.w - getActualWidth();
-
     int x = (int) (x0 + (x1 - x0) * f);
-
     setActualLocation(x, getActualLocation().y);
   }
 
   public void setVerticalAlignmentWithRegion(Region region, float f) {
-
     int y0 = region.y;
     int y1 = region.y + region.h - getActualHeight();
-
     int y = (int) (y0 + (y1 - y0) * f);
-
     setActualLocation(getActualLocation().x, y);
   }
   //</editor-fold>
@@ -940,16 +1027,12 @@ public class SikuliGuideComponent extends JComponent
     // force the follower to have the same visibility
     sklComp.setVisible(isVisible());
     sklComp.setOpacity(opacity);
-
     if (followers.indexOf(sklComp) < 0) {
       // if this component is not already a follower
-
       // add it to the list of follower
       followers.add(sklComp);
-
       // remove its previous leader
       sklComp.removeFromLeader();
-
       // set its new leader to self
       sklComp.leader = this;
     }

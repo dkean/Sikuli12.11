@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sikuli.guide;
 
@@ -22,56 +22,61 @@ import org.sikuli.script.Region;
 
 public class SikuliGuideFlag extends SikuliGuideComponent{
 
-
    // which direction this element is pointing
    public final static int DIRECTION_EAST = 1;
    public final static int DIRECTION_WEST = 2;
    public final static int DIRECTION_SOUTH = 3;
    public final static int DIRECTION_NORTH = 4;
-   
-   String text;
-   JLabel label;
-   public SikuliGuideFlag(String text){         
-      super();
-      init(text);
-   }
-   
-   public void setText(String text){
-      init(text);
-   }
-   
-   public String getText(){
-      return text;
-   }
 
-   Font font;
+   JLabel label;
    Rectangle textBox;
    Rectangle triangle;
    FontMetrics fm;
-   
-   static final int PADDING_X = 3;
-   static final int PADDING_Y = 3;
- 
-
+   String defFont = "sansserif";
+   Font font;
+   int defFontSize = 16;
    int direction;
-   void init(String text){
-      this.text = text;
-      
-      setForeground(Color.black);
-      setBackground(Color.green);
+   Dimension canonicalSize;
+   GeneralPath flagShape;
 
+   public SikuliGuideFlag(String text){
+      super();
+      init(text);
+   }
+
+   private void init(String text){
+      this.text = text;
+      setForeground(colorText);
+      setBackground(colorFront);
       textBox = new Rectangle();
       triangle = new Rectangle();
+      font = new Font(defFont, Font.BOLD, defFontSize);
+      setLayout(Layout.LEFT);
+   }
 
-      font = new Font("sansserif", Font.BOLD, 14);
+   @Override
+   public void updateComponent() {
       fm = getFontMetrics(font);
       textBox.setSize(fm.stringWidth(text),fm.getHeight());
       textBox.grow(PADDING_X, PADDING_Y);
-      
-      setDirection(DIRECTION_EAST);
+      setLocationRelativeToRegion(getTarget(), layout);
    }
 
-   public void setLocationRelativeToRegion(Region region, Layout side) {
+   @Override
+   public SikuliGuideComponent setText(String text){
+      this.text = text;
+      updateComponent();
+      return this;
+   }
+
+   @Override
+   public SikuliGuideComponent setFont(String fontName, int fsize) {
+     font = new Font(fontName, Font.BOLD, fsize>0 ? fsize : fontSize);
+     return this;
+   }
+
+   @Override
+   public SikuliGuideComponent setLocationRelativeToRegion(Region region, Layout side) {
       if (side == Layout.TOP){
          setDirection(DIRECTION_SOUTH);
       } else if (side == Layout.BOTTOM){
@@ -80,30 +85,21 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
          setDirection(DIRECTION_EAST);
       } else if (side == Layout.RIGHT){
          setDirection(DIRECTION_WEST);
-      }      
-
-      super.setLocationRelativeToRegion(region,side);
+      }
+      return super.setLocationRelativeToRegion(region,side);
    }
-   
-  
-   
-   Dimension canonicalSize;
-   
-   GeneralPath flagShape;
-   
+
    public void setDirection(int direction){
       this.direction = direction;
       if (direction == DIRECTION_EAST || direction == DIRECTION_WEST){
          triangle.setSize(10,textBox.height);
-         canonicalSize = new Dimension(textBox.width + triangle.width, textBox.height);                  
+         canonicalSize = new Dimension(textBox.width + triangle.width, textBox.height);
       }else{
          triangle.setSize(20, 10);
          setActualSize(textBox.width, textBox.height + triangle.height);
          canonicalSize = new Dimension(textBox.width,  textBox.height + triangle.height);
       }
-      
       setActualSize(canonicalSize);
-      
       if (direction == DIRECTION_EAST){
          textBox.setLocation(0, 0);
       } else if (direction == DIRECTION_WEST){
@@ -113,8 +109,6 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
       } else if (direction == DIRECTION_NORTH){
          textBox.setLocation(0, triangle.height);
       }
-      
-      
       flagShape = new GeneralPath();
       if (direction == DIRECTION_WEST || direction == DIRECTION_EAST) {
          flagShape.moveTo(0,0);
@@ -133,7 +127,6 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
          flagShape.lineTo(0,textBox.height);
          flagShape.closePath();
       }
-
       if (direction == DIRECTION_WEST){
          AffineTransform rat = new AffineTransform();
          rat.setToTranslation(textBox.width + triangle.width, textBox.height);
@@ -147,43 +140,28 @@ public class SikuliGuideFlag extends SikuliGuideComponent{
       }
    }
 
+   @Override
    public void paintComponent(Graphics g){
-      
       Dimension d = new Dimension(textBox.width + triangle.width, textBox.height);
-      
       Dimension originalSize = canonicalSize;
       Dimension actualSize = getActualSize();
-      
       float scalex = 1f * actualSize.width / originalSize.width;
-      float scaley = 1f * actualSize.height / originalSize.height;      
+      float scaley = 1f * actualSize.height / originalSize.height;
       ((Graphics2D) g).scale(scalex, scaley);
-
       super.paintComponent(g);
-
       Graphics2D g2d = (Graphics2D) g;
       g2d.setFont(font);
-      
-
-
-
       g2d.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON));
-
-      g2d.setColor(getBackground());
+      g2d.setColor(colorFront);
       g2d.fill(flagShape);
-      
       // draw outline
       Stroke pen = new BasicStroke(1.0F);
       g2d.setStroke(pen);
-      //g2d.setColor(new Color(0.6f,0.6f,0.6f));
-      g2d.setColor(Color.white);
-      g2d.draw(flagShape);      
-
-      g2d.setColor(getForeground());
-      g2d.drawString(text, textBox.x + PADDING_X, 
+      g2d.setColor(colorFrame);
+      g2d.draw(flagShape);
+      g2d.setColor(colorText);
+      g2d.drawString(text, textBox.x + PADDING_X,
             textBox.y +  textBox.height - fm.getDescent() - PADDING_Y);
-
    }
-
-
 }

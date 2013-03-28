@@ -4,12 +4,14 @@
 package org.sikuli.guide;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
+import org.sikuli.script.Debug;
 
 import org.sikuli.script.Region;
 
@@ -17,21 +19,34 @@ public class SikuliGuideCircle extends SikuliGuideComponent {
 
   public SikuliGuideCircle(Region region) {
     super();
-    if (region != null) {
-      Rectangle rect = region.getRect();
-      rect.grow(stroke, stroke);
-      setActualBounds(rect);
-    }
-    init();
+    init(region);
+  }
+
+  public SikuliGuideCircle(SikuliGuideComponent comp) {
+    super();
+    init(comp.getRegion());
   }
 
   public SikuliGuideCircle() {
     super();
-    init();
+    init(null);
   }
 
-  private void init() {
-    setColors(null, color, null, null, null);
+  private void init(Region region) {
+    if (region != null) {
+      targetRegion = region;
+    } else {
+      Debug.log(2, "SikuliGuideRectangle: targetRegion is given as null");
+      targetRegion = Region.create(0, 0, 2*stroke, 2*stroke);
+    }
+    setColor(Color.RED);
+  }
+
+  @Override
+  public void updateComponent() {
+    setActualBounds(getTarget().getRect());
+    setForeground(colorFront);
+    super.setLocationRelative(Layout.OVER);
   }
 
   @Override
@@ -43,10 +58,9 @@ public class SikuliGuideCircle extends SikuliGuideComponent {
     Stroke pen = new BasicStroke((float) stroke);
     g2d.setStroke(pen);
     Rectangle r = new Rectangle(getActualBounds());
-    r.grow(-2, -2);
-    g2d.translate(2, 2);
-    Ellipse2D.Double ellipse =
-            new Ellipse2D.Double(0, 0, r.width - 1, r.height - 1);
+    r.grow(-(stroke-1), -(stroke-1));
+    g2d.translate(stroke-1, stroke-1);
+    Ellipse2D.Double ellipse = new Ellipse2D.Double(0, 0, r.width - 1, r.height - 1);
     g2d.draw(ellipse);
   }
 }

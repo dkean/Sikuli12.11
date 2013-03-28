@@ -23,34 +23,59 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
   public static final int ELBOW_X = 1;
   public static final int ELBOW_Y = 2;
   int style;
-  private Point source;
-  private Point destination;
-  SikuliGuideComponent from;
-  SikuliGuideComponent to;
-
-  public void setStyle(int style) {
-    this.style = style;
-  }
+  private Point source = null;
+  private Point destination = null;
+  private SikuliGuideComponent from = null;
+  private SikuliGuideComponent to = null;
+  boolean hasComponents = false;
 
   public SikuliGuideArrow(Point from, Point to) {
     super();
     this.source = from;
     this.destination = to;
-    setForeground(Color.red);
-    setStyle(STRAIGHT);
-    updateBounds();
+    init();
   }
 
   public SikuliGuideArrow(SikuliGuideComponent from, SikuliGuideComponent to) {
     super();
+    hasComponents = true;
     this.from = from;
     this.to = to;
-    setForeground(Color.red);
-    setStyle(STRAIGHT);
-    updateBounds();
     from.addComponentListener(this);
     to.addComponentListener(this);
-    updateVisibility();
+    init();
+  }
+
+  private void init() {
+    colorFront = Color.RED;
+    style = STRAIGHT;
+    updateComponent();
+  }
+
+  @Override
+  public void updateComponent() {
+    setForeground(colorFront);
+    Rectangle dirtyBounds = getBounds();
+    if (from != null && to != null) {
+      source = from.getCenter();
+      destination = to.getCenter();
+    }
+    Debug.info("" + getSource() + " to " + getDestination());
+    Rectangle r = new Rectangle(getSource());
+    r.add(getDestination());
+    r.grow(10, 10);
+    setActualBounds(r);
+    dirtyBounds.add(getBounds());
+    if (getTopLevelAncestor() != null) {
+      getTopLevelAncestor().repaint(dirtyBounds.x, dirtyBounds.y, dirtyBounds.width, dirtyBounds.height);
+    }
+    if (hasComponents) {
+      updateVisibility();
+    }
+  }
+
+  public void setStyle(int style) {
+    this.style = style;
   }
 
   private void drawPolylineArrow(Graphics g, int[] xPoints, int[] yPoints,
@@ -110,7 +135,7 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
   public void setDestination(Point destination) {
     this.destination = destination;
-    updateBounds();
+    updateComponent();
   }
 
   public Point getDestination() {
@@ -119,28 +144,11 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
   public void setSource(Point source) {
     this.source = source;
-    updateBounds();
+    updateComponent();
   }
 
   public Point getSource() {
     return source;
-  }
-
-  protected void updateBounds() {
-    Rectangle dirtyBounds = getBounds();
-    if (from != null && to != null) {
-      source = from.getCenter();
-      destination = to.getCenter();
-    }
-    Debug.info("" + getSource() + " to " + getDestination());
-    Rectangle r = new Rectangle(getSource());
-    r.add(getDestination());
-    r.grow(10, 10);
-    setActualBounds(r);
-    dirtyBounds.add(getBounds());
-    if (getTopLevelAncestor() != null) {
-      getTopLevelAncestor().repaint(dirtyBounds.x, dirtyBounds.y, dirtyBounds.width, dirtyBounds.height);
-    }
   }
 
   void updateVisibility() {
@@ -154,7 +162,7 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
   @Override
   public void componentMoved(ComponentEvent arg0) {
-    updateBounds();
+    updateComponent();
   }
 
   @Override
@@ -163,7 +171,7 @@ public class SikuliGuideArrow extends SikuliGuideComponent implements ComponentL
 
   @Override
   public void componentShown(ComponentEvent arg0) {
-    updateBounds();
+    updateComponent();
     updateVisibility();
   }
 }
