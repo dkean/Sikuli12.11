@@ -21,6 +21,7 @@ public class Pattern {
 	private BufferedImage imgBuf = null;
   private float similarity = (float) Settings.MinSimilarity;
   private Location offset = new Location(0, 0);
+  private final static String isBImg = "-- BufferedImage --";
 
   /**
 	 * creates empty Pattern object
@@ -64,7 +65,7 @@ public class Pattern {
 	 */
 	public Pattern(BufferedImage bimg) {
 		imgBuf = bimg;
-		imgURL = "-- BufferedImage --";
+		imgURL = isBImg;
 	}
 
   /**
@@ -159,6 +160,9 @@ public class Pattern {
 	 */
 	public String getFilename() {
 		if (imgURL != null) {
+      if (isBImg.equals(imgURL)) {
+        return isBImg;
+      }
 			try {
 				return ImageLocator.locate(imgURL);
 			} catch (IOException ex) {

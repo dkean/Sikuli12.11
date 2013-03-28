@@ -146,6 +146,7 @@ public class Finder implements Iterator<Match> {
    * @param aPtn
    */
   public String find(Pattern aPtn) {
+//TODO Pattern with BufferedImage
     _pattern = (Pattern) aPtn;
     String img = aPtn.getFilename();
     if (img == null) {
