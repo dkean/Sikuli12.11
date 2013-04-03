@@ -7,10 +7,7 @@ SikuliX-1.0 (currently at Beta 351)
 
 **----------- PLEASE ------- look at the contained readme.txt**
 
-- **Mac**:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta351.zip
- - Issue: use Chrome or Firefox to click the above download link. 
-Safari (version 6 on 10.8 at least) seems to have a problem with the file name and I don't have an easy solution currently.
+- **Mac**: currently not working - back on April 4th
 - **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta351.zip
  - natives built with MinGW
 - **Windows 64Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win64Beta351.zip
