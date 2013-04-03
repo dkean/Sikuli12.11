@@ -5,7 +5,6 @@
 package org.sikuli.guide;
 
 import java.awt.Color;
-import java.awt.Point;
 import org.sikuli.script.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,8 +27,13 @@ public class AAARunGuide {
   static String images = "/Users/rhocke/Dropbox/Public/SikuliX/Guide/test.sikuli";
 
   public static void main(String[] args) throws FindFailed {
+    /*    Settings.OcrTextRead = true;
+     * String  text = s.find(getImage("sometext")).text();
+     * String finaltext = text.trim();
+     * System.out.println(finaltext);
+     */
     //runTest(s);
-    runTestImage(s);
+    //runTestImage(s);
   }
 
   public static void runTestImage(Screen s) throws FindFailed {
