@@ -7,7 +7,7 @@ SikuliX-1.0 (currently at Beta 351)
 
 **----------- PLEASE ------- look at the contained readme.txt**
 
-- **Mac**: currently not working - back on April 4th
+- **Mac**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-MacBeta351.zip
 - **Windows 32Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta351.zip
  - natives built with MinGW
 - **Windows 64Bit**: https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win64Beta351.zip
@@ -17,7 +17,8 @@ SikuliX-1.0 (currently at Beta 351)
 **Unzip to wherever you want, look into the contained readme.txt and Have Fun ;-)**
 
 **If you have any problems, post on the issues page with a copy of the command line output**<br />
-**You get more valuable debug output using option -d 3 (Mac) or d:3 (Windows)**
+**You get more valuable debug output using option -d 3 (Mac) or d:3 (Windows)**<br />
+**When having problems with the IDE, use option -c additionally, to get the output to the commandline**
 
 Have a look at the JavaDocs of Sikuli Script: https://dl.dropbox.com/u/42895525/SikuliX/javadoc/index.html
 
