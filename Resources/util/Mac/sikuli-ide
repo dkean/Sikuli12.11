@@ -99,7 +99,21 @@ if [ ! -e "$SIKULI_HOME/libs/libVisionProxy.dylib" ]; then
     echo giving up
   fi
 fi
-if [ "SIKULI_HOME" != "INVALID" ]; then
+
+if [ $SIKULI_HOME != "INVALID" ]; then
+# doing some special stuff here - move to a setup script later
+  if [ ! -e "$SIKULI_HOME/libs/libopencv_core.2.4.dylib" ]; then
+    pushd $SIKULI_HOME/libs
+    ln -s libopencv_core.2.4.4.dylib libopencv_core.2.4.dylib
+    ln -s libopencv_features2d.2.4.4.dylib libopencv_features2d.2.4.dylib
+    ln -s libopencv_flann.2.4.4.dylib libopencv_flann.2.4.dylib
+    ln -s libopencv_highgui.2.4.4.dylib libopencv_highgui.2.4.dylib
+    ln -s libopencv_imgproc.2.4.4.dylib libopencv_imgproc.2.4.dylib
+    popd
+  fi
+fi
+
+if [ $SIKULI_HOME != "INVALID" ]; then
   echo using as SIKULI_HOME $SIKULI_HOME
   echo seems to be valid - trying to start Sikuli IDE
   echo "running $PROPS $CONSOLE -Dsikuli.Debug=$DEBUG"

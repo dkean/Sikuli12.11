@@ -20,4 +20,8 @@ if [ "$beta" != "" ]; then
   echo +++ $beta
 fi
 basedir=../Resources/build
-ant -f $basedir/build-mac-app.xml -Dbasedir=$basedir -Dbeta=$beta -Dversion=$sversion
+if [ "$beta" != "" ]; then
+  ant -f $basedir/build-mac-app.xml -Dbasedir=$basedir -Dbeta=$beta -Dversion=$sversion
+else
+  echo +++ !!! +++ usage: java-version beta-version
+fi

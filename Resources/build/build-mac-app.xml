@@ -99,7 +99,8 @@
     </copy>
 
     <exec executable="${my.util}/post-build">
-      <arg path="${my.beta}/libs"/>
+      <arg path="${my.beta}"/>
+      <arg path="${my.app}"/>
     </exec>
 
     <chmod file="${my.beta}/sikuli-ide" perm="ugo+rx"/>
