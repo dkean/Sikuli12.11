@@ -21,11 +21,10 @@ public class EditorKit extends StyledEditorKit {
   public static final String sklDeindentAction = "SKL.DeindentAction";
   private ViewFactory _viewFactory;
 
-  ;
-
-   public EditorKit() {
+  public EditorKit() {
     _viewFactory = new EditorViewFactory();
   }
+
   private static final TextAction[] defaultActions = {
     new InsertTabAction(),
     new DeindentAction(),
@@ -541,16 +540,14 @@ public class EditorKit extends StyledEditorKit {
     }
 
     /**
-     * Change the indentation of a line. Any existing leading whitespace is
-     * replaced by the appropriate number of tab characters (padded with blank
-     * characters if necessary) if tab expansion in the user preferences is
-     * true, or the appropriate number of blank characters if tab expansion is
-     * false.
+     * Change the indentation of a line. Any existing leading whitespace is replaced by the
+     * appropriate number of tab characters (padded with blank characters if necessary) if tab
+     * expansion in the user preferences is true, or the appropriate number of blank characters if
+     * tab expansion is false.
      *
      * @param linenum the line number (0-based)
-     * @param columns the number of columns by which to increase the indentation
-     * (if columns is greater than 0) or decrease the indentation (if columns is
-     * less than 0)
+     * @param columns the number of columns by which to increase the indentation (if columns is
+     * greater than 0) or decrease the indentation (if columns is less than 0)
      * @throws BadLocationException if the specified line does not exist
      */
     // TODO: make this a method of SikuliDocument, no need to pass document as argument

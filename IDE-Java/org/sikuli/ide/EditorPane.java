@@ -315,9 +315,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
       throw new BadLocationException("Can't find function " + funcName, -1);
     }
   }
-  //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="content handling">
   private int getFunctionStartOffset(String func, Element node) throws BadLocationException {
     Document doc = getDocument();
     int count = node.getElementCount();
@@ -340,7 +338,9 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
     return -1;
   }
+  //</editor-fold>
 
+  //<editor-fold defaultstate="collapsed" desc="content handling">
   public int getNumLines() {
     Document doc = getDocument();
     Element root = doc.getDefaultRootElement();
@@ -348,8 +348,8 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     return lineIdx + 1;
   }
 
-  // line starting from 0
-  int getLineStartOffset(int line) throws BadLocationException {
+  public int getLineStartOffset(int line) throws BadLocationException {
+    // line starting from 0
     Element map = getDocument().getDefaultRootElement();
     if (line < 0) {
       throw new BadLocationException("Negative line", -1);
@@ -361,7 +361,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
   }
 
-  int parseRange(int start, int end) {
+  private int parseRange(int start, int end) {
     try {
       end = parseLine(start, end, patCaptureBtn);
       end = parseLine(start, end, patPatternStr);
@@ -373,7 +373,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     return end;
   }
 
-  void parse(Element node) {
+  private void parse(Element node) {
     int count = node.getElementCount();
     for (int i = 0; i < count; i++) {
       Element elm = node.getElement(i);
@@ -387,7 +387,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
   }
 
-  int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException {
+  private int parseLine(int startOff, int endOff, Pattern ptn) throws BadLocationException {
     //System.out.println(startOff + " " + endOff);
     if (endOff <= startOff) {
       return endOff;
@@ -412,7 +412,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     return endOff;
   }
 
-  boolean replaceWithImage(int startOff, int endOff, Pattern ptn)
+  private boolean replaceWithImage(int startOff, int endOff, Pattern ptn)
           throws BadLocationException {
     Document doc = getDocument();
     String imgStr = doc.getText(startOff, endOff - startOff);
@@ -438,7 +438,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     return false;
   }
 
-  void insertString(String str) {
+  public void insertString(String str) {
     int sel_start = getSelectionStart();
     int sel_end = getSelectionEnd();
     if (sel_end != sel_start) {
@@ -455,7 +455,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     setCaretPosition(end);
   }
 
-  void insertString(int pos, String str) {
+  private void insertString(int pos, String str) {
     Document doc = getDocument();
     try {
       doc.insertString(pos, str, null);
@@ -464,7 +464,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
   }
 
-  void appendString(String str) {
+  public void appendString(String str) {
     Document doc = getDocument();
     try {
       int start = doc.getLength();
@@ -745,6 +745,7 @@ public class EditorPane extends JTextPane implements KeyListener, CaretListener 
     }
   }
   //</editor-fold>
+
   //<editor-fold defaultstate="collapsed" desc="currently not used">
   private Class _historyBtnClass;
   private Pattern _lastSearchPattern = null;
