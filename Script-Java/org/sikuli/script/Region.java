@@ -2705,9 +2705,13 @@ public class Region {
       return 0;
     }
     if (text != null && !"".equals(text)) {
+      String showText = "";
+      for (int i = 0; i < text.length(); i++) {
+        showText += Key.toJavaKeyCodeText(text.charAt(i));
+      }
       Debug.history(
               (modifiers != 0 ? KeyEvent.getKeyModifiersText(modifiers) + "+" : "")
-              + "TYPE \"" + text + "\"");
+              + "TYPE \"" + showText + "\"");
       RobotDesktop r = getScreen().getActionRobot();
       for (int i = 0; i < text.length(); i++) {
         r.pressModifiers(modifiers);
